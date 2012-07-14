@@ -14,12 +14,12 @@ Vector2d::Vector2d(float inX, float inY)
 
 Vector2d::Vector2d(Vector2d &inVector)
 {
-	Vector2d(inVector.X(), inVector.Y());
+	this->setXY(inVector.X(), inVector.Y());
 }
 
 Vector2d::Vector2d()
 {
-	Vector2d(0, 0);
+	this->setXY(0.0, 0.0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
