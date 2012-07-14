@@ -8,53 +8,19 @@
 
 #include <iostream>
 
-#include <gl/glut.h>
-
-/*
 #include "Vector2d.h"
-#include "Collections/PLList.h"
-#include "Base/PLAutoPointer.h"
-
-#include "Classificator/PLContext.h"
-*/
+#include "Collider/PLConvexPolygon2d.h"
 
 using namespace std;
 
 int main(int argc, char** argv)
 {
-//	PLAutoPointer<PLContext> theContext = new PLContext();
+	Vector2d **theVectors = new Vector2d*[4];
+	theVectors[0] = new Vector2d(100.0, 100.0);
+	theVectors[1] = new Vector2d(100.0, 200.0);
+	theVectors[2] = new Vector2d(200.0, 200.0);
+	theVectors[3] = new Vector2d(200.0, 100.0);
 
-/*
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(800, 600);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("2.1. Каркас OpenGL приложения c использованием GLUT.");
-    glutMainLoop();
-*/
-
-
-	/*
-	pointer0 = new Vector2d();
-	pointer0 = new Vector2d();
-	pointer0 = new Vector2d();
-	pointer0 = new Vector2d();
-
-	pointer1 = pointer0;
-
-	 */
-
-	//Vector2d *theVector = new Vector2d(100, 100);
-
-	/*
-	PLList *theList = new PLList();
-
-	theList->addObject(new Vector2d(100, 100));
-	theList->addObject(new Vector2d(200, 200));
-	theList->addObject(new Vector2d(300, 300));
-
-	theList->release();
-	 */
-
-	return 0;
+	PLConvexPolygon2d *thePolygon = new PLConvexPolygon2d(theVectors, 4);
+	thePolygon->print();
 }

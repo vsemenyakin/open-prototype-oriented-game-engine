@@ -3,7 +3,7 @@
 #ifndef VECTOR2D_H_
 #define VECTOR2D_H_
 
-#include "Base/PLObject/PLObject.h"
+#include "../Base/PLObject/PLObject.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 class Vector2d : public PLObject {
