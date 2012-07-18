@@ -3,10 +3,10 @@
 #ifndef VECTOR2D_H_
 #define VECTOR2D_H_
 
-#include "../Base/PLObject/PLObject.h"
+#include "../Base/PLCore.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-class Vector2d : public PLObject {
+CLASS_WITH_REF(PLVector2d) : public PLObject {
 
 private:
 	float x;
@@ -22,9 +22,9 @@ private:
 public:
 	// *** Memory management ***
 	// constructors
-	Vector2d();
-	Vector2d(float inX, float inY);
-	Vector2d(Vector2d &inVector);
+	PLVector2d();
+	PLVector2d(float inX, float inY);
+	PLVector2d(PLVector2d &inVector);
 
 	// destructors
 	virtual void destroy();
@@ -56,24 +56,24 @@ public:
 
 	// *** Vector math ***
 	// --- Vector ---
-	void sum(Vector2d *inVector);
-	void subtract(Vector2d *inVector);
+	void sum(PLVector2d *inVector);
+	void subtract(PLVector2d *inVector);
 
-	float scolarMultiply(Vector2d *inVector);
-	float vectorMultiplyLength(Vector2d *inVector);
+	float scolarMultiply(PLVector2d *inVector);
+	float vectorMultiplyLength(PLVector2d *inVector);
 
-	void proectToVector(Vector2d *inVector);
-	float lengthOfProectionToVector(Vector2d *inVector);
+	void proectToVector(PLVector2d *inVector);
+	float lengthOfProectionToVector(PLVector2d *inVector);
 
 	// --- Static ---
-	static Vector2d *sumOfVectors(Vector2d *inVectorA, Vector2d *inVectorB);
-	static Vector2d *subtractionOfVectors(Vector2d *inVectorA, Vector2d *inVectorB);
+	static PLVector2d *sumOfVectors(PLVector2d *inVectorA, PLVector2d *inVectorB);
+	static PLVector2d *subtractionOfVectors(PLVector2d *inVectorA, PLVector2d *inVectorB);
 
-	static float scolarMultiply(Vector2d *inVectorA, Vector2d *inVectorB);
-	static float vectorMultiplyLength(Vector2d *inVectorA, Vector2d *inVectorB);
+	static float scolarMultiply(PLVector2d *inVectorA, PLVector2d *inVectorB);
+	static float vectorMultiplyLength(PLVector2d *inVectorA, PLVector2d *inVectorB);
 
-	static Vector2d *proectionOfVectorToVector(Vector2d *inVectorA, Vector2d *inVectorB);
-	static float lengthOfProectionOfVectorToVector(Vector2d *inVectorA, Vector2d *inVectorB);
+	static PLVector2d *proectionOfVectorToVector(PLVector2d *inVectorA, PLVector2d *inVectorB);
+	static float lengthOfProectionOfVectorToVector(PLVector2d *inVectorA, PLVector2d *inVectorB);
 };
 
 #endif /* VECTOR2D_H_ */
