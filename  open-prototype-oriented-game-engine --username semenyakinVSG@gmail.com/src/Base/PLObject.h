@@ -13,7 +13,6 @@ public:
 	void release();
 	void autorelease();
 
-
 	virtual void destroy();
 
 	virtual ~PLObject();

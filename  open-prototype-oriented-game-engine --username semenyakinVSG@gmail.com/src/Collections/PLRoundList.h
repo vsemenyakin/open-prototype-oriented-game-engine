@@ -40,7 +40,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	// *** Content management ***
 	///////////////////////////////////////////////////////////////////////////////
-	void push_back(ItemType *inElement)
+	void push_back(ItemType inElement)
 	{
 		ListElement *theElement = new ListElement();
 
@@ -61,16 +61,20 @@ public:
 			first->prev = theElement;
 		}
 
-		theElement->data.setRawPointer(inElement);
+		//theElement->data.setRawPointer(inElement);
 	}
 
-	void push_front(ItemType *inElement)
+	void push_front(ItemType inElement)
 	{
 		push_back(inElement);
 		first = first->prev;
 	}
 
+	// friends
 	template<typename ElementType> friend class PLIterator;
+
+	// types
+	typedef PLIterator<ItemType> Iterator;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
