@@ -1,4 +1,4 @@
-#include "Vector2d.h"
+#include "PLVector2d.h"
 
 #include <math.h>
 #include <iostream>
@@ -7,26 +7,26 @@
 // *** Memory management ***
 ///////////////////////////////////////////////////////////////////////////////
 // Designated constructor
-Vector2d::Vector2d(float inX, float inY)
+PLVector2d::PLVector2d(float inX, float inY)
 {
 	this->setXY(inX, inY);
 }
 
-Vector2d::Vector2d(Vector2d &inVector)
+PLVector2d::PLVector2d(PLVector2d &inVector)
 {
 	this->setXY(inVector.X(), inVector.Y());
 }
 
-Vector2d::Vector2d()
+PLVector2d::PLVector2d()
 {
 	this->setXY(0.0, 0.0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Destructor
-void Vector2d::destroy()
+void PLVector2d::destroy()
 {
-	std::cout << "PLVector2d destroyed" << std::endl;
+	std::cout << "PLPLVector2d destroyed" << std::endl;
 
 	PLObject::destroy();
 }
@@ -35,17 +35,17 @@ void Vector2d::destroy()
 // *** Accessors ***
 ///////////////////////////////////////////////////////////////////////////////
 // --- Atomic ---
-float Vector2d::X()
+float PLVector2d::X()
 {
 	return x;
 }
 
-float Vector2d::Y()
+float PLVector2d::Y()
 {
 	return y;
 }
 
-void Vector2d::setX(float inX)
+void PLVector2d::setX(float inX)
 {
 	if (inX != x)
 	{
@@ -56,7 +56,7 @@ void Vector2d::setX(float inX)
 	x = inX;
 }
 
-void Vector2d::setY(float inY)
+void PLVector2d::setY(float inY)
 {
 	if (inY != y)
 	{
@@ -67,7 +67,7 @@ void Vector2d::setY(float inY)
 	y = inY;
 }
 
-void Vector2d::setXY(float inX, float inY)
+void PLVector2d::setXY(float inX, float inY)
 {
 	if (inX != x || inY != y)
 	{
@@ -81,7 +81,7 @@ void Vector2d::setXY(float inX, float inY)
 
 ///////////////////////////////////////////////////////////////////////////////
 // --- Complex ---
-float Vector2d::length()
+float PLVector2d::length()
 {
 	if (__length_update_need)
 	{
@@ -92,7 +92,7 @@ float Vector2d::length()
 	return __length;
 }
 
-float Vector2d::angle()
+float PLVector2d::angle()
 {
 	if (__angle_update_need)
 	{
@@ -103,7 +103,7 @@ float Vector2d::angle()
 	return __angle;
 }
 
-void Vector2d::setLength(float inLength)
+void PLVector2d::setLength(float inLength)
 {
 	if (__length_update_need)
 	{
@@ -121,7 +121,7 @@ void Vector2d::setLength(float inLength)
 	}
 }
 
-void Vector2d::setAngle(float inAngle)
+void PLVector2d::setAngle(float inAngle)
 {
 	__angle = inAngle;
 
@@ -133,7 +133,7 @@ void Vector2d::setAngle(float inAngle)
 ///////////////////////////////////////////////////////////////////////////////
 // *** Equivalents ***
 ///////////////////////////////////////////////////////////////////////////////
-float Vector2d::length2()
+float PLVector2d::length2()
 {
 	float theLength2 = 0;
 
@@ -151,7 +151,7 @@ float Vector2d::length2()
 	return theLength2;
 }
 
-float Vector2d::ACV() const
+float PLVector2d::ACV() const
 {
 	if (x > y) {
 		if (x > -y) {
@@ -178,31 +178,31 @@ float Vector2d::ACV() const
 // *** Vector math ***
 ///////////////////////////////////////////////////////////////////////////////
 // --- Vector ---
-void Vector2d::sum(Vector2d *inVector)
+void PLVector2d::sum(PLVector2d *inVector)
 {
 	x += inVector->x;
 	y += inVector->y;
 }
 
-void Vector2d::subtract(Vector2d *inVector)
+void PLVector2d::subtract(PLVector2d *inVector)
 {
 	x -= inVector->x;
 	y -= inVector->y;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-float Vector2d::scolarMultiply(Vector2d *inVector)
+float PLVector2d::scolarMultiply(PLVector2d *inVector)
 {
 	return x * inVector->x + y * inVector->y;
 }
 
-float Vector2d::vectorMultiplyLength(Vector2d *inVector)
+float PLVector2d::vectorMultiplyLength(PLVector2d *inVector)
 {
 	return x * inVector->y - y * inVector->x;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void Vector2d::proectToVector(Vector2d *inVector)
+void PLVector2d::proectToVector(PLVector2d *inVector)
 {
 	float theDelta = scolarMultiply(inVector) / inVector->length2();
 
@@ -212,52 +212,52 @@ void Vector2d::proectToVector(Vector2d *inVector)
 	setXY(theX, theY);
 }
 
-float Vector2d::lengthOfProectionToVector(Vector2d *inVector)
+float PLVector2d::lengthOfProectionToVector(PLVector2d *inVector)
 {
 	return scolarMultiply(inVector) / inVector->length();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // --- Static ---
-Vector2d *Vector2d::sumOfVectors(Vector2d *inVectorA, Vector2d *inVectorB)
+PLVector2d *PLVector2d::sumOfVectors(PLVector2d *inVectorA, PLVector2d *inVectorB)
 {
 	float theX = inVectorA->X() + inVectorB->X();
 	float theY = inVectorA->Y() + inVectorB->Y();
 
-	return new Vector2d(theX, theY);
+	return new PLVector2d(theX, theY);
 }
 
-Vector2d *Vector2d::subtractionOfVectors(Vector2d *inVectorA, Vector2d *inVectorB)
+PLVector2d *PLVector2d::subtractionOfVectors(PLVector2d *inVectorA, PLVector2d *inVectorB)
 {
 	float theX = inVectorA->X() - inVectorB->X();
 	float theY = inVectorA->Y() - inVectorB->Y();
 
-	return new Vector2d(theX, theY);
+	return new PLVector2d(theX, theY);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-float Vector2d::scolarMultiply(Vector2d *inVectorA, Vector2d *inVectorB)
+float PLVector2d::scolarMultiply(PLVector2d *inVectorA, PLVector2d *inVectorB)
 {
 	return inVectorA->X() * inVectorB->X() + inVectorA->Y() * inVectorB->Y();
 }
 
-float Vector2d::vectorMultiplyLength(Vector2d *inVectorA, Vector2d *inVectorB)
+float PLVector2d::vectorMultiplyLength(PLVector2d *inVectorA, PLVector2d *inVectorB)
 {
 	return inVectorA->X() * inVectorB->Y() - inVectorA->Y() * inVectorB->X();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-Vector2d *Vector2d::proectionOfVectorToVector(Vector2d *inVectorA, Vector2d *inVectorB)
+PLVector2d *PLVector2d::proectionOfVectorToVector(PLVector2d *inVectorA, PLVector2d *inVectorB)
 {
-	float theDelta = Vector2d::scolarMultiply(inVectorA, inVectorB) / inVectorA->length2();
+	float theDelta = PLVector2d::scolarMultiply(inVectorA, inVectorB) / inVectorA->length2();
 
 	float theX = inVectorB->X() * theDelta;
 	float theY = inVectorB->Y() * theDelta;
 
-	return new Vector2d(theX, theY);
+	return new PLVector2d(theX, theY);
 }
 
-float Vector2d::lengthOfProectionOfVectorToVector(Vector2d *inVectorA, Vector2d *inVectorB)
+float PLVector2d::lengthOfProectionOfVectorToVector(PLVector2d *inVectorA, PLVector2d *inVectorB)
 {
-	return Vector2d::scolarMultiply(inVectorA, inVectorB) / inVectorA->length();
+	return PLVector2d::scolarMultiply(inVectorA, inVectorB) / inVectorA->length();
 }
