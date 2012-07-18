@@ -21,8 +21,6 @@ void PLList::destroy()
 		(*theIterator)->release();
 	}
 
-	std::cout << "PList destroyed" << std::endl;
-
 	PLObject::destroy();
 }
 

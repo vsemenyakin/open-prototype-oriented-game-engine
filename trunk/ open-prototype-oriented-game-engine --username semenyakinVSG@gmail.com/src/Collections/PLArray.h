@@ -3,8 +3,7 @@
 #ifndef PLARRAY_H_
 #define PLARRAY_H_
 
-#include "../Base/PLScalarTypes.h"
-#include "../Base/PLObject/PLObject.h"
+#include "../Base/PLCore.h"
 
 class PLArray : public PLObject {
 

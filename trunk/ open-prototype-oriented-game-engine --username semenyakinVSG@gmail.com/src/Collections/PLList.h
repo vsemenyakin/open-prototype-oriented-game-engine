@@ -8,8 +8,8 @@
 #ifndef PLLIST_H_
 #define PLLIST_H_
 
-#include "list.h"
-#include "../Base/PLObject/PLObject.h"
+#include <list>
+#include "../Base/PLCore.h"
 
 class PLList : public PLObject {
 
