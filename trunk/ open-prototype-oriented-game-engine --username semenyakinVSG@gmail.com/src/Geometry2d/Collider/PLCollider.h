@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////
 class PLSegment2dWrapper;
 
-struct PLVector2Wrapper
+struct PLVertex2dWrapper
 {
 	PLVector2d *point;
 	PLSegment2dWrapper* segmentA;
@@ -28,19 +28,18 @@ struct PLVector2Wrapper
 ////////////////////////////////////////////////////////////////
 class PLSegment2dWrapper
 {
-	PLAutoPointer<PLVector2Wrapper> pointA;
-	PLAutoPointer<PLVector2Wrapper> pointB;
+	ref< PLVertex2dWrapper > pointA;
+	ref< PLVertex2dWrapper > pointB;
 
 	PLVector2dRef delta;
 	PLVector2dRef currentPoint;
 
-
-	PLAutoPointer<PLConvexPolygon2d> polygon;
+	ref< PLConvexPolygon2d > polygon;
 
 	float parameter;
 
 	/////////////////////////////////////////////////
-	PLSegment2dWrapper(PLVector2Wrapper *inVectorWrapperA, PLVector2Wrapper *inVectorWrapperB,
+	PLSegment2dWrapper(PLVertex2dWrapper *inVectorWrapperA, PLVertex2dWrapper *inVectorWrapperB,
 			PLConvexPolygon2d *inPolygon)
 	{
 		/*
@@ -63,10 +62,15 @@ class PLSegment2dWrapper
 ////////////////////////////////////////////////////////////////
 class PLPolygon2dWrapper
 {
+private:
+
+public:
 	PLPolygon2dWrapper(PLConvexPolygon2d *inPolygon)
 	{
-		//PLRoundList<Vector2d> *theList = inPolygon->vertexes;
-		//PLRoundList<Vector2d>::Iterator theIterator = theList->begin();
+		PLRoundList< PLVector2dRef >::Iterator theVertex = inPolygon->vertexes()->begin();
+		for (; theVertex.loopCount() != 0; ++theVertex)
+		{
+		}
 	}
 };
 

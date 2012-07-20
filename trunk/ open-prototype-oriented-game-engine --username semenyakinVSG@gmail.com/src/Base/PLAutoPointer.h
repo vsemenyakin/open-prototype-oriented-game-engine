@@ -8,6 +8,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 //static int debugCounter = 0;
 
+#define ref PLAutoPointer
+#define CLASS_WITH_REF(name) \
+	class name;	\
+	typedef PLAutoPointer<name> name##Ref; \
+	class name
+
 ///////////////////////////////////////////////////////////////////////////////
 template <typename ItemType>
 class PLAutoPointer
