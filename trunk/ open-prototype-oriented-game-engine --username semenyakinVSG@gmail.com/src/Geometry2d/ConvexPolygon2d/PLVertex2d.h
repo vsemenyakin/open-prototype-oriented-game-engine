@@ -12,24 +12,26 @@
 #include "../PLVector2d.h"
 #include "../../Base/PLCore.h"
 
-class PLSegment2dWrapper;
+class PLSegment2d;
 
 ////////////////////////////////////////////////
 CLASS_WITH_REF(PLVertex2d) : public PLVector2d {
 
 private:
-	PLSegment2dWrapper* _segmentA;
-	PLSegment2dWrapper* _segmentB;
+	PLSegment2d* _previousSegment;
+	PLSegment2d* _nextSegment;
 
 public:
 
 	PLVertex2d();
-	PLVertex2d(const PLVertex2d &inVector);
-	void setSegmentA(PLSegment2dWrapper* inSegmentA);
-	PLSegment2dWrapper* segmentA();
+	PLVertex2d(const PLVertex2d &inVertex);
+	PLVertex2d(const PLVector2d &inVector);
 
-	void setSegmentB(PLSegment2dWrapper* inSegmentB);
-	PLSegment2dWrapper* segmentB();
+	void setPreviousSegment(PLSegment2d* inSegmentB);
+	PLSegment2d* previousSegment();
+
+	void setNextSegment(PLSegment2d* inSegmentA);
+	PLSegment2d* nextSegment();
 };
 
 #endif /* PLVERTEX2D_H_ */

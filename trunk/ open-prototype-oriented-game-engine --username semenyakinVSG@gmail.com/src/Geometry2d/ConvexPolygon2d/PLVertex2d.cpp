@@ -8,24 +8,26 @@
 #include "PLVertex2d.h"
 
 PLVertex2d::PLVertex2d() : PLVector2d() { }
-PLVertex2d::PLVertex2d(const PLVertex2d &inVector) : PLVector2d(inVector) { }
+PLVertex2d::PLVertex2d(const PLVertex2d &inVertex) : PLVector2d(inVertex) { }
+PLVertex2d::PLVertex2d(const PLVector2d &inVector) : PLVector2d(inVector) { }
+
 ////////////////////////////////////////////////////////
-void PLVertex2d::setSegmentA(PLSegment2dWrapper* inSegmentA)
+void PLVertex2d:: setPreviousSegment(PLSegment2d* inPreviousSegment)
 {
-	_segmentA = inSegmentA;
+	_previousSegment = inPreviousSegment;
 }
 
-PLSegment2dWrapper* PLVertex2d::segmentA()
+PLSegment2d* PLVertex2d::previousSegment()
 {
-	return _segmentA;
+	return _previousSegment;
 }
 
-void PLVertex2d:: setSegmentB(PLSegment2dWrapper* inSegmentB)
+void PLVertex2d::setNextSegment(PLSegment2d *inNextSegment)
 {
-	_segmentB = inSegmentB;
+	_nextSegment = inNextSegment;
 }
 
-PLSegment2dWrapper* PLVertex2d::segmentB()
+PLSegment2d* PLVertex2d::nextSegment()
 {
-	return _segmentB;
+	return _nextSegment;
 }

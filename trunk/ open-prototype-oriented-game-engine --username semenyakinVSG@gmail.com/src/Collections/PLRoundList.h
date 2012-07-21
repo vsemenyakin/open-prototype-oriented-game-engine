@@ -11,7 +11,7 @@ private:
 public:
 	struct ListElement
 	{
-		PLAutoPointer<ItemType> data;
+		ref<ItemType> data;
 
 		ListElement *next;
 		ListElement *prev;
@@ -86,37 +86,62 @@ class PLIterator
 private:
 	typename PLRoundList<ElementType>::ListElement *element;
 
+	typename PLRoundList<ElementType>::ListElement *loopBeginElement;
+	int _loopCount;
+
 public:
 
 	////////////////////////////////////////////////////////////////////////////
 	PLIterator(typename PLRoundList<ElementType>::ListElement *inElement)
 	{
-		typename PLRoundList<ElementType>::ListElement theElement;
 		element = inElement;
+		_loopCount = 0;
 	}
 
 	virtual ~PLIterator() {	}
 
 	////////////////////////////////////////////////////////////////////////////
+	int loopCount()
+	{
+		return _loopCount;
+	}
+
+	ElementType *next()
+	{
+		return ~element->next->data;
+	}
+
+	ElementType *prev()
+	{
+		return ~element->prev->data;
+	}
+
 	void operator ++(void)
 	{
 		element = element->next;
+		if (element == loopBeginElement)
+		{
+			++_loopCount;
+		}
 	}
 
 	void operator --(void)
 	{
 		element = element->prev;
+		if (element == loopBeginElement)
+		{
+			--_loopCount;
+		}
 	}
 
 	ElementType *operator ->(void)
 	{
-		ElementType *theElement = element->data.rawPointer();
-		return theElement;
+		return element->data.rawPointer();
 	}
 
 	ElementType &operator *(void)
 	{
-		return element->data;
+		return *element->data.rawPointer();
 	}
 };
 
