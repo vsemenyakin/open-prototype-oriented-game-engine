@@ -11,6 +11,7 @@
 #include "PLAutoPointer.h"
 #include "PLObject.h"
 #include "PLScalarTypes.h"
+#include "PLString.h"
 
 #define CLASS_WITH_REF(name) \
 	class name;	\

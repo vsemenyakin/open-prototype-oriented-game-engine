@@ -12,7 +12,7 @@ PLVector2d::PLVector2d(float inX, float inY)
 	this->setXY(inX, inY);
 }
 
-PLVector2d::PLVector2d(PLVector2d &inVector)
+PLVector2d::PLVector2d(const PLVector2d &inVector)
 {
 	this->setXY(inVector.X(), inVector.Y());
 }
@@ -35,12 +35,12 @@ void PLVector2d::destroy()
 // *** Accessors ***
 ///////////////////////////////////////////////////////////////////////////////
 // --- Atomic ---
-float PLVector2d::X()
+float PLVector2d::X() const
 {
 	return x;
 }
 
-float PLVector2d::Y()
+float PLVector2d::Y() const
 {
 	return y;
 }
@@ -81,7 +81,7 @@ void PLVector2d::setXY(float inX, float inY)
 
 ///////////////////////////////////////////////////////////////////////////////
 // --- Complex ---
-float PLVector2d::length()
+float PLVector2d::length() const
 {
 	if (__length_update_need)
 	{
@@ -92,7 +92,7 @@ float PLVector2d::length()
 	return __length;
 }
 
-float PLVector2d::angle()
+float PLVector2d::angle() const
 {
 	if (__angle_update_need)
 	{
@@ -133,7 +133,7 @@ void PLVector2d::setAngle(float inAngle)
 ///////////////////////////////////////////////////////////////////////////////
 // *** Equivalents ***
 ///////////////////////////////////////////////////////////////////////////////
-float PLVector2d::length2()
+float PLVector2d::length2() const
 {
 	float theLength2 = 0;
 

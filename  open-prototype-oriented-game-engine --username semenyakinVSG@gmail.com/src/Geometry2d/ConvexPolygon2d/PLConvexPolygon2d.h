@@ -8,24 +8,24 @@
 #ifndef PLCONVEXPOLYGON2D_H_
 #define PLCONVEXPOLYGON2D_H_
 
-#include <list>
 #include "../../Base/PLCore.h"
 #include "../../Collections/PLRoundList.h"
-#include "../PLVector2d.h"
 
+class PLVertex2d;
+class PLVector2d;
+
+///////////////////////////////////////////////////////////////
 CLASS_WITH_REF(PLConvexPolygon2d) {
 
 private:
-
-
-	PLAutoPointer<PLRoundList<PLVector2dRef> > vertexes;
+	ref< PLRoundList< ref<PLVertex2d> > > _vertexes;
 
 public:
 	PLConvexPolygon2d();
-	PLConvexPolygon2d(PLVector2dRef *inVertexes, int inCount);
+	PLConvexPolygon2d(ref<PLVector2d> *inVertexes, int inCount);
 	virtual ~PLConvexPolygon2d();
 
-	PLAutoPointer<PLRoundList<PLVector2dRef> > Vertexes();
+	ref< PLRoundList< ref<PLVertex2d> > > vertexes();
 
 	void Print();
 };

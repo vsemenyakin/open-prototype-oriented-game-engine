@@ -13,18 +13,18 @@ private:
 	float y;
 
 	// Caching variables
-	float __length;
-	float __angle;
+	mutable float __length;
+	mutable float __angle;
 
-	bool __length_update_need;
-	bool __angle_update_need;
+	mutable bool __length_update_need;
+	mutable bool __angle_update_need;
 
 public:
 	// *** Memory management ***
 	// constructors
 	PLVector2d();
 	PLVector2d(float inX, float inY);
-	PLVector2d(PLVector2d &inVector);
+	PLVector2d(const PLVector2d &inVector);
 
 	// destructors
 	virtual void destroy();
@@ -32,8 +32,8 @@ public:
 	// *** Accessors ***
 	// --- Atomic ---
 	// getters
-	float X();
-	float Y();
+	float X() const;
+	float Y() const;
 
 	// setters
 	void setX(float inX);
@@ -43,15 +43,15 @@ public:
 
 	// --- Complex ---
 	// getters
-	float length();
-	float angle();
+	float length() const;
+	float angle() const;
 
 	// setters
 	void setLength(float inLength);
 	void setAngle(float inAngle);
 
 	// *** Equivalents ***
-	float length2();
+	float length2() const;
 	float ACV() const;
 
 	// *** Vector math ***

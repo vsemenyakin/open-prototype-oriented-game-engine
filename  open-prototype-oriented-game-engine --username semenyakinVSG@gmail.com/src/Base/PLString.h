@@ -4,18 +4,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 #include "PLObject.h"
+#include <string>
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLString : public PLObject {
-
 private:
-
-	char *string;
+	std::string *theString;
 
 public:
+	PLString();
 	PLString(char *inCString);
-
 	virtual ~PLString();
+
+	void append(const char *inCString);
 };
 
 #endif /* STRING_H_ */
