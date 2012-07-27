@@ -11,8 +11,9 @@
 #include "../../Base/PLCore.h"
 #include "../../Collections/PLRoundList.h"
 
-class PLVertex2d;
 class PLVector2d;
+//class PLVertex2d;
+#include "PLVertex2d.h"
 
 ///////////////////////////////////////////////////////////////
 CLASS_WITH_REF(PLConvexPolygon2d) {

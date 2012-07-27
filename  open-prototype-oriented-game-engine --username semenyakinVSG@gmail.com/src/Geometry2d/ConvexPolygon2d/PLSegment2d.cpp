@@ -8,12 +8,12 @@
 #include "PLSegment2d.h"
 
 /////////////////////////////////////////////////
-PLSegment2d::PLSegment2d(ref< PLVertex2d > inVertexA, ref< PLVertex2d > inVertexB)
+PLSegment2d::PLSegment2d(ref<PLVertex2d> inVertexA, ref<PLVertex2d> inVertexB)
 {
 	vertexA = inVertexA;
 	vertexB = inVertexB;
 
-	delta = ref< PLVector2d >::create(*PLVector2d::subtractionOfVectors(~inVertexB, ~inVertexA));
+	delta = ref<PLVector2d>::create(*PLVector2d::subtractionOfVectors(~inVertexB, ~inVertexA));
 	parameter = 0;
 }
 

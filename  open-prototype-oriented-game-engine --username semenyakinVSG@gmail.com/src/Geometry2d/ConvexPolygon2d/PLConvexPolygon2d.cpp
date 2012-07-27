@@ -24,9 +24,9 @@ PLConvexPolygon2d::PLConvexPolygon2d(ref<PLVector2d> *inVertexes, int inCount)
 
 	for(; theIterator.loopCount() == 0; ++theIterator)
 	{
-		ref<PLVertex2d> thePreviosVertex = ref<PLVertex2d>::create(**theIterator.prev());
-		ref<PLVertex2d> theCurrentVertex = ref<PLVertex2d>::create(**theIterator);
-		ref<PLVertex2d> theNextVertex = ref<PLVertex2d>::create(**theIterator.next());
+		thePreviosVertex = ref<PLVertex2d>::create(*theIterator.prev());
+		theCurrentVertex = ref<PLVertex2d>::create(**theIterator);
+		theNextVertex = ref<PLVertex2d>::create(*theIterator.next());
 
 		theCurrentVertex->setPreviousSegment(new PLSegment2d(thePreviosVertex, theCurrentVertex));
 		theCurrentVertex->setNextSegment(new PLSegment2d(thePreviosVertex, theCurrentVertex));
