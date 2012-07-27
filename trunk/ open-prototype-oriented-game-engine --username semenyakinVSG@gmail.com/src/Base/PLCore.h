@@ -12,22 +12,6 @@
 #include "PLObject.h"
 #include "PLScalarTypes.h"
 #include "PLString.h"
-
-#define CLASS_WITH_REF(name) \
-	class name;	\
-	typedef PLAutoPointer<name> name##Ref; \
-	class name
-
-/*
-template<typename ElementType> class PLIterator;
-template <typename ItemType>
-class PLRoundList
-*/
-
-#define TEMPLATE_CLASS_WITH_REF(name, itemTypeName) \
-	template<typename ElementType> class name;	\
-	typedef PLAutoPointer<name<ElementType> > name##Ref; \
-	template <typename itemTypeName> class name
-
+#include "Diagnostic/PLLog.h"
 
 #endif /* PLCORE_H_ */

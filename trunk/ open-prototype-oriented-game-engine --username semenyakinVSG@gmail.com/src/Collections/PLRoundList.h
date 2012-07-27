@@ -5,8 +5,10 @@
 template<typename ElementType> class PLIterator;
 
 ////////////////////////////////////////////////////////////////////////////////
+template <typename AnyType> class PLRoundList;
+
 template <typename ItemType>
-class PLRoundList {
+class PLRoundList< ref<ItemType> > {
 private:
 public:
 	struct ListElement
@@ -31,16 +33,16 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	// *** Propeties ***
 	///////////////////////////////////////////////////////////////////////////////
-	PLIterator<ItemType> begin()
+	PLIterator< ref<ItemType> > begin()
 	{
-		PLIterator<ItemType> theIterator(first);
+		PLIterator< ref<ItemType> > theIterator(first);
 		return theIterator;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
 	// *** Content management ***
 	///////////////////////////////////////////////////////////////////////////////
-	void push_back(ItemType inElement)
+	void push_back(ref<ItemType> inElement)
 	{
 		ListElement *theElement = new ListElement();
 
@@ -61,10 +63,10 @@ public:
 			first->prev = theElement;
 		}
 
-		//theElement->data.setRawPointer(inElement);
+		theElement->data = inElement;
 	}
 
-	void push_front(ItemType inElement)
+	void push_front(ref<ItemType> inElement)
 	{
 		push_back(inElement);
 		first = first->prev;
@@ -74,25 +76,26 @@ public:
 	template<typename ElementType> friend class PLIterator;
 
 	// types
-	typedef PLIterator<ItemType> Iterator;
+	typedef PLIterator< ref<ItemType> > Iterator;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-template <typename ElementType>
-class PLIterator
+template <typename AnyType> class PLIterator;
+
+template <typename ItemType>
+class PLIterator< ref<ItemType> >
 {
 private:
-	typename PLRoundList<ElementType>::ListElement *element;
-
-	typename PLRoundList<ElementType>::ListElement *loopBeginElement;
+	typename PLRoundList< ref<ItemType> >::ListElement *element;
+	typename PLRoundList< ref<ItemType> >::ListElement *loopBeginElement;
 	int _loopCount;
 
 public:
 
 	////////////////////////////////////////////////////////////////////////////
-	PLIterator(typename PLRoundList<ElementType>::ListElement *inElement)
+	PLIterator(typename PLRoundList< ref<ItemType> >::ListElement *inElement)
 	{
 		element = inElement;
 		_loopCount = 0;
@@ -106,14 +109,14 @@ public:
 		return _loopCount;
 	}
 
-	ElementType *next()
+	ref<ItemType> next()
 	{
-		return ~element->next->data;
+		return element->next->data;
 	}
 
-	ElementType *prev()
+	ref<ItemType> prev()
 	{
-		return ~element->prev->data;
+		return element->prev->data;
 	}
 
 	void operator ++(void)
@@ -134,14 +137,14 @@ public:
 		}
 	}
 
-	ElementType *operator ->(void)
+	ref<ItemType> operator *(void)
 	{
-		return element->data.rawPointer();
+		return element->data;
 	}
 
-	ElementType &operator *(void)
+	ref<ItemType> *operator ->(void)
 	{
-		return *element->data.rawPointer();
+		return element->data.rawPointer();
 	}
 };
 

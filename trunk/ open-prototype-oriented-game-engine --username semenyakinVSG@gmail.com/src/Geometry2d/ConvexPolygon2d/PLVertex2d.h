@@ -26,6 +26,7 @@ public:
 	PLVertex2d();
 	PLVertex2d(const PLVertex2d &inVertex);
 	PLVertex2d(const PLVector2d &inVector);
+	PLVertex2d(ref<PLVector2d> inVector);
 
 	void setPreviousSegment(PLSegment2d* inSegmentB);
 	PLSegment2d* previousSegment();

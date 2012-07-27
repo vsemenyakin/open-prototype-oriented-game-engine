@@ -10,6 +10,7 @@
 PLVertex2d::PLVertex2d() : PLVector2d() { }
 PLVertex2d::PLVertex2d(const PLVertex2d &inVertex) : PLVector2d(inVertex) { }
 PLVertex2d::PLVertex2d(const PLVector2d &inVector) : PLVector2d(inVector) { }
+PLVertex2d::PLVertex2d(ref<PLVector2d> inVector) : PLVector2d(*inVector) { }
 
 ////////////////////////////////////////////////////////
 void PLVertex2d:: setPreviousSegment(PLSegment2d* inPreviousSegment)

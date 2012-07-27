@@ -8,8 +8,8 @@
 
 #include <iostream>
 
-#include "Geometry2d/PLGeometry2dCore.h"
 #include "Base/PLCore.h"
+#include "Geometry2d/PLGeometry2dCore.h"
 
 using namespace std;
 
@@ -28,7 +28,22 @@ PLConvexPolygon2dRef PLMakePolygon()
 
 int main()
 {
-	PLColliderRef theCollider = PLColliderRef::create();
+//	PLColliderRef theCollider = PLColliderRef::create();
+
+	ref< PLRoundList< ref<PLVertex2d> > > theList;
+	ref<PLVertex2d> theVertex = ref<PLVertex2d>::create(ref<PLVector2d>::create(100.0, 100.0));
+	theList->push_back(theVertex);
+
+	PLLog *theLog = new PLLog();
+
+	theLog->beginGroup("Group_1");
+	theLog->print("Message 1");
+	theLog->print("Message 2");
+	theLog->beginGroup("Group_2");
+	theLog->print("Message 3");
+	theLog->endGroup();
+	theLog->endGroup();
+	theLog->print("Message 4");
 
 /*
 	// ROUND LIST UNIT TESTS

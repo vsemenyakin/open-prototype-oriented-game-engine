@@ -14,17 +14,17 @@
 class PLSegment2d {
 
 private:
-	ref< PLVertex2d > vertexA;
-	ref< PLVertex2d > vertexB;
+	ref<PLVertex2d> vertexA;
+	ref<PLVertex2d> vertexB;
 
-	ref< PLVector2d > delta;
-	ref< PLVector2d > currentPoint;
+	ref<PLVector2d> delta;
+	ref<PLVector2d> currentPoint;
 
 	float parameter;
 
 public:
 	/////////////////////////////////////////////////
-	PLSegment2d(ref< PLVertex2d > inVertexA, ref< PLVertex2d > inVertexB);
+	PLSegment2d(ref<PLVertex2d> inVertexA, ref<PLVertex2d> inVertexB);
 	void setParameter(const float inParameter);
 };
 

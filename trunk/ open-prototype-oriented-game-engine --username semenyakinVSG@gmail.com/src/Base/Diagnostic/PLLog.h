@@ -2,19 +2,21 @@
 #define PLLOG_H_
 
 #include <iostream>
-#include "../Base/PLCore.h"
-
+#include "../PLAutoPointer.h"
 class PLString;
 
 class PLLog : std::ostream {
 private:
-	ref<PLString> theString;
+	ref<PLString> indentation;
 
 public:
 	PLLog();
 	virtual ~PLLog();
 
-	void beginGroup();
+	void print(const char *inMessage);
+	void printValue();
+
+	void beginGroup(const char *inGroupName);
 	void endGroup();
 };
 

@@ -16,6 +16,8 @@ public:
 	PLString(char *inCString);
 	virtual ~PLString();
 
+	const char *CString();
+	void removeLastSymbles(int inSymblesCount);
 	void append(const char *inCString);
 };
 
