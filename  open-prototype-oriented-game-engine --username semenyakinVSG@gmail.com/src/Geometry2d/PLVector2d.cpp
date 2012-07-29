@@ -135,6 +135,7 @@ void PLVector2d::setAngle(float inAngle)
 ///////////////////////////////////////////////////////////////////////////////
 float PLVector2d::length2() const
 {
+//Rename to lengthsqr() or lengthpow2()... why do we need this? it doesn't look faster then length()*length() because it uses sqrtf anyway 
 	float theLength2 = 0;
 
 	if (__length_update_need)
@@ -153,9 +154,10 @@ float PLVector2d::length2() const
 
 float PLVector2d::ACV() const
 {
+//how to explain all these magic constants 2, 4, 6, 8...
 	if (x > y) {
 		if (x > -y) {
-			return 2 - x/y;
+			return 2 - x/y; //ok, so i called this function with x=1 y=0 and LOL!!!
 		} else {
 			return 4 + y/x;
 		}
@@ -164,7 +166,11 @@ float PLVector2d::ACV() const
 			if (y >= 0) {
 				return y/x;
 			} else {
-				return 8 + y/x;
+				return 8 + y/x; 
+				/*
+					Look, at this point x<=y, x>-y, y<0. {(x>-y); (y<0)} =) (x>0), but {(x<=y); (y<0)} =) (x<0), maybe I am wrong, but i think this line will never be executed... 
+				*/
+				
 			}
 		} else {
 			return 6 - x/y;
@@ -178,6 +184,7 @@ float PLVector2d::ACV() const
 // *** Vector math ***
 ///////////////////////////////////////////////////////////////////////////////
 // --- Vector ---
+
 void PLVector2d::sum(PLVector2d *inVector)
 {
 	x += inVector->x;
@@ -191,14 +198,14 @@ void PLVector2d::subtract(PLVector2d *inVector)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-float PLVector2d::scolarMultiply(PLVector2d *inVector)
+float PLVector2d::scolarMultiply(PLVector2d *inVector) //*scAlar. from the word scale
 {
-	return x * inVector->x + y * inVector->y;
+	return x * inVector->x + y * inVector->y; 
 }
 
 float PLVector2d::vectorMultiplyLength(PLVector2d *inVector)
 {
-	return x * inVector->y - y * inVector->x;
+	return x * inVector->y - y * inVector->x; //not sure about sign of result here
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -243,7 +250,7 @@ float PLVector2d::scolarMultiply(PLVector2d *inVectorA, PLVector2d *inVectorB)
 
 float PLVector2d::vectorMultiplyLength(PLVector2d *inVectorA, PLVector2d *inVectorB)
 {
-	return inVectorA->X() * inVectorB->Y() - inVectorA->Y() * inVectorB->X();
+	return inVectorA->X() * inVectorB->Y() - inVectorA->Y() * inVectorB->X(); //not sure about sign of result
 }
 
 ///////////////////////////////////////////////////////////////////////////////
