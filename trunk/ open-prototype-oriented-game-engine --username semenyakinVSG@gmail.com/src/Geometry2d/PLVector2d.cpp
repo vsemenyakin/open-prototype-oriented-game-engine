@@ -135,20 +135,6 @@ void PLVector2d::setAngle(float inAngle)
 ///////////////////////////////////////////////////////////////////////////////
 float PLVector2d::length2() const
 {
-//Rename to lengthsqr() or lengthpow2()... why do we need this? it doesn't look faster then length()*length() because it uses sqrtf anyway 
-	float theLength2 = 0;
-
-	if (__length_update_need)
-	{
-		theLength2 = x * x + y *y;
-		__length = sqrtf(theLength2);
-		__length_update_need = false;
-	}
-	else
-	{
-		theLength2 = __length * __length;
-	}
-
 	return theLength2;
 }
 
@@ -198,14 +184,14 @@ void PLVector2d::subtract(PLVector2d *inVector)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-float PLVector2d::scolarMultiply(PLVector2d *inVector) //*scAlar. from the word scale
+float PLVector2d::scalarMultiply(PLVector2d *inVector)
 {
 	return x * inVector->x + y * inVector->y; 
 }
 
 float PLVector2d::vectorMultiplyLength(PLVector2d *inVector)
 {
-	return x * inVector->y - y * inVector->x; //not sure about sign of result here
+	return x * inVector->y - y * inVector->x;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
