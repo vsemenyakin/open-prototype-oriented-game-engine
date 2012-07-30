@@ -8,6 +8,10 @@ PLObject::PLObject() {
 	referenceCount = 1;
 }
 
+PLObject::~PLObject()
+{
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 PLObject *PLObject::retain()
 {
@@ -33,6 +37,10 @@ void PLObject::destroy()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-PLObject::~PLObject()
+ref<PLString> logString()
+{
+}
+
+ref<PLString> logString(int inLogLevel)
 {
 }
