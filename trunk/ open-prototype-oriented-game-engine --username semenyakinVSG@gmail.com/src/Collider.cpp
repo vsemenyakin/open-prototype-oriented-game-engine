@@ -6,6 +6,7 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 // Mateush Artyom is trying to commit this comment...
+// Gusiev Olexandr is trying to commit this comment...
 #include <iostream>
 
 #include "Base/PLCore.h"
