@@ -37,10 +37,10 @@ void PLObject::destroy()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-ref<PLString> logString()
+ref<PLString> PLObject::logString()
 {
 }
 
-ref<PLString> logString(int inLogLevel)
+ref<PLString> PLObject::logString(int inLogLevel)
 {
 }
