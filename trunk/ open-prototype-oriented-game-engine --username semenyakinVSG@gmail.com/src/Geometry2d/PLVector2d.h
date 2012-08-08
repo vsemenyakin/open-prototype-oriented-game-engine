@@ -6,14 +6,22 @@
 #include "../Base/PLCore.h"
 
 ///////////////////////////////////////////////////////////////////////////////
+struct PLPoint2d
+{
+	float x;
+	float y;
+};
+
+///////////////////////////////////////////////////////////////////////////////
 CLASS_WITH_REF(PLVector2d) : public PLObject {
 
 private:
-	float x;
-	float y;
+	PLPoint2d vector;
 
 	// Caching variables
+	mutable PLPoint2d __ort;
 	mutable float __length;
+	mutable float __length2;
 	mutable float __angle;
 
 	mutable bool __length_update_need;
@@ -59,8 +67,8 @@ public:
 	void sum(PLVector2d *inVector);
 	void subtract(PLVector2d *inVector);
 
-	float scolarMultiply(PLVector2d *inVector);
-	float vectorMultiplyLength(PLVector2d *inVector);
+	float scolarMultiply(const PLVector2d *inVector) const;
+	float vectorMultiplyLength(const PLVector2d *inVector) const;
 
 	void proectToVector(PLVector2d *inVector);
 	float lengthOfProectionToVector(PLVector2d *inVector);
