@@ -37,46 +37,46 @@ void PLVector2d::destroy()
 // --- Atomic ---
 float PLVector2d::X() const
 {
-	return x;
+	return vector.x;
 }
 
 float PLVector2d::Y() const
 {
-	return y;
+	return vector.y;
 }
 
 void PLVector2d::setX(float inX)
 {
-	if (inX != x)
+	if (inX != vector.x)
 	{
 		__length_update_need = true;
 		__angle_update_need = true;
 	}
 
-	x = inX;
+	vector.x = inX;
 }
 
 void PLVector2d::setY(float inY)
 {
-	if (inY != y)
+	if (inY != vector.y)
 	{
 		__length_update_need = true;
 		__angle_update_need = true;
 	}
 
-	y = inY;
+	vector.y = inY;
 }
 
 void PLVector2d::setXY(float inX, float inY)
 {
-	if (inX != x || inY != y)
+	if (inX != vector.x || inY != vector.y)
 	{
 		__length_update_need = true;
 		__angle_update_need = true;
 	}
 
-	x = inX;
-	y = inY;
+	vector.x = inX;
+	vector.y = inY;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ float PLVector2d::length() const
 {
 	if (__length_update_need)
 	{
-		__length = sqrtf(x * x + y * y);
+		__length = sqrtf(vector.x * vector.x + vector.y * vector.y);
 		__length_update_need = false;
 	}
 
@@ -96,7 +96,7 @@ float PLVector2d::angle() const
 {
 	if (__angle_update_need)
 	{
-		__angle = atan2f(y, x);
+		__angle = atan2f(vector.y, vector.x);
 		__angle_update_need = false;
 	}
 
@@ -105,29 +105,15 @@ float PLVector2d::angle() const
 
 void PLVector2d::setLength(float inLength)
 {
-	if (__length_update_need)
-	{
-		__length = inLength;
-		x = __length * cosf(__angle);
-		y = __length * sinf(__angle);
-
-		__length_update_need = false;
-	}
-	else
-	{
-		float theDelta = inLength / __length;
-		x *= theDelta;
-		y *= theDelta;
-	}
 }
 
 void PLVector2d::setAngle(float inAngle)
 {
 	__angle = inAngle;
 
-	float theLength = length();
-	x = theLength * cosf(__angle);
-	y = theLength * sinf(__angle);
+	float theLength = this->length();
+	vector.x = theLength * cosf(__angle);
+	vector.y = theLength * sinf(__angle);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,31 +121,30 @@ void PLVector2d::setAngle(float inAngle)
 ///////////////////////////////////////////////////////////////////////////////
 float PLVector2d::length2() const
 {
-	return theLength2;
+	return __length2;
 }
 
 float PLVector2d::ACV() const
 {
 //how to explain all these magic constants 2, 4, 6, 8...
-	if (x > y) {
-		if (x > -y) {
-			return 2 - x/y; //ok, so i called this function with x=1 y=0 and LOL!!!
+	if (vector.x > vector.y) {
+		if (vector.x > -vector.y) {
+			return 2 - vector.x / vector.y; //ok, so i called this function with x=1 y=0 and LOL!!!
 		} else {
-			return 4 + y/x;
+			return 4 + vector.y / vector.x;
 		}
 	} else {
-		if (x > -y) {
-			if (y >= 0) {
-				return y/x;
+		if (vector.x > -vector.y) {
+			if (vector.y >= 0) {
+				return vector.y / vector.x;
 			} else {
-				return 8 + y/x; 
+				return 8 + vector.y / vector.x;
 				/*
 					Look, at this point x<=y, x>-y, y<0. {(x>-y); (y<0)} =) (x>0), but {(x<=y); (y<0)} =) (x<0), maybe I am wrong, but i think this line will never be executed... 
 				*/
-				
 			}
 		} else {
-			return 6 - x/y;
+			return 6 - vector.x / vector.y;
 		}
 	}
 
@@ -173,25 +158,25 @@ float PLVector2d::ACV() const
 
 void PLVector2d::sum(PLVector2d *inVector)
 {
-	x += inVector->x;
-	y += inVector->y;
+	vector.x += inVector->vector.x;
+	vector.y += inVector->vector.y;
 }
 
 void PLVector2d::subtract(PLVector2d *inVector)
 {
-	x -= inVector->x;
-	y -= inVector->y;
+	vector.x -= inVector->vector.x;
+	vector.y -= inVector->vector.y;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-float PLVector2d::scalarMultiply(PLVector2d *inVector)
+float PLVector2d::scolarMultiply(const PLVector2d *inVector) const
 {
-	return x * inVector->x + y * inVector->y; 
+	return vector.x * inVector->vector.x + vector.y * inVector->vector.y;
 }
 
-float PLVector2d::vectorMultiplyLength(PLVector2d *inVector)
+float PLVector2d::vectorMultiplyLength(const PLVector2d *inVector) const
 {
-	return x * inVector->y - y * inVector->x;
+	return vector.x * inVector->vector.y - vector.y * inVector->vector.x;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
