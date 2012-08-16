@@ -26,7 +26,7 @@ PLVector2d::PLVector2d()
 // Destructor
 void PLVector2d::destroy()
 {
-	std::cout << "PLPLVector2d destroyed" << std::endl;
+	std::cout << "PLVector2d destroyed" << std::endl;
 
 	PLObject::destroy();
 }

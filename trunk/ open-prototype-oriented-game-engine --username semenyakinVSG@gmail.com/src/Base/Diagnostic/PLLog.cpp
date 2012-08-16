@@ -20,18 +20,18 @@ PLLog::~PLLog()
 //////////////////////////////////////////////////////
 void PLLog::print(const char *inMessage)
 {
-	std::cout << indentation->CString() << inMessage << std::endl;
+	std::cout << indentation->getCString() << inMessage << std::endl;
 }
 
 void PLLog::beginGroup(const char *inGroupName)
 {
-	std::cout <<  indentation->CString() << inGroupName << std::endl;
-	std::cout << indentation->CString() << GOURP_BEGIN << std::endl;
+	std::cout <<  indentation->getCString() << inGroupName << std::endl;
+	std::cout << indentation->getCString() << GOURP_BEGIN << std::endl;
 	indentation->append(SEPARATOR);
 }
 
 void PLLog::endGroup()
 {
-	indentation->removeLastSymbles(strlen(SEPARATOR));
-	std::cout << indentation->CString() << GOURP_END << std::endl;
+	indentation->removeCharacterBack(strlen(SEPARATOR));
+	std::cout << indentation->getCString() << GOURP_END << std::endl;
 }

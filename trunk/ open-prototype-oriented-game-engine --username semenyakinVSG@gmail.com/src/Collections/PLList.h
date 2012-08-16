@@ -1,27 +1,85 @@
-/*
- * PLList.h
- *
- *  Created on: 16.06.2012
- *      Author: SterX
- */
-
 #ifndef PLLIST_H_
 #define PLLIST_H_
 
 #include <list>
-#include "../Base/PLCore.h"
+#include "../Base/PLAutoPointer.h"
+#include "../Base/PLObject.h"
 
-class PLList : public PLObject {
+////////////////////////////////////////////////////////////////////////////////
+template <typename ItemType> class PLList;
+
+
+template <typename ItemType>
+class PLList< ref<ItemType> >  : public PLObject
+{
 
 private:
 
-	std::list<PLObject *> list;
+	std::list< ref<ItemType> > list;
+
 
 public:
-	PLList();
-	virtual void destroy();
+	// *** Defines ***
 
-	void addObject(PLObject *inObject);
+
+	// *** Memory management ***
+	// constructors
+
+	PLList()
+	{
+		list.clear();
+	};
+
+	// destructors
+
+	virtual ~PLList()
+	{
+	};
+
+	// *** Accessors ***
+	//getters
+
+	bool isEmpty()
+	{
+		return list.empty();
+	};
+
+	void push_front( ref<ItemType>  inElement)
+	{
+		list.push_front(inElement);
+	};
+	void push_back( ref<ItemType>  inElement ){
+		list.push_back(inElement);
+	};
+
+	//setters
+
+	void clear()
+	{
+		list.clear();
+	};
+
+	void pop_front()
+	{
+		list.popFront();
+	};
+
+	void pop_back()
+	{
+		list.popBack();
+	};
+
+	//methods
+
+	void sort()
+	{
+		list.sort();
+	};
+
+	//To do
+	//begin
+	//end
+	//merge
 
 };
 
