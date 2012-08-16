@@ -9,16 +9,61 @@
 ///////////////////////////////////////////////////////////////////////////////
 class PLString : public PLObject {
 private:
-	std::string *theString;
+
+	std::string theString;
 
 public:
+
+	//////////////////////////////////////////////////////////////
+	// *** Memory management ***
+	// constructors
+
 	PLString();
-	PLString(char *inCString);
+
+	PLString(const char *inCString);
+	PLString(PLString *inString);
+
+	// destructors
+
 	virtual ~PLString();
 
-	const char *CString();
-	void removeLastSymbles(int inSymblesCount);
+	//////////////////////////////////////////////////////////////
+	// *** Accessors ***
+
+	//getters
+
+	const char* getCString() const
+	{
+		return theString.c_str();
+	}
+
+	const int length() const
+	{
+		return theString.length();
+	}
+
+	//setters
+	//adding
 	void append(const char *inCString);
+	void append(const PLString *inString);
+	void append(const PLString *inString, int firstCharacter, int charactersCount);
+	void push_back(char addedCharacter);
+
+	//removing
+	void assign(const char *inCString);
+	void assign(const PLString *inString);
+	void assign(const PLString *inString, int firstCharacter, int charactersCount);
+	void erase(int position, int charactersCount);
+	void clear();
+
+	//swapping
+	// Done without links exchanging, but with reassigning
+	// I can`t get access to 'theString' in the swappingString but the encapsulation
+	void swap(PLString *swappingString);
+
+	//compare
+
 };
+
 
 #endif /* STRING_H_ */

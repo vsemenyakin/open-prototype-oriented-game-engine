@@ -1,33 +1,94 @@
 #include "PLString.h"
 
 //////////////////////////////////////////////////////////////
+// *** Memory management ***
+// constructors
+
 PLString::PLString()
 {
-	theString = new std::string();
 }
 
-PLString::PLString(char *inCString)
+PLString::PLString(const char *inCString)
 {
-	theString = new std::string(inCString);
+	theString.append(inCString);
 }
+
+PLString::PLString(PLString *inString)
+{
+	append(inString);
+}
+
+// destructors
 
 PLString::~PLString()
 {
 }
 
 //////////////////////////////////////////////////////////////
-const char *PLString::CString()
-{
-	return theString->c_str();
-}
+// *** Accessors ***
 
-//////////////////////////////////////////////////////////////
+//getters
+
+
+
+//setters
+//adding
+
 void PLString::append(const char *inCString)
 {
-	theString->append(inCString);
+	theString.append(inCString);
 }
 
-void PLString::removeLastSymbles(int inSymblesCount)
+void PLString::append(const PLString *inString)
 {
-	theString->resize(theString->size() - inSymblesCount);
+	theString.append(inString->getCString());
 }
+
+void PLString::append(const PLString *inString, int firstCharacter, int charactersCount)
+{
+	theString.append(inString->getCString(), firstCharacter, charactersCount);
+}
+
+void PLString::push_back(char addedCharacter)
+{
+	theString.push_back(addedCharacter);
+}
+
+//removing
+void PLString::assign(const char *inCString)
+{
+	theString.assign(inCString);
+}
+
+void PLString::assign(const PLString *inString)
+{
+	theString.assign(inString->getCString());
+}
+
+void PLString::assign(const PLString *inString, int firstCharacter, int charactersCount)
+{
+	theString.assign(inString->getCString(), firstCharacter, charactersCount);
+}
+
+void PLString::erase(int position, int charactersCount)
+{
+	theString.erase(position, charactersCount);
+}
+
+void PLString::clear()
+{
+	theString.clear();
+}
+
+//swapping
+
+void PLString::swap(PLString *swappingString)
+{
+	const char *tmp;
+
+	tmp = getCString();
+	theString.assign(swappingString->getCString());
+	swappingString->assign(tmp);
+}
+
+
