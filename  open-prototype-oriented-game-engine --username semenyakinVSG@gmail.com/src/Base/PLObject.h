@@ -24,14 +24,6 @@ public:
 	PLObject *retain();
 	void release();
 	void autorelease();
-
-	// Serialization
-	void saveToFile(ref<PLString> inFileName);
-	void readFromFile(ref<PLString> inFileName);
-
-	// Logging
-//	virtual ref<PLString> logString();
-//	virtual ref<PLString> logString(int inLogLevel);
 };
 
 #endif /* RROBJECT_H_ */

@@ -16,7 +16,6 @@ public:
 	// *** Memory management ***
 	// constructors
 	PLArray(PLIndex inCapasity);
-	void virtual destroy();
 
 	// *** Content management ***
 	PLObject *objectAtIndex(PLIndex inIndex);
