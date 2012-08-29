@@ -6,27 +6,29 @@ const char* get_datetime()
 {
 	time_t rawtime;
 	struct tm* timeinfo;
+	static char buffer [100];
 	time ( &rawtime );
 	timeinfo = localtime ( &rawtime );
-	return asctime(timeinfo);
+	strftime(buffer, 100, "%x %X", timeinfo);
+	return buffer;
 }
 
 
 ////////////////////////////////////////////////////////
 PLLog::PLLog()
-{
-	stream_out = new ostream(cout);
+{	isFile=false;
+	stream_out = &cout;
 
 }
 
 
 PLLog::PLLog(const char* filename)
-{
+{	isFile=true;
 	ofstream* fstream_out = new ofstream(filename, ios_base::app);
 	stream_out = (std::ostream*) fstream_out; //ptr to a new ofstream converted into ptr to ostream;
-	if ((stream_out == 0) || fstream_out->is_open() || stream_out->bad())
+	if ((stream_out == 0) || !(fstream_out->is_open()) || stream_out->bad())
 	{
-		delete stream_out;
+		if (isFile) delete stream_out;
 
 		std::string errmsg("[PLLOG] Cannot initialize ");
 		errmsg.append(filename);
@@ -37,6 +39,10 @@ PLLog::PLLog(const char* filename)
 
 PLLog::~PLLog()
 {
+	if (isFile)
+	{
+		((ofstream*) stream_out)->close();
+	}
 	delete stream_out;
 }
 

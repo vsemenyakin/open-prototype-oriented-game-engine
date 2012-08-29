@@ -8,12 +8,9 @@
 #include "PLList.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-PLList::PLList()
-{
-}
 
 ///////////////////////////////////////////////////////////////////////////////
-void PLList::destroy()
+template <typename ItemType> void PLList<ItemType>::destroy()
 {
 	std::list<PLObject *>::iterator theIterator = list.begin();
 	for (; theIterator != list.end(); ++theIterator)

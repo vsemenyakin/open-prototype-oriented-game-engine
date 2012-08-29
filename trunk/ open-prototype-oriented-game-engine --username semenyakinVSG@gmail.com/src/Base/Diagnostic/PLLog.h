@@ -25,6 +25,7 @@ using namespace std;
 class PLLog {
 private:
 	std::ostream* stream_out;
+	bool isFile;
 public:
 	PLLog();
 	PLLog(const char* filename);
