@@ -34,16 +34,17 @@ int main()
 	ref<PLVertex2d> theVertex = ref<PLVertex2d>::create(ref<PLVector2d>::create(100.0, 100.0));
 	theList->push_back(theVertex);
 
-	PLLog *theLog = new PLLog();
+	PLLog *theLog1 = new PLLog();
+	PLLog *theLog2 = new PLLog("log2.txt");
+	theLog1->print("DEBUG testing", DEBUG);
+	theLog1->print("INFO testing", INFO);
+	theLog1->print("WARNING testing", WARNING);
+	theLog1->print("ERROR testing", ERROR);
+	theLog2->print("DEBUG testing", DEBUG);
+	theLog2->print("INFO testing", INFO);
+	theLog2->print("WARNING testing", WARNING);
+	theLog2->print("ERROR testing", ERROR);
 
-	theLog->beginGroup("Group_1");
-	theLog->print("Message 1");
-	theLog->print("Message 2");
-	theLog->beginGroup("Group_2");
-	theLog->print("Message 3");
-	theLog->endGroup();
-	theLog->endGroup();
-	theLog->print("Message 4");
 
 /*
 	// ROUND LIST UNIT TESTS
