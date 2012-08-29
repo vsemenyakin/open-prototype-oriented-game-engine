@@ -80,7 +80,8 @@ public:
 	//begin
 	//end
 	//merge
-
+	void addObject(PLObject *inObject);
+	void destroy();
 };
 
 #endif /* PLLIST_H_ */

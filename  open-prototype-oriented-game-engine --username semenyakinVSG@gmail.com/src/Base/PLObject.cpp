@@ -39,10 +39,10 @@ void PLObject::destroy()
 ref<PLString> PLObject::logString()
 {
 	//ToDo: Update this with new PLLOG
-	return "";
+
 }
 
 ref<PLString> PLObject::logString(int inLogLevel)
 {	////ToDo: Update this with new PLLOG
-	return "";
+
 }
