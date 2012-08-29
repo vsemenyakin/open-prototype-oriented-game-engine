@@ -3,21 +3,35 @@
 
 #include <iostream>
 #include "../PLAutoPointer.h"
-class PLString;
+#include <fstream>
+#include "../PLString.h"
+#include <time.h>
 
-class PLLog : std::ostream {
+//LOG LEVELS
+#define DEBUG "Debug"
+#define INFO "Info"
+#define WARNING "Warning"
+#define ERROR "Error"
+
+#define LEFT_LOGLEVEL_BRACKET "["
+#define RIGHT_LOGLEVEL_BRACKET "] "
+
+#define LEFT_DATE_BRACKET "["
+#define RIGHT_DATE_BRACKET "] "
+
+using namespace std;
+
+
+class PLLog {
 private:
-	ref<PLString> indentation;
-
+	std::ostream* stream_out;
 public:
 	PLLog();
+	PLLog(const char* filename);
 	virtual ~PLLog();
-
-	void print(const char *inMessage);
-	void printValue();
-
-	void beginGroup(const char *inGroupName);
-	void endGroup();
+	void print(const char *inMessage, const char* errorlevel);
+	void print(const PLString *inMessage, const char* errorlevel);
+	void print(const PLString inMessage, const char* errorlevel);
 };
 
 #endif /* PLLOG_H_ */

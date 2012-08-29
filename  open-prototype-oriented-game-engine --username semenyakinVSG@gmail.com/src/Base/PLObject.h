@@ -5,13 +5,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 class PLString;
 #include "PLAutoPointer.h"
-
 const int kMaxLogLevel = 0xFFFFFFFF;
 
 class PLObject {
 private:
 
 	int referenceCount;
+
 
 protected:
 	virtual void destroy();
