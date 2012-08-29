@@ -80,8 +80,22 @@ public:
 	//begin
 	//end
 	//merge
-	void addObject(PLObject *inObject);
-	void destroy();
+	void addObject(PLObject *inObject)
+	{
+		list.push_back(inObject);
+		inObject->retain();
+	}
+	void destroy()
+		{
+			std::list<PLObject *>::iterator theIterator = list.begin();
+			for (; theIterator != list.end(); ++theIterator)
+			{
+				(*theIterator)->release();
+			}
+
+			PLObject::destroy();
+		}
+
 };
 
 #endif /* PLLIST_H_ */

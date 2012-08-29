@@ -30,8 +30,8 @@ public:
 	void readFromFile(ref<PLString> inFileName);
 
 	// Logging
-	virtual ref<PLString> logString();
-	virtual ref<PLString> logString(int inLogLevel);
+//	virtual ref<PLString> logString();
+//	virtual ref<PLString> logString(int inLogLevel);
 };
 
 #endif /* RROBJECT_H_ */
