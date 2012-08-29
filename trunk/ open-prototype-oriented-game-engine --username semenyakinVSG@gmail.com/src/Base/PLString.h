@@ -47,7 +47,7 @@ public:
 	void append(const char *inCString);
 	void append(const PLString *inString);
 	void append(const PLString *inString, int firstCharacter, int charactersCount);
-	void push_back(char addedCharacter);
+	void pushBack(char inCharacter);
 
 	//removing
 	void assign(const char *inCString);

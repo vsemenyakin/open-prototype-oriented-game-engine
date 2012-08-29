@@ -34,17 +34,3 @@ void PLObject::destroy()
 
 	delete this;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-/*ref<PLString> PLObject::logString()
-{
-	//
-	//ToDo: what's this for? Update this with new PLLOG
-
-}
-
-ref<PLString> PLObject::logString(int inLogLevel)
-{	////ToDo: what's this for? Update this with new PLLOG
-
-}
-*/

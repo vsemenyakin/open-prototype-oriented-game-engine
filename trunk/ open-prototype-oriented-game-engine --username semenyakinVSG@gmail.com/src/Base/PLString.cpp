@@ -49,9 +49,9 @@ void PLString::append(const PLString *inString, int firstCharacter, int characte
 	theString.append(inString->getCString(), firstCharacter, charactersCount);
 }
 
-void PLString::push_back(char addedCharacter)
+void PLString::pushBack(char inCharacter)
 {
-	theString.push_back(addedCharacter);
+	theString.push_back(inCharacter);
 }
 
 //removing
