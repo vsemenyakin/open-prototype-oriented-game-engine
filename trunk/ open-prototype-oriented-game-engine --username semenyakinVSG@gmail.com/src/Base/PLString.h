@@ -62,7 +62,7 @@ public:
 	void swap(PLString *swappingString);
 
 	//compare
-
+	bool PLString::operator < (const PLString &inStringA) const;
 };
 
 

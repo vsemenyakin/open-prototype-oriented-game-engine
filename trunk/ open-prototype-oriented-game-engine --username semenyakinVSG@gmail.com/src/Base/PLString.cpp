@@ -29,11 +29,9 @@ PLString::~PLString()
 
 //getters
 
-
-
 //setters
-//adding
 
+//adding
 void PLString::append(const char *inCString)
 {
 	theString.append(inCString);
@@ -81,7 +79,6 @@ void PLString::clear()
 }
 
 //swapping
-
 void PLString::swap(PLString *swappingString)
 {
 	const char *tmp;
@@ -91,4 +88,8 @@ void PLString::swap(PLString *swappingString)
 	swappingString->assign(tmp);
 }
 
-
+// Comparing
+bool PLString::operator < (const PLString &inStringA) const
+{
+	return this->theString < inStringA.theString;
+}
