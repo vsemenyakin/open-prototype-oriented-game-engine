@@ -98,6 +98,7 @@ public:
 	PLIterator(typename PLRoundList< ref<ItemType> >::ListElement *inElement)
 	{
 		element = inElement;
+		loopBeginElement = inElement;
 		_loopCount = 0;
 	}
 
