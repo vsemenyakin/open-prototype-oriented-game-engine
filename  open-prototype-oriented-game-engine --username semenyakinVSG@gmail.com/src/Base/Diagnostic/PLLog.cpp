@@ -2,61 +2,85 @@
 
 	//PLLog methods
 ////////////////////////////////////////////////////////
-PLLog::PLLog()
-{	isFile=false;
-	stream_out = &cout;
-	_formatter = new PLLogFormatter();
-}
 
 
-PLLog::PLLog(const char* filename)
-{	isFile=true;
-	_formatter = new PLLogFormatter();
-	ofstream* fstream_out = new ofstream(filename, ios_base::app);
-	stream_out = (std::ostream*) fstream_out; //ptr to a new ofstream converted into ptr to ostream;
-	if ((stream_out == 0) || !(fstream_out->is_open()) || stream_out->bad())
+void PLLog::init(const char* filename, PLLogFormatter* formatter)
+{
+	acceptsAllLoglevels=true;
+	acceptsAllChannels=true;
+	acceptableLoglevels = new set<const char*>();
+	acceptableChannels = new set<const char*>();
+	isFile=(*filename !='\0');
+	if (!formatter)
 	{
-		if (isFile) delete stream_out;
-
-		std::string errmsg("[PLLOG] Cannot initialize ");
-		errmsg.append(filename);
-		throw new ios_base::failure(errmsg);
+		_formatter = new PLLogFormatter();
+		formatter_responsibility=true;
 
 	}
-
-}
-
-PLLog::PLLog(PLLogFormatter* formatter)
-{
-	isFile=false;
-	stream_out = &cout;
-	_formatter = formatter;
-}
-
-PLLog::PLLog(const char* filename, PLLogFormatter* formatter)
-{
-	isFile=true;
-		_formatter = formatter;
+	else
+		{
+			_formatter = formatter;
+			formatter_responsibility=false;
+		}
+	if (!isFile)
+	{
+		stream_out=&cout;
+		stream_responsibility=false;
+	}
+	else
+	{
+		stream_responsibility=true;
 		ofstream* fstream_out = new ofstream(filename, ios_base::app);
 		stream_out = (std::ostream*) fstream_out; //ptr to a new ofstream converted into ptr to ostream;
-		if ((stream_out == 0) || !(fstream_out->is_open()) || stream_out->bad())
+		if ((stream_out == 0) || stream_out->bad() || !(fstream_out->is_open()) )
 		{
-			if (isFile) delete stream_out;
-
+			delete stream_out;
+			isFile=false;
+			stream_out=&cout;
 			std::string errmsg("[PLLOG] Cannot initialize ");
 			errmsg.append(filename);
-			throw new ios_base::failure(errmsg);
+			print(errmsg.c_str(), ERROR, "PLLog");
+
 		}
+	}
 }
+
+void PLLog::init(ostream* stream, PLLogFormatter* formatter)
+{
+	acceptsAllLoglevels=true;
+	acceptsAllChannels=true;
+	acceptableLoglevels = new set<const char*>();
+	acceptableChannels = new set<const char*>();
+	stream_responsibility=false;
+	isFile=false;
+	if (!formatter)
+	{
+		_formatter = new PLLogFormatter();
+		formatter_responsibility=true;
+
+	}
+	else
+	{
+		_formatter = formatter;
+		formatter_responsibility=false;
+	}
+	if (stream != 0) stream_out=stream;
+	else stream_out=&cout;
+}
+
 
 PLLog::~PLLog()
 {
+	stream_out->flush();
 	if (isFile)
 	{
-		((ofstream*) stream_out)->close();
+		ofstream* fstream_out = (static_cast<ofstream*>(stream_out));
+		fstream_out->close();
 	}
-	delete stream_out;
-	delete _formatter;
+	if (stream_responsibility) delete stream_out;
+	if (formatter_responsibility) delete _formatter;
+	delete acceptableLoglevels;
+	delete acceptableChannels;
 }
 
 ////////////////////////////////////////////////////////////
@@ -82,4 +106,66 @@ void PLLog::print(const PLString *inMessage, const char* errorlevel, const char*
 void PLLog::print(const PLString inMessage, const char* errorlevel, const char* channel=GENERAL)
 {
 	print(inMessage.getCString(), errorlevel, channel);
+}
+
+bool PLLog::acceptsLoglevel(const char* errorlevel)
+{
+	if (acceptsAllLoglevels) return true;
+	else return (acceptableLoglevels->count(errorlevel)>0);
+}
+
+bool PLLog::acceptsChannel(const char* channel)
+{
+	if (acceptsAllChannels) return true;
+	else return (acceptableChannels->count(channel)>0);
+}
+
+
+
+bool PLLog::accepts(const char* errorlevel, const char* channel)
+{
+	return acceptsLoglevel(errorlevel) && acceptsChannel (channel);
+}
+
+void PLLog::addLoglevel(const char* errorlevel)
+{
+	if (acceptsAllLoglevels==true || ! (acceptsLoglevel(errorlevel)))
+	{
+		acceptsAllLoglevels=false;
+		acceptableLoglevels->insert(errorlevel);
+	}
+}
+
+
+
+bool PLLog::deleteLoglevel(const char* errorlevel)
+{
+	return (acceptableLoglevels->erase(errorlevel) > 0) ;
+}
+
+void PLLog::addChannel(const char* channel)
+{
+	if (acceptsAllChannels==true || ! (acceptsChannel(channel)))
+	{
+		acceptsAllChannels=false;
+		acceptableChannels->insert(channel);
+	}
+}
+
+
+bool PLLog::deleteChannel(const char* channel)
+{
+	return (acceptableChannels->erase(channel) > 0) ;
+}
+
+void PLLog::wipeLogLevels()
+{
+	acceptableLoglevels->clear();
+	acceptsAllLoglevels=true;
+}
+
+void PLLog::wipeChannels()
+{
+	acceptableChannels->clear();
+	acceptsAllChannels=true;
 }

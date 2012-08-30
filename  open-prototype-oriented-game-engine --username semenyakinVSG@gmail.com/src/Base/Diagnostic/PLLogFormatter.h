@@ -1,3 +1,14 @@
+/*
+ * PLLogFormatter.h
+ *
+ *  Created on: 30 ρεπο. 2012
+ *      Author: ShareDVI
+ */
+
+#ifndef PLLOGFORMATTER_H_
+#define PLLOGFORMATTER_H_
+
+
 #include <time.h>
 #include "../PLString.h"
 
@@ -23,11 +34,12 @@ PLLogFormatter( // the HORRIBLE CONSTRUCTOR NEEDS TO be rewritten  using templat
 
 
 ~PLLogFormatter() {}
-const char* format(const char *inMessage, const char* errorlevel, const char* channel);
+const char* format(const char *inMessage, const char* errorlevel, const char* channel) const;
+
+protected:
+const char* get_datetime(const char* format) const;
 
 private:
-const char* get_datetime(const char* format);
-
 //fields
 const bool _showLogLevel;
 const bool _showDatetime;
@@ -42,3 +54,5 @@ const char* _left_channel_bracket;
 const char* _right_channel_bracket;
 
 };
+
+#endif /* PLLOGFORMATTER_H_ */

@@ -1,7 +1,15 @@
+/*
+ * PLLogFormatter.cpp
+ *
+ *  Created on: 30 ρεπο. 2012
+ *      Author: ShareDVI
+ */
+
+
 #include "PLLogFormatter.h"
 
 //PLLogFormatter methods.
-	const char* PLLogFormatter::get_datetime(const char* format)
+	const char* PLLogFormatter::get_datetime(const char* format) const
 {
 	time_t rawtime;
 	struct tm* timeinfo;
@@ -12,7 +20,7 @@
 	return buffer;
 }
 
-	const char* PLLogFormatter::format(const char *inMessage, const char* errorlevel, const char* channel)
+	const char* PLLogFormatter::format(const char *inMessage, const char* errorlevel, const char* channel) const
 	{
 		static std::string buffer("");
 		buffer.clear();
