@@ -16,6 +16,8 @@
 //channels
 #define GENERAL "General"
 
+// !!!!!!!!!!!!!!!!!!!!!!
+// Look - there is something with formater
 
 using namespace std;
 
@@ -38,7 +40,7 @@ public:
 	//constructor logic moved to init()
 
 
-	PLLog(const char* filename = "", PLLogFormatter* formatter=0)
+	PLLog(const char* filename = "", PLLogFormatter* formatter = 0)
 	{
 		init(filename, formatter);
 	}
@@ -48,15 +50,15 @@ public:
 		init(filename->getCString(), formatter);
 	}
 
-	PLLog(ostream* stream, PLLogFormatter* formatter=0)
+	PLLog(ostream* stream, PLLogFormatter* formatter = 0)
 	{
 		init(stream, formatter);
 	}
 
 	virtual ~PLLog();
-	void print(const char *inMessage, const char* errorlevel, const char* channel);
-	void print(const PLString *inMessage, const char* errorlevel, const char* channel);
-	void print(const PLString inMessage, const char* errorlevel, const char* channel);
+	virtual void print(const char *inMessage, const char* errorlevel, const char* channel);
+	virtual void print(const PLString *inMessage, const char* errorlevel, const char* channel);
+	virtual void print(const PLString inMessage, const char* errorlevel, const char* channel);
 	bool accepts(const char* errorlevel, const char* channel);
 	void addLoglevel(const char* errorlevel);
 	bool deleteLoglevel(const char* errorlevel);
