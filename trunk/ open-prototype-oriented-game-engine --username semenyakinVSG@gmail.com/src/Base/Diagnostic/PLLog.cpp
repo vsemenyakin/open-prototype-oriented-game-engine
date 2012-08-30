@@ -92,7 +92,7 @@ void PLLog::print(const char *inMessage, const char* errorlevel, const char* cha
 	}
 	else if (stream_out->fail() || stream_out->eof()) stream_out->clear();
 
-	*stream_out << _formatter->format(inMessage, errorlevel, channel);
+	//*stream_out << _formatter->format(inMessage, errorlevel, channel);
 	*stream_out << std::endl;
 
 }
