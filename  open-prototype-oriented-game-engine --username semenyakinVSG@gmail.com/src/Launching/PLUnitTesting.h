@@ -1,0 +1,18 @@
+#ifndef PLUNITTESTING_H_
+#define PLUNITTESTING_H_
+
+///////////////////////////////////////////////////////////////////////////////
+class PLError;
+
+///////////////////////////////////////////////////////////////////////////////
+class PLUnitTesting {
+private:
+
+public:
+	PLUnitTesting();
+	virtual ~PLUnitTesting();
+
+	void perform();
+};
+
+#endif /* PLUNITTESTING_H_ */
