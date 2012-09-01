@@ -1,7 +1,7 @@
 #ifndef PLROUNDLIST_H_
 #define PLROUNDLIST_H_
 
-#include "../Base/PLAutoPointer.h"
+#include "../Base/Memory/PLAutoPointer.h"
 template<typename ElementType> class PLIterator;
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@
 #ifndef PLCORE_H_
 #define PLCORE_H_
 
-#include "PLAutoPointer.h"
+#include "Memory/PLAutoPointer.h"
 #include "PLObject.h"
 #include "PLScalarTypes.h"
 #include "PLString.h"

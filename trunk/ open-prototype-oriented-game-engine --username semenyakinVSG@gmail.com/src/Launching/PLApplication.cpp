@@ -4,6 +4,9 @@
 #include "../Base/PLCore.h"
 #include "../Geometry2d/PLGeometry2dCore.h"
 
+// TODO put here PLLog
+#include <stdio.h>
+
 ///////////////////////////////////////////////////////////////////////////////
 PLApplication::PLApplication()
 {
@@ -16,5 +19,7 @@ PLApplication::~PLApplication()
 ///////////////////////////////////////////////////////////////////////////////
 PLError *PLApplication::start()
 {
+	std::cout << "PLApplication started..." << std::endl;
+
 	return NULL;
 }
