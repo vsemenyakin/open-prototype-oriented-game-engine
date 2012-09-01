@@ -1,12 +1,14 @@
 #ifndef PLLOG_H_
 #define PLLOG_H_
 
+///////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <fstream>
 #include <set>
 #include "IPLLogReceiver.h"
 #include "PLLogFormatter.h"
 
+///////////////////////////////////////////////////////////////////////////////
 //LOG LEVELS
 #define DEBUG "Debug"
 #define INFO "Info"
@@ -16,12 +18,17 @@
 //channels
 #define GENERAL "General"
 
-// !!!!!!!!!!!!!!!!!!!!!!
+///////////////////////////////////////////////////////////////////////////////
+// !!!!!!!!!!!!!!!!!!!!!! *******
 // Look - there is something with formater
-
+// TODO singletone class for logging (sharedLogger)/ You can googling about it,
+// or just look at class on Base/Memory/PLCacheMeneger.h
+// !!!!!!!!!!!!!!!!!!!!!! *******
 using namespace std;
 
-class PLLog : IPLLogReceiver {
+///////////////////////////////////////////////////////////////////////////////
+class PLLog : public IPLLogReceiver
+{
 private:
 	std::ostream* stream_out;
 	PLLogFormatter* _formatter;
@@ -37,9 +44,8 @@ private:
 	bool acceptsLoglevel(const char* errorlevel);
 	bool acceptsChannel(const char* channel);
 public:
+
 	//constructor logic moved to init()
-
-
 	PLLog(const char* filename = "", PLLogFormatter* formatter = 0)
 	{
 		init(filename, formatter);

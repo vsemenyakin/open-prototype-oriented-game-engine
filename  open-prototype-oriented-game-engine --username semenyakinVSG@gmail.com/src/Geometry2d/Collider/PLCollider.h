@@ -8,7 +8,7 @@
 #ifndef PLCOLLIDER_H_
 #define PLCOLLIDER_H_
 
-#include "../../Base/PLAutoPointer.h"
+#include "../../Base/Memory/PLAutoPointer.h"
 #include "../ConvexPolygon2d/PLConvexPolygon2d.h"
 #include "../PLVector2d.h"
 
