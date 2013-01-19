@@ -9,10 +9,9 @@ class PLError;
 class PLApplication {
 public:
 	PLApplication();
+	virtual ~PLApplication();
 
 	virtual PLError *start();
-
-	virtual ~PLApplication();
 };
 
 #endif /* PLAPPLICATION_H_ */

@@ -13,7 +13,7 @@ public:
 	PLDictionary(void);
 	~PLDictionary(void);
 
-	void addKeyAndObject(const PLString* key, PLObject* object);
+	void setObjectForKey(PLObject* object, PLString* key);
 	PLObject* objectForKey(const PLString* key);
 	void removeObjectWithKey(const PLString* key);
 	PLIndex count(void);

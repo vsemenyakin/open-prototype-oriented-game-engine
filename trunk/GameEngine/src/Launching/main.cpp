@@ -4,10 +4,13 @@ using namespace std;
 #include "PLApplication.h"
 #include "PLUnitTesting.h"
 
-#define APPLICATION_EXECUTION
+#include <iostream.h>
+
 #define UNIT_TESTING
+//#define APPLICATION_EXECUTION
 
 ///////////////////////////////////////////////////////////////////////////////
+
 int main()
 {
 // Unit testing
