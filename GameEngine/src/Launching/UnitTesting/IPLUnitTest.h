@@ -8,9 +8,10 @@
 #ifndef PLUNITTEST_H_
 #define PLUNITTEST_H_
 
-class IPLUnitTest {
+class IPLUnitTest
+{
 public:
-	virtual ~PLUnitTest() = 0;
+	virtual ~IPLUnitTest() { };
 	virtual void performTest() = 0;
 };
 

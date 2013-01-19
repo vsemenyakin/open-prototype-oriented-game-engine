@@ -13,7 +13,8 @@ struct PLPoint2d
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-CLASS_WITH_REF(PLVector2d) : public PLObject {
+CLASS_WITH_REF(PLVector2d) : public PLObject
+{
 
 private:
 	PLPoint2d vector;
@@ -33,9 +34,6 @@ public:
 	PLVector2d();
 	PLVector2d(float inX, float inY);
 	PLVector2d(const PLVector2d &inVector);
-
-	// destructors
-	virtual void destroy();
 
 	// *** Accessors ***
 	// --- Atomic ---

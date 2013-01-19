@@ -12,7 +12,7 @@ PLDictionary::~PLDictionary(void)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PLDictionary::addKeyAndObject(const PLString* key, PLObject* object)
+void PLDictionary::setObjectForKey(PLObject* object, PLString* key)
 {
 	(*dictionary)[*key]=object;
 }
