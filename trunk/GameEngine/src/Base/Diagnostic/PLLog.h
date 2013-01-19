@@ -30,42 +30,84 @@ using namespace std;
 class PLLog : public IPLLogReceiver
 {
 private:
-	std::ostream* stream_out;
-	PLLogFormatter* _formatter;
+
+
+	// **************************************************************
+	// *					Private _ Variables						*
+	// **************************************************************
+
+	// ---------------
+	// *** Inner state
 	bool stream_responsibility;
 	bool formatter_responsibility;
 	bool isFile;
+
+	// --------------------
+	// *** Output variables
+	std::ostream* stream_out;
+	PLLogFormatter* _formatter;
+
+	// ------------------------------
+	// *** Levels and channels accept
 	bool acceptsAllLoglevels;
 	bool acceptsAllChannels;
 	set<const char*>* acceptableLoglevels;
 	set<const char*>* acceptableChannels;
-	void init(const char* filename, PLLogFormatter* formatter);
-	void init(ostream* filename, PLLogFormatter* formatter);
+
+
+	// **************************************************************
+	// *					Private _ Methods						*
+	// **************************************************************
+
+	// ------------------
+	// *** Initialization
+	void init(const char* inFilename, PLLogFormatter* inFormatter);
+	void init(ostream* inFilename, PLLogFormatter* inFormatter);
+
+	// ------------------------------
+	// *** Levels and channels accept
 	bool acceptsLoglevel(const char* errorlevel);
 	bool acceptsChannel(const char* channel);
+
 public:
 
-	//constructor logic moved to init()
-	PLLog(const char* filename = "", PLLogFormatter* formatter = 0)
-	{
-		init(filename, formatter);
-	}
 
-	PLLog(PLString* filename, PLLogFormatter* formatter=0)
-	{
-		init(filename->getCString(), formatter);
-	}
+	// **************************************************************
+	// *					Public _ Constants						*
+	// **************************************************************
+	//char *const kErrorLevelDefault = "default_error";
 
-	PLLog(ostream* stream, PLLogFormatter* formatter = 0)
-	{
-		init(stream, formatter);
-	}
+
+	// **************************************************************
+	// *					Public _ Methods						*
+	// **************************************************************
+
+	// ---------------------
+	// *** Memory management
+	PLLog(const char* inFilename = "", PLLogFormatter* inFormatter = 0);
+	PLLog(PLString* inFilename, PLLogFormatter* inFormatter = 0);
+	PLLog(ostream* inStream, PLLogFormatter* inFormatter = 0);
 
 	virtual ~PLLog();
-	virtual void print(const char *inMessage, const char* errorlevel, const char* channel);
-	virtual void print(const PLString *inMessage, const char* errorlevel, const char* channel);
-	virtual void print(const PLString inMessage, const char* errorlevel, const char* channel);
+
+	// ------------
+	// *** Printing
+	virtual void print(const char *inMessage, const char* errorlevel,
+			const char* channel);
+	virtual void print(const PLString *inMessage, const char* errorlevel,
+			const char* channel);
+	virtual void print(const PLString inMessage, const char* errorlevel,
+			const char* channel);
+
+	// ------------
+	// *** Grouping
+	virtual void beginGroup(const char *inErrorLevel, const char *inChannel);
+	virtual void endGroup(const char *inErrorLevel, const char *inChannel);
+
+	// -------------------------------------
+	// *** Log level and channels management
 	bool accepts(const char* errorlevel, const char* channel);
+
 	void addLoglevel(const char* errorlevel);
 	bool deleteLoglevel(const char* errorlevel);
 	void addChannel(const char* channel);
@@ -73,6 +115,16 @@ public:
 	void wipeLogLevels();
 	void wipeChannels();
 
+
+	// **************************************************************
+	// *					Static _ Methods						*
+	// **************************************************************
+	static PLLog *sharedLog();
 };
+
+// ****************************************************************************
+// Macros
+#define PRINT()
+
 
 #endif /* PLLOG_H_ */

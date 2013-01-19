@@ -6,11 +6,13 @@
 #include "PLObject.h"
 #include <string>
 
-///////////////////////////////////////////////////////////////////////////////
-class PLString : public PLObject {
-private:
+#include "PLScalarTypes.h"
 
-	std::string theString;
+///////////////////////////////////////////////////////////////////////////////
+class PLString : public PLObject
+{
+private:
+	std::string _string;
 
 public:
 
@@ -24,7 +26,6 @@ public:
 	PLString(PLString *inString);
 
 	// destructors
-
 	virtual ~PLString();
 
 	//////////////////////////////////////////////////////////////
@@ -34,25 +35,28 @@ public:
 
 	const char* getCString() const
 	{
-		return theString.c_str();
+		return _string.c_str();
 	}
 
-	const int length() const
+	const size_t length() const
 	{
-		return theString.length();
+		return _string.length();
 	}
 
 	//setters
 	//adding
+	void append(char inCharacter);
 	void append(const char *inCString);
 	void append(const PLString *inString);
-	void append(const PLString *inString, int firstCharacter, int charactersCount);
+	void append(const PLString *inString, int firstCharacter,
+			int charactersCount);
 	void pushBack(char inCharacter);
 
 	//removing
 	void assign(const char *inCString);
 	void assign(const PLString *inString);
-	void assign(const PLString *inString, int firstCharacter, int charactersCount);
+	void assign(const PLString *inString, int firstCharacter,
+			int charactersCount);
 	void erase(int position, int charactersCount);
 	void clear();
 
@@ -62,8 +66,32 @@ public:
 	void swap(PLString *swappingString);
 
 	//compare
-	bool PLString::operator < (const PLString &inStringA) const;
+	char &operator [] (size_t inIndex);
+
+	PLString &operator += (const char &inChar);
+	PLString &operator += (const PLCharacter &inCharacter);
+	PLString &operator += (const PLString &inString);
+
+	void operator = (const PLString &inString);
+	bool operator < (const PLString &inString) const;
+	bool operator == (const PLString &inString) const;
+
+	//
+	friend PLString &operator + (const PLString &inString, const char inChar);
+	friend PLString &operator + (const PLString &inString,
+			const PLCharacter inCharacter);
+	friend PLString &operator + (const PLString &inString,
+			const PLString &inString);
 };
 
+PLString &operator + (const PLString &inString, const char inChar);
+PLString &operator + (const PLString &inString, const PLCharacter inCharacter);
+PLString &operator + (const PLString &inStringA, const PLString &inStringB);
 
+///////////////////////////////////////////////////////////////////////////////
+PLString *PLStringCreate(const char *inCString);
+
+#define PL_STR(C_STRING) PLStringCreate(C_STRING)
+
+///////////////////////////////////////////////////////////////////////////////
 #endif /* STRING_H_ */

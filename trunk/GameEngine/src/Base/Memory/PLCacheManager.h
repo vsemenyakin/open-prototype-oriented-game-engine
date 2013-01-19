@@ -5,7 +5,8 @@
 #include "../../CoreCollections/PL_core_fastStack.h"
 
 //////////////////////////////////////////////////////////////////////////////
-class PLCacheManager {
+class PLCacheManager
+{
 private:
 	// Private constructor for singletone. Do nothing while creation.
 	PLCacheManager() { };
