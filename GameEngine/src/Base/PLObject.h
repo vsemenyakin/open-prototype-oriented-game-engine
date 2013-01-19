@@ -4,23 +4,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLString;
+class PLReflectionDictionary;
 
-class PLObject {
+class PLObject
+{
 private:
-	int referenceCount;
-
-protected:
-	virtual void destroy();
+	PLReflectionDictionary *_reflections;
 
 public:
-
 	virtual ~PLObject();
 	PLObject();
 
-	// Memory
-	PLObject *retain();
-	void release();
-	void autorelease();
+	virtual PLString *description();
+	virtual PLReflectionDictionary *reflections();
 };
 
 #endif /* RROBJECT_H_ */

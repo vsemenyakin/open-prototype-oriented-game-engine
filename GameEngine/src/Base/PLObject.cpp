@@ -1,36 +1,36 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "PLObject.h"
+#include "PLString.h"
+#include "../Behavior/Reflection/PLReflectionDictionary.h"
+
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
-PLObject::PLObject() {
-	referenceCount = 1;
+PLObject::PLObject()
+	: _reflections(NULL)
+{
 }
 
 PLObject::~PLObject()
 {
+	delete _reflections;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-PLObject *PLObject::retain()
+// *** Base behavior
+///////////////////////////////////////////////////////////////////////////////
+PLString *PLObject::description()
 {
-	++referenceCount;
-
-	return this;
+	return new PLString("PLObject\0");
 }
 
-void PLObject::release()
+///////////////////////////////////////////////////////////////////////////////
+PLReflectionDictionary *PLObject::reflections()
 {
-	--referenceCount;
-	if (0 == referenceCount)
+	if (NULL == _reflections)
 	{
-		this->destroy();
+		_reflections = new PLReflectionDictionary();
 	}
-}
 
-void PLObject::destroy()
-{
-	std::cout << "PLObject destroyed" << std::endl;
-
-	delete this;
+	return _reflections;
 }

@@ -8,85 +8,142 @@
 ///////////////////////////////////////////////////////////////////////////////
 //static int debugCounter = 0;
 
-#define ref PLAutoPointer
+#define ref PLAutoPointer_owning
 #define CLASS_WITH_REF(name) \
 	class name;	\
-	typedef PLAutoPointer<name> name##Ref; \
+	typedef PLAutoPointer_owning<name> name##Ref; \
 	class name
 
+//////////////////////////////////////////////////////////////////////////////
+//
+//	KNOWS-A POINTER
+//
 ///////////////////////////////////////////////////////////////////////////////
 template <typename ItemType>
-class PLAutoPointer
+class PLAutoPointer_knowing
 {
-private:
+protected:
 
-	template <typename WrapperItemType>
+
+	// **************************************************************
+	// *					 Private _ Types						*
+	// **************************************************************
+
+	// -----------
+	// *** Wrapper
 	struct PointerWrapper
 	{
+		PointerWrapper(ItemType *inPointer)
+		{
+			pointer = inPointer;
+		}
+
 		int referenceCount;
-		WrapperItemType *pointer;
+		ItemType *pointer;
 	};
 
-	char name[20];
-	PointerWrapper<ItemType> *pointerWrapper;
 
-	ItemType * (PLAutoPointer::*_pointer)();
+	// **************************************************************
+	// *					 Private _ Variables					*
+	// **************************************************************
 
+	// ---------
+	// *** Debug
+	char _name[20];
 
-	// 	Private methods
-	void setRawPointer(ItemType *inRawPointer)
-	{
-		release();
-		pointerWrapper = new PointerWrapper<ItemType>();
-		pointerWrapper->pointer = inRawPointer;
-		retain();
-	}
+	// -----------
+	// *** Wrapper
+	PointerWrapper *_pointerToWrapper;
+
 
 public:
-	///////////////////////////////////////////////////////////////////////////////
-	// *** Memory management ***
-	///////////////////////////////////////////////////////////////////////////////
-	PLAutoPointer()
+
+
+	// **************************************************************
+	// *					 Public _ Methods						*
+	// **************************************************************
+	PLAutoPointer_knowing()
+		: _pointerToWrapper(NULL)
+	{
+	}
+
+
+	// **************************************************************
+	// *					 Public _ Operators						*
+	// **************************************************************
+	PLAutoPointer_knowing<ItemType> &operator = (
+			const PLAutoPointer_knowing<ItemType> &inPointer)
+	{
+		_pointerToWrapper = inPointer._pointerToWrapper;
+
+		return *this;
+	}
+
+	ItemType &operator *(void)
+	{
+		return this->_pointerToWrapper->pointer;
+	}
+
+	ItemType *operator ->(void)
+	{
+		return this->_pointerToWrapper->pointer;
+	}
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//	HAS-A POINTER
+//
+///////////////////////////////////////////////////////////////////////////////
+template <typename ItemType>
+class PLAutoPointer_owning : public PLAutoPointer_knowing<ItemType>
+{
+public:
+
+
+	// **************************************************************
+	// *					 Public _ Method						*
+	// **************************************************************
+
+	// ---------------------
+	// *** Memory management
+	PLAutoPointer_owning()
 	{
 		//sprintf(name, "POINTER %i", debugCounter);
 		//std::cout << "Constructor of " << name << std::endl;
 		//++debugCounter;
-
-		pointerWrapper = NULL;
-		_pointer = &(PLAutoPointer::objectPointerWithCreation);
+		this->_pointerToWrapper = NULL;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
-	PLAutoPointer(const PLAutoPointer<ItemType> &inAutoPointer)
+	PLAutoPointer_owning(const PLAutoPointer_owning<ItemType> &inPointer)
 	{
 		//sprintf(name, "POINTER %i", debugCounter);
 		//std::cout << "Copying constructor of " << name << std::endl;
 		//++debugCounter;
 
-		pointerWrapper = inAutoPointer.pointerWrapper;
-		_pointer = &PLAutoPointer::objectPointerWithCreation;
+		this->_pointerToWrapper = inPointer._pointerToWrapper;
 		retain();
 	}
 
-	virtual ~PLAutoPointer()
+	virtual ~PLAutoPointer_owning()
 	{
 		//std::cout << "Destructor of " << name << std::endl;
 		release();
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
-	// *** Retain / Release ***
-	///////////////////////////////////////////////////////////////////////////////
+	// -------------------
+	// *** Owning behavior
 	void release()
 	{
-		if (NULL != pointerWrapper)
+		if (NULL != this->_pointerToWrapper)
 		{
-			--pointerWrapper->referenceCount;
-			if (0 == pointerWrapper->referenceCount)
+			--this->_pointerToWrapper->referenceCount;
+			if (0 == this->_pointerToWrapper->referenceCount)
 			{
-				delete pointerWrapper->pointer;
-				delete pointerWrapper;
-				pointerWrapper = NULL;
+				delete this->_pointerToWrapper->pointer;
+				delete this->_pointerToWrapper;
+				this->_pointerToWrapper = NULL;
 			}
 		}
 		//std::cout << "Release of " << name << ". Reference count: " <<
@@ -94,12 +151,11 @@ public:
 		//			<< std::endl;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
 	void retain()
 	{
-		if (NULL != pointerWrapper)
+		if (NULL != this->_pointerToWrapper)
 		{
-			++pointerWrapper->referenceCount;
+			++this->_pointerToWrapper->referenceCount;
 		}
 
 		//std::cout << "Reatain of " << name << ". Reference count: " <<
@@ -107,111 +163,102 @@ public:
 		//			<< std::endl;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
-	// *** Operators ***
-	///////////////////////////////////////////////////////////////////////////////
-	PLAutoPointer<ItemType> &operator = (const PLAutoPointer<ItemType> &inAutoPointer)
+
+	// **************************************************************
+	// *					 Public _ Operators						*
+	// **************************************************************
+	PLAutoPointer_owning<ItemType> &operator = (
+			const PLAutoPointer_knowing<ItemType> &inPointer)
 	{
-		if (inAutoPointer.pointerWrapper != pointerWrapper)
+		if (inPointer.pointerWrapper != this->_pointerToWrapper)
 		{
 			release();
-			pointerWrapper = inAutoPointer.pointerWrapper;
+			this->_pointerToWrapper = inPointer._pointerToWrapper;
 			retain();
 		}
 
 		return *this;
 	}
 
-	// ***************************
-	// Object pointer from wrapper
-	// {
-	ItemType *objectPointerWithCreation()
-	{
-		if (NULL == pointerWrapper)
-		{
-			this->setRawPointer(new ItemType());
-			_pointer = &PLAutoPointer::objectPointer;
-		}
-		return pointerWrapper->pointer;
-	}
-
-	ItemType *objectPointer()
-	{
-		return pointerWrapper->pointer;
-	}
-	// }
-	// ***************************
-
-	ItemType *operator ~()
-	{
-		return (this->*_pointer)();
-	}
-
 	ItemType &operator *(void)
 	{
-		return *(this->*_pointer)();
+		return *this->_pointerToWrapper->pointer;
 	}
 
 	ItemType *operator ->(void)
 	{
-		return (this->*_pointer)();
+		return this->_pointerToWrapper->pointer;
 	}
+
 
 	///////////////////////////////////////////////////////////////////////////////
 	// *** Properties ***
 	///////////////////////////////////////////////////////////////////////////////
 	ItemType *rawPointer()
 	{
-		return pointerWrapper->pointer;
+		return this->_pointerToWrapper->pointer;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
-	// *** Create ***
-	///////////////////////////////////////////////////////////////////////////////
-	static PLAutoPointer<ItemType> create()
+	// **************************************************************
+	// *					 Static _ Method						*
+	// **************************************************************
+	static PLAutoPointer_owning<ItemType> create()
 	{
-		PLAutoPointer<ItemType> thePointer;
-		thePointer.setRawPointer(new ItemType());
+		PLAutoPointer_owning<ItemType> thePointer;
+		thePointer._pointerToWrapper = new typename
+				PLAutoPointer_knowing<ItemType>::PointerWrapper(NULL);
 		return thePointer;
 	}
 
 	template<typename T1>
-	static PLAutoPointer<ItemType> create(T1 arg1)
+	static PLAutoPointer_owning<ItemType> create(T1 arg1)
 	{
-		PLAutoPointer<ItemType> thePointer;
-		thePointer.setRawPointer(new ItemType(arg1));
+		PLAutoPointer_owning<ItemType> thePointer;
+		thePointer._pointerToWrapper = new typename
+				PLAutoPointer_knowing<ItemType>::PointerWrapper(
+						new ItemType(arg1));
 		return thePointer;
 	}
 
 	template<typename T1, typename T2>
-	static PLAutoPointer<ItemType> create(T1 arg1, T2 arg2)
+	static PLAutoPointer_owning<ItemType> create(T1 arg1, T2 arg2)
 	{
-		PLAutoPointer<ItemType> thePointer;
-		thePointer.setRawPointer(new ItemType(arg1, arg2));
+		PLAutoPointer_owning<ItemType> thePointer;
+		thePointer._pointerToWrapper = new typename
+				PLAutoPointer_knowing<ItemType>::PointerWrapper(
+						new ItemType(arg1, arg2));
 		return thePointer;
 	}
 
 	template<typename T1, typename T2, typename T3>
-	static PLAutoPointer<ItemType> create(T1 arg1, T2 arg2, T3 arg3)
+	static PLAutoPointer_owning<ItemType> create(T1 arg1, T2 arg2, T3 arg3)
 	{
-		PLAutoPointer<ItemType> thePointer;
-		thePointer.setRawPointer(new ItemType(arg1, arg2, arg3));
+		PLAutoPointer_owning<ItemType> thePointer;
+		thePointer._pointerToWrapper = new typename
+				PLAutoPointer_knowing<ItemType>::PointerWrapper(
+						new ItemType(arg1, arg2, arg3));
 		return thePointer;
 	}
 
 	template<typename T1, typename T2, typename T3, typename T4>
-	static PLAutoPointer<ItemType> create(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+	static PLAutoPointer_owning<ItemType> create(T1 arg1, T2 arg2, T3 arg3,
+			T4 arg4)
 	{
-		PLAutoPointer<ItemType> thePointer;
-		thePointer.setRawPointer(new ItemType(arg1, arg2, arg3, arg4));
+		PLAutoPointer_owning<ItemType> thePointer;
+		thePointer._pointerToWrapper = new typename
+				PLAutoPointer_knowing<ItemType>::PointerWrapper(
+						new ItemType(arg1, arg2, arg3, arg4));
 		return thePointer;
 	}
 
 	template<typename T1, typename T2, typename T3, typename T4, typename T5>
-	static PLAutoPointer<ItemType> create(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+	static PLAutoPointer_owning<ItemType> create(T1 arg1, T2 arg2, T3 arg3,
+			T4 arg4, T5 arg5)
 	{
-		PLAutoPointer<ItemType> thePointer;
-		thePointer.setRawPointer(new ItemType(arg1, arg2, arg3, arg4, arg5));
+		PLAutoPointer_owning<ItemType> thePointer;
+		thePointer._pointerToWrapper = new typename
+				PLAutoPointer_knowing<ItemType>::PointerWrapper(
+						new ItemType(arg1, arg2, arg3, arg4, arg5));
 		return thePointer;
 	}
 };

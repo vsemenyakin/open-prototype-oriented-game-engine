@@ -1,16 +1,21 @@
 #include "PLString.h"
 
 //////////////////////////////////////////////////////////////
+PLString *PLStringCreate(const char *inCString)
+{
+	return new PLString(inCString);
+}
+
+//////////////////////////////////////////////////////////////
 // *** Memory management ***
 // constructors
-
 PLString::PLString()
 {
 }
 
 PLString::PLString(const char *inCString)
 {
-	theString.append(inCString);
+	_string.append(inCString);
 }
 
 PLString::PLString(PLString *inString)
@@ -32,50 +37,57 @@ PLString::~PLString()
 //setters
 
 //adding
+void PLString::append(char inCharacter)
+{
+	_string.append(&inCharacter);
+}
+
 void PLString::append(const char *inCString)
 {
-	theString.append(inCString);
+	_string.append(inCString);
 }
 
 void PLString::append(const PLString *inString)
 {
-	theString.append(inString->getCString());
+	_string.append(inString->getCString());
 }
 
-void PLString::append(const PLString *inString, int firstCharacter, int charactersCount)
+void PLString::append(const PLString *inString, int firstCharacter,
+		int charactersCount)
 {
-	theString.append(inString->getCString(), firstCharacter, charactersCount);
+	_string.append(inString->getCString(), firstCharacter, charactersCount);
 }
 
 void PLString::pushBack(char inCharacter)
 {
-	theString.push_back(inCharacter);
+	_string.push_back(inCharacter);
 }
 
 //removing
 void PLString::assign(const char *inCString)
 {
-	theString.assign(inCString);
+	_string.assign(inCString);
 }
 
 void PLString::assign(const PLString *inString)
 {
-	theString.assign(inString->getCString());
+	_string.assign(inString->getCString());
 }
 
-void PLString::assign(const PLString *inString, int firstCharacter, int charactersCount)
+void PLString::assign(const PLString *inString, int firstCharacter,
+		int charactersCount)
 {
-	theString.assign(inString->getCString(), firstCharacter, charactersCount);
+	_string.assign(inString->getCString(), firstCharacter, charactersCount);
 }
 
 void PLString::erase(int position, int charactersCount)
 {
-	theString.erase(position, charactersCount);
+	_string.erase(position, charactersCount);
 }
 
 void PLString::clear()
 {
-	theString.clear();
+	_string.clear();
 }
 
 //swapping
@@ -84,12 +96,76 @@ void PLString::swap(PLString *swappingString)
 	const char *tmp;
 
 	tmp = getCString();
-	theString.assign(swappingString->getCString());
+	_string.assign(swappingString->getCString());
 	swappingString->assign(tmp);
 }
 
-// Comparing
-bool PLString::operator < (const PLString &inStringA) const
+// Characters access
+char &PLString::operator [] (size_t inIndex)
 {
-	return this->theString < inStringA.theString;
+	return _string[inIndex];
+}
+
+//
+void PLString::operator = (const PLString &inString)
+{
+	_string = inString._string;
+}
+
+// Concating
+PLString &PLString::operator += (const char &inChar)
+{
+	_string += inChar;
+
+	return *this;
+}
+
+PLString &PLString::operator += (const PLCharacter &inCharacter)
+{
+	_string += inCharacter;
+
+	return *this;
+}
+
+PLString &PLString::operator += (const PLString &inString)
+{
+	_string += inString._string;
+
+	return *this;
+}
+
+// Functions concating
+PLString &operator + (const PLString &inString, const char &inChar)
+{
+	PLString *theString = new PLString(inString);
+	(*theString) += inChar;
+
+	return *theString;
+}
+
+PLString &operator + (const PLString &inString, const PLCharacter &inCharacter)
+{
+	PLString *theString = new PLString(inString);
+	(*theString) += inCharacter;
+
+	return *theString;
+}
+
+PLString &operator + (const PLString &inStringA, const PLString &inStringB)
+{
+	PLString *theString = new PLString(inStringA);
+	(*theString) += inStringB;
+
+	return *theString;
+}
+
+// Comparing
+bool PLString::operator < (const PLString &inString) const
+{
+	return this->_string < inString._string;
+}
+
+bool PLString::operator == (const PLString &inString) const
+{
+	return this->_string == inString._string;
 }

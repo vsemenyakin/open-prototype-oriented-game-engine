@@ -20,13 +20,14 @@
 	return buffer;
 }
 
-	const char* PLLogFormatter::format(const char *inMessage, const char* errorlevel, const char* channel) const
+	const char* PLLogFormatter::format(const char *inMessage,
+			const char* inErrorLevel, const char* inChannel) const
 	{
 		static std::string buffer("");
 		buffer.clear();
 		if (_showLogLevel) {
 			buffer.append(_left_loglevel_bracket);
-			buffer.append(errorlevel);
+			buffer.append(inErrorLevel);
 			buffer.append(_right_loglevel_bracket);
 		}
 
@@ -38,7 +39,7 @@
 
 		if (_showChannel) {
 			buffer.append(_left_channel_bracket);
-			buffer.append(channel);
+			buffer.append(inChannel);
 			buffer.append(_right_channel_bracket);
 		}
 		buffer.append(inMessage);

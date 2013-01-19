@@ -1,25 +1,43 @@
- #include "PLLog.h"
 
-//PLLog methods
 ///////////////////////////////////////////////////////////////////////////////
-void PLLog::init(const char* filename, PLLogFormatter* formatter)
+#include "PLLog.h"
+
+///////////////////////////////////////////////////////////////////////////////
+PLLog::PLLog(const char* inFilename, PLLogFormatter* inFormatter)
+{
+	init(inFilename, inFormatter);
+}
+
+PLLog::PLLog(PLString* inFilename, PLLogFormatter* inFormatter)
+{
+	init(inFilename->getCString(), inFormatter);
+}
+
+PLLog::PLLog(ostream* inStream, PLLogFormatter* inFormatter)
+{
+	init(inStream, inFormatter);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PLLog::init(const char* inFilename, PLLogFormatter* inFormatter)
 {
 	acceptsAllLoglevels = true;
 	acceptsAllChannels = true;
 	acceptableLoglevels = new set<const char*>();
 	acceptableChannels = new set<const char*>();
-	isFile = (*filename != '\0');
-	if (!formatter)
+
+	isFile = (*inFilename != '\0');
+	if (NULL == inFormatter)
 	{
 		_formatter = new PLLogFormatter();
 		formatter_responsibility = true;
-
 	}
 	else
-		{
-			_formatter = formatter;
-			formatter_responsibility = false;
-		}
+	{
+		_formatter = inFormatter;
+		formatter_responsibility = false;
+	}
+
 	if (!isFile)
 	{
 		stream_out=&cout;
@@ -28,7 +46,7 @@ void PLLog::init(const char* filename, PLLogFormatter* formatter)
 	else
 	{
 		stream_responsibility=true;
-		ofstream* fstream_out = new ofstream(filename, ios_base::app);
+		ofstream* fstream_out = new ofstream(inFilename, ios_base::app);
 
 		//ptr to a new ofstream converted into ptr to ostream;
 		stream_out = (std::ostream*) fstream_out;
@@ -39,14 +57,13 @@ void PLLog::init(const char* filename, PLLogFormatter* formatter)
 			isFile=false;
 			stream_out=&cout;
 			std::string errmsg("[PLLOG] Cannot initialize ");
-			errmsg.append(filename);
+			errmsg.append(inFilename);
 			print(errmsg.c_str(), ERROR, "PLLog");
-
 		}
 	}
 }
 
-void PLLog::init(ostream* stream, PLLogFormatter* formatter)
+void PLLog::init(ostream* inStream, PLLogFormatter* inFormatter)
 {
 	acceptsAllLoglevels = true;
 	acceptsAllChannels = true;
@@ -54,18 +71,19 @@ void PLLog::init(ostream* stream, PLLogFormatter* formatter)
 	acceptableChannels = new set<const char*>();
 	stream_responsibility = false;
 	isFile = false;
-	if (!formatter)
+
+	if (!inFormatter)
 	{
 		_formatter = new PLLogFormatter();
 		formatter_responsibility = true;
 	}
 	else
 	{
-		_formatter = formatter;
+		_formatter = inFormatter;
 		formatter_responsibility = false;
 	}
-	if (stream != 0) stream_out = stream;
-	else stream_out = &cout;
+
+	stream_out = (inStream != 0) ? inStream : &cout;
 }
 
 
@@ -77,6 +95,7 @@ PLLog::~PLLog()
 		ofstream* fstream_out = (static_cast<ofstream*>(stream_out));
 		fstream_out->close();
 	}
+
 	if (stream_responsibility) delete stream_out;
 	if (formatter_responsibility) delete _formatter;
 	delete acceptableLoglevels;
@@ -91,11 +110,13 @@ void PLLog::print(const char *inMessage, const char* errorlevel,
 	{
 		throw new ios_base::failure("[PLLOG] Error: bad stream");
 	}
-	else if (stream_out->fail() || stream_out->eof()) stream_out->clear();
+	else if (stream_out->fail() || stream_out->eof())
+	{
+		stream_out->clear();
+	}
 
-	//*stream_out << _formatter->format(inMessage, errorlevel, channel);
+	*stream_out << _formatter->format(inMessage, errorlevel, channel);
 	*stream_out << std::endl;
-
 }
 
 void PLLog::print(const PLString *inMessage, const char* errorlevel,
@@ -108,6 +129,15 @@ void PLLog::print(const PLString inMessage, const char* errorlevel,
 		const char* channel = GENERAL)
 {
 	print(inMessage.getCString(), errorlevel, channel);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PLLog::beginGroup(const char *inErrorLevel, const char *inChannel)
+{
+}
+
+void PLLog::endGroup(const char *inErrorLevel, const char *inChannel)
+{
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -168,4 +198,17 @@ void PLLog::wipeLogLevels()
 {
 	acceptableLoglevels->clear();
 	acceptsAllLoglevels = true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+static PLLog *sharedLogPointer = NULL;
+
+static PLLog *PLLogsharedLog()
+{
+	if (NULL == sharedLogPointer)
+	{
+		//sharedLogPointer = new PLLog(NULL);
+	}
+
+	return sharedLogPointer;
 }
