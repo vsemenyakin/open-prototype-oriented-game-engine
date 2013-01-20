@@ -8,7 +8,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 //static int debugCounter = 0;
 
-#define ref PLAutoPointer_owning
+#define knowing_ref PLAutoPointer_knowing
+#define function_ref PLAutoPointer_knowing
+#define owning_ref PLAutoPointer_owning
+
 #define CLASS_WITH_REF(name) \
 	class name;	\
 	typedef PLAutoPointer_owning<name> name##Ref; \

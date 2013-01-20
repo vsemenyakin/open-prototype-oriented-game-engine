@@ -7,22 +7,23 @@ using namespace std;
 #include <iostream.h>
 
 #define UNIT_TESTING
-//#define APPLICATION_EXECUTION
+#define APPLICATION_EXECUTION
 
 ///////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
+
 // Unit testing
 #ifdef UNIT_TESTING
-	PLApplication theApplication;
-	theApplication.start();
+	PLUnitTesting theUnitTesting;
+	theUnitTesting.perform();
 #endif
 
 // Application execution
 #ifdef APPLICATION_EXECUTION
-	PLUnitTesting theUnitTesting;
-	theUnitTesting.perform();
+	PLApplication theApplication;
+	theApplication.start();
 #endif
 
 	// TODO return here PLError

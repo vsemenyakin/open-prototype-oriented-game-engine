@@ -2,11 +2,14 @@
 #define PLUNITTESTING_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLError;
+#include "UnitTesting/PLUnitTestCore.h"
+#include <list>
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLUnitTesting {
+class PLUnitTesting
+{
 private:
+	std::list<IPLUnitTest *> _tests;
 
 public:
 	PLUnitTesting();

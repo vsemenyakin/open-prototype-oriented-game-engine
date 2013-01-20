@@ -4,19 +4,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "../Syntax/ReflectorBuilder/PLCharacterReflector_Syntax.h"
-//#include "../Syntax/ReflectorBuilder/PLCharacterReflector_Number.h"
-#include "../Syntax/ReflectorBuilder/PLCharacterReflector_StressTests.h"
-
-#include "../Syntax/Reflectors/PLCharacterStreamReflector.h"
-
-#include "../Syntax/PLCharacterSet.h"
 #include "../CoreCollections/PL_core_graph.h"
-
 #include "../Base/PLCore.h"
-
 #include "../Base/Diagnostic/PLLog.h"
-
 #include "../View/PLWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -138,7 +128,7 @@ PLError *PLApplication::start()
 
 	std::cout << "PLApplication launched..." << std::endl;
 
-	while (true);
+	//while (true);
 
 	return 0;
 }

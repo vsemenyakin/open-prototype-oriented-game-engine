@@ -12,7 +12,7 @@
 #include <string>
 #include <fstream>
 
-#include "../PLScalarTypes.h"
+#include "../Types/PLScalarTypes.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLScopeBasedLog
