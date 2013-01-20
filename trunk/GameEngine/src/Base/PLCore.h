@@ -10,7 +10,7 @@
 
 #include "Memory/PLAutoPointer.h"
 #include "PLObject.h"
-#include "PLScalarTypes.h"
+#include "Types/PLScalarTypes.h"
 #include "PLString.h"
 #include "Diagnostic/PLLog.h"
 

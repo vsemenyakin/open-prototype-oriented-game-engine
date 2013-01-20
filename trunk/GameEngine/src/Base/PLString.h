@@ -4,77 +4,102 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 #include "PLObject.h"
+#include "Types/PLScalarTypes.h"
+
 #include <string>
 
-#include "PLScalarTypes.h"
+#include "Memory/PLAutoPointer.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLString : public PLObject
 {
 private:
+
+
+	// **************************************************************
+	// *					 Private _ Variables					*
+	// **************************************************************
+
+	// ----------
+	// *** String
 	std::string _string;
+
 
 public:
 
-	//////////////////////////////////////////////////////////////
-	// *** Memory management ***
-	// constructors
 
+	// **************************************************************
+	// *					 Public _ Methods						*
+	// **************************************************************
+
+	// ------------
+	// *** Iterator
 	PLString();
 
-	PLString(const char *inCString);
-	PLString(PLString *inString);
+	PLString(const char *inString);
+	PLString(function_ref<PLString> inString);
 
 	// destructors
 	virtual ~PLString();
 
-	//////////////////////////////////////////////////////////////
-	// *** Accessors ***
+	// -------------
+	// *** Accessors
+	const char *getCString() const;
+	const PLIndex length() const;
 
-	//getters
 
-	const char* getCString() const
-	{
-		return _string.c_str();
-	}
+	// *********************
+	//   Extending methods
+	// *********************
 
-	const size_t length() const
-	{
-		return _string.length();
-	}
+	// ---------------------------
+	// *** Character methods group
 
-	//setters
-	//adding
+	void assign(char inCharacter);
 	void append(char inCharacter);
-	void append(const char *inCString);
-	void append(const PLString *inString);
-	void append(const PLString *inString, int firstCharacter,
-			int charactersCount);
-	void pushBack(char inCharacter);
 
-	//removing
-	void assign(const char *inCString);
-	void assign(const PLString *inString);
-	void assign(const PLString *inString, int firstCharacter,
-			int charactersCount);
-	void erase(int position, int charactersCount);
+
+	// -------------------------
+	// *** CString methods group
+
+	void append(const char *inCString);
+
+	// --------------------------
+	// *** PLString methods group
+
+	void append(function_ref<PLString> inString);
+	void append(function_ref<PLString> inString, PLRange inRange);
+
+
+	// ********************
+	//   Erasing methods
+	// ********************
+
+	void erase(PLRange inRange);
 	void clear();
 
-	//swapping
-	// Done without links exchanging, but with reassigning
-	// I can`t get access to 'theString' in the swappingString but the encapsulation
-	void swap(PLString *swappingString);
 
-	//compare
-	char &operator [] (size_t inIndex);
+	// *************
+	//   Operators
+	// *************
 
-	PLString &operator += (const char &inChar);
-	PLString &operator += (const PLCharacter &inCharacter);
-	PLString &operator += (const PLString &inString);
-
+	// -------------
+	// *** Assigning
 	void operator = (const PLString &inString);
+
+	// -------------
+	// *** Comparing
 	bool operator < (const PLString &inString) const;
 	bool operator == (const PLString &inString) const;
+
+	// -------------
+	// *** Accessing
+	char &operator [] (size_t inIndex);
+
+	// -------------
+	// *** Extending
+	PLString &operator += (const char &inChar);
+	PLString &operator += (const PLString &inString);
 
 	//
 	friend PLString &operator + (const PLString &inString, const char inChar);
@@ -87,6 +112,9 @@ public:
 PLString &operator + (const PLString &inString, const char inChar);
 PLString &operator + (const PLString &inString, const PLCharacter inCharacter);
 PLString &operator + (const PLString &inStringA, const PLString &inStringB);
+
+bool PLCStringEquals(const char *inCStringA, size_t inCStringALength,
+		const char *inCStringB, size_t inCStringBLength);
 
 ///////////////////////////////////////////////////////////////////////////////
 PLString *PLStringCreate(const char *inCString);
