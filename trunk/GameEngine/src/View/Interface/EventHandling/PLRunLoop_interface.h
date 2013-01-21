@@ -1,0 +1,21 @@
+/*
+ * PLRunLoop.h
+ *
+ *  Created on: Jan 21, 2013
+ *      Author: Admin
+ */
+///////////////////////////////////////////////////////////////////////////////
+#ifndef PLRUNLOOP_INTERFACE_H_
+#define PLRUNLOOP_INTERFACE_H_
+
+///////////////////////////////////////////////////////////////////////////////
+#include "IPLEventHandler_interface.h"
+
+///////////////////////////////////////////////////////////////////////////////
+class PLRunLoop_interface
+{
+public:
+	void assignHandler(IPLEventHandler_interface *inHandler);
+};
+
+#endif /* PLRUNLOOP_INTERFACE_H_ */

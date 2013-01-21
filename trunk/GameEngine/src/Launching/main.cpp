@@ -6,7 +6,7 @@ using namespace std;
 
 #include <iostream.h>
 
-#define UNIT_TESTING
+//#define UNIT_TESTING
 #define APPLICATION_EXECUTION
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -4,10 +4,11 @@
 #include <iostream>
 #include <fstream>
 
-#include "../CoreCollections/PL_core_graph.h"
+#include <windows.h>
+
 #include "../Base/PLCore.h"
-#include "../Base/Diagnostic/PLLog.h"
-#include "../View/PLWindow.h"
+
+#include "../View/PLGraphic.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -47,86 +48,50 @@ PLString *plStringFromFile(PLString &inFileName)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+void callback(void *inEventMessage)
+{
+	std::cout << "Key pressed" << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 PLError *PLApplication::start()
 {
 	PLWindow *theWindow = new PLWindow("First window",
 			PLCreateRectangle(100.0, 100.0, 500.0, 500.0));
 
+	theWindow->setFocus();
 	theWindow->show();
 
-	/*
-	PLString *theString = plStringFromFile(*PL_STR("program.txt"));
-	std::cout << theString->getCString() << std::endl;
+	PLKeyboardEventHandler *theKeyboardEventsHandler =
+			new PLKeyboardEventHandler();
+	theWindow->getRunLoop()->assignHandler(theKeyboardEventsHandler);
 
-	PLCharacterReflector_Syntax *theSyntaxReflector =
-			new PLCharacterReflector_Syntax();
+	theKeyboardEventsHandler->addCallback(callback);
 
-	//PLCharacterReflector_Number *theNumberReflector =
-	//		new PLCharacterReflector_Number();
+	bool theExecutingFlag = true;
 
-	//PLCharacter *theNumber = charactersFromCharBuffer("123.1010", 8);//"123.1010\0";
-	//PLCharacter *theStressTest = charactersFromCharBuffer("ACYZ", 4);
-
-	//PLCharacter *theStressTest = charactersFromCharBuffer("ZABD", 4);
-
-	PLCharacter *theStressTest = charactersFromCharBuffer(theString->getCString(), theString->length());
-	//PLCharacter *theStressTest = charactersFromCharBuffer("PROGRAMQWERTY;CONSTFIRSTCONST=\'00,00\'SECONDCONST=\'11,11\'BEGINEND.", 65);
-
-
-	PLCharacterStreamReflector *theReflector =
-			theSyntaxReflector->reflector();
-//	PLCharacterStreamReflector *theReflector =
-//			theNumberReflector->reflector();
-
-	int i = 0;
-	PLCharacterReflectorUpdatingResult *theResult = NULL;
-
-	do
+	MSG theMessage;
+	while (theExecutingFlag)
 	{
-		theResult = theReflector->updateWithSymbol(theStressTest[i++]);
-		//theResult = theReflector->updateWithSymbol(theNumber[i++]);
-	} while (theResult->updateStatus == PLCharacterReflectorUpdating);
-
-	delete theReflector;
-
-	std::cout << std::endl << "--------- " << std::endl;
-
-	if (theResult->updateStatus == PLCharacterReflectorFinished &&
-			theResult->root->edgesOut()->size() != 0)
-	{
-		i = 0;
-
-		PLReflectionTree::node_iterator *theIterator =
-				new PLReflectionTree::node_iterator(theResult->root);
-
-		while (theIterator->edgesOut()->size() != 0 && i < 100)
+		if (PeekMessage(&theMessage, NULL, 0, 0, PM_REMOVE))
 		{
-			std::cout << theIterator->_node << " : " << **theIterator
-					<< " = " << theIterator->edgesOut()->size() << std::endl;
-
-			(**theIterator)->call();
-
-			theIterator->moveToNextNode(theIterator->edgesOut()->begin());
+			if (theMessage.message == WM_QUIT) // Have We Received A Quit Message?
+			{
+				theExecutingFlag = false; // If So done = TRUE
+			}
+			else									// If Not, Deal With Window Messages
+			{
+				TranslateMessage(&theMessage);				// Translate The Message
+				DispatchMessage(&theMessage);				// Dispatch The Message
+			}
 		}
-
-		std::cout << theIterator->_node << " : " <<  **theIterator
-				<< " = " << theIterator->edgesOut()->size() << std::endl;
-		(**theIterator)->call();
-	}
-	else
-	{
-		std::cout << "Reflector failed" << std::endl;
+		else
+		{
+			//
+		}
 	}
 
-	theSyntaxReflector->writeErrorsToFile(*PL_STR("errors.txt"));
-	theSyntaxReflector->writeLexemsToFile(*PL_STR("lixems.txt"));
-	theSyntaxReflector->writeParseTreeToFile(*PL_STR("parseTree.txt"));
-	theSyntaxReflector->writeAssemblerFile(*PL_STR("assemblerCode.txt"));
-
-	std::cout << "PLApplication launched..." << std::endl;
-	 */
-
-	std::cout << "PLApplication launched..." << std::endl;
+	std::cout << "PLApplication finished." << std::endl;
 
 	//while (true);
 
