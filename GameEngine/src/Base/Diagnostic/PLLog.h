@@ -10,10 +10,10 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 //LOG LEVELS
-#define DEBUG "Debug"
-#define INFO "Info"
-#define WARNING "Warning"
-#define ERROR "Error"
+#define DEBUG_LOG_LEVEL "Debug"
+#define INFO_LOG_LEVEL "Info"
+#define WARNING_LOG_LEVEL "Warning"
+#define ERROR_LOG_LEVEL "Error"
 
 //channels
 #define GENERAL "General"

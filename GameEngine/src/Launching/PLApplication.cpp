@@ -7,8 +7,13 @@
 #include <windows.h>
 
 #include "../Base/PLCore.h"
+#include "../OSDepended/Interface/PLGraphic.h"
 
-#include "../View/PLGraphic.h"
+#include "../CoreCollections/PL_core_graph.h"
+
+#include "../Base/Memory/PLAutoPointer.h"
+
+//#include "../OSDepended/Implementation/Windows/PLWindow_windows.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -54,94 +59,66 @@ void callback(void *inEventMessage)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+class A
+{
+public:
+	virtual void foo()
+	{
+		std::cout << "First foo" << std::endl;
+	}
+
+	virtual ~A()
+	{
+		std::cout << ">>> Removed" << std::endl;
+	}
+};
+
+class B : public A
+{
+public:
+	virtual void foo()
+	{
+		std::cout << "First foo" << std::endl;
+	}
+
+	virtual ~B()
+	{
+	}
+};
+
+///////////////////////////////////////////////////////////////////////////////
 PLError *PLApplication::start()
 {
-	PLWindow *theWindow = new PLWindow("First window",
-			PLCreateRectangle(100.0, 100.0, 500.0, 500.0));
+	owning_ref<B> theOwningReference = owning_ref<B>::create();
+	knowing_ref<A> theAssignedKnowingReference =
+			cast_ref<A>(theOwningReference);
 
-	theWindow->setFocus();
+	owning_ref<A> theOwningReferenceNumerTwo = cast_ref<A>(theOwningReference);
+
+	//std::cout << *theOwningReference << std::endl;
+	//std::cout << *theAssignedKnowingReference << std::endl;
+
+//	owning_ref<A> theA = cast_ref<A>(theB);
+
+
+//	owning_ref<A> theAPointer = owning_ref<B>::create();
+
+	/*
+	PLWindow *theWindow = new PLWindow("First window",
+			PLCreateRectangle(0.0, 0.0, 640.0, 480.0));
+
 	theWindow->show();
+	theWindow->setFocus();
 
 	PLKeyboardEventHandler *theKeyboardEventsHandler =
 			new PLKeyboardEventHandler();
 	theWindow->getRunLoop()->assignHandler(theKeyboardEventsHandler);
-
 	theKeyboardEventsHandler->addCallback(callback);
 
-	bool theExecutingFlag = true;
+	theWindow->getRunLoop()->run();
+	*/
 
-	MSG theMessage;
-	while (theExecutingFlag)
-	{
-		if (PeekMessage(&theMessage, NULL, 0, 0, PM_REMOVE))
-		{
-			if (theMessage.message == WM_QUIT) // Have We Received A Quit Message?
-			{
-				theExecutingFlag = false; // If So done = TRUE
-			}
-			else									// If Not, Deal With Window Messages
-			{
-				TranslateMessage(&theMessage);				// Translate The Message
-				DispatchMessage(&theMessage);				// Dispatch The Message
-			}
-		}
-		else
-		{
-			//
-		}
-	}
-
-	std::cout << "PLApplication finished." << std::endl;
-
-	//while (true);
+	std::cout << "PLApplication finished" << std::endl;
 
 	return 0;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-//void testNumber()
-//{
-//	PLCharacterReflector_Number *theNumberReflector =
-//			new PLCharacterReflector_Number();
-//
-//	//char *theNumber = "123.4560\0";//"123.1010\0";
-//	char *theNumber = "1.00000\0";
-//
-//	PLCharacterStreamReflector *theReflector = theNumberReflector->reflector();
-//
-//	int i = 0;
-//	PLCharacterReflectorUpdatingResult *theResult = NULL;
-//
-//	do
-//	{
-//		theResult = theReflector->updateWithSymbol(theNumber[i++]);
-//	} while (theResult->updateStatus == PLCharacterReflectorUpdating);
-//
-//	std::cout << std::endl << "--------- " << std::endl;
-//
-//	if (theResult->root->edgesOut()->size() != 0)
-//	{
-//		i = 0;
-//
-//		PLReflectionTree::node_iterator *theIterator =
-//				new PLReflectionTree::node_iterator(theResult->root);
-//
-//		theIterator->moveToNextNode(theIterator->edgesOut()->begin());
-//
-//		while (theIterator->edgesOut()->size() != 0 && i < 100)
-//		{
-//			std::cout << **theIterator << std::endl;
-//
-//			(**theIterator)->call();
-//
-//			theIterator->moveToNextNode(theIterator->edgesOut()->begin());
-//		}
-//
-//		std::cout << **theIterator << std::endl;
-//		(**theIterator)->call();
-//	}
-//	else
-//	{
-//		std::cout << "Reflector failed" << std::endl;
-//	}
-//}
