@@ -27,8 +27,7 @@ public:
 	virtual PLHandlerRegistringInformation *getRegistringInformation() = 0;
 	virtual void addCallback(PLEventCallback inCallback) = 0;
 
-	virtual void handleEvent(HWND inWindowHandle, UINT inMessage,
-			WPARAM inWindowParameter, LPARAM inD) = 0;
+	virtual void handleEvent(MSG inMessage) = 0;
 };
 
 #endif /* PLEVENTHANDLER_H_ */

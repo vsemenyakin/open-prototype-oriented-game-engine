@@ -13,12 +13,14 @@
 // WIN32
 #ifdef WIN32
 
-#include "Implementation/Windows/PLGraphic_windows.h"
+#include "../Implementation/Windows/PLGraphic_windows.h"
 
 typedef PLWindow_windows PLWindow;
 
 typedef PLRunLoop_windows PLRunLoop;
 typedef PLKeyboardEventHandler_windows PLKeyboardEventHandler;
+
+typedef PLThread_windows PLThread;
 
 #endif
 
@@ -28,7 +30,6 @@ typedef PLKeyboardEventHandler_windows PLKeyboardEventHandler;
 #ifdef MAC_OS_X
 
 #endif
-
 
 
 #endif /* PLGRAPHIC_H_ */

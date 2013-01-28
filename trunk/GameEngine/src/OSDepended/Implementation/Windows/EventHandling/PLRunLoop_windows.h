@@ -23,17 +23,19 @@ private:
 	std::map<PLEventMessage, IPLEventHandler_windows *>
 			_messageHandlersAssigning;
 
+	HDC ___handle;
+
 public:
 	PLRunLoop_windows();
 	virtual ~PLRunLoop_windows();
 
 	void assignHandler(IPLEventHandler_windows *inHandler);
+	void run();
+
+	void setHandle(HDC inHandle);
 
 	LRESULT CALLBACK windowProcedure(HWND inWindowHandle, UINT inMessage,
 			WPARAM inWindowParameter, LPARAM inD);
 };
-
-///////////////////////////////////////////////////////////////////////////////
-#define PLRunLoop PLRunLoop_windows
 
 #endif /* PLRUNLOOP_WINDOWS_H_ */
