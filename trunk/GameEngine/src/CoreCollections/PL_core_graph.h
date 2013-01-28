@@ -14,16 +14,21 @@
 #include <iostream>
 #include <fstream>
 
+#include "../Base/Memory/PLAutoPointer.h"
+
 ///////////////////////////////////////////////////////////////////////////////
-template <typename ItemType, typename EdgeItemType>
-		class PL_core_graph_iterator;
+template <typename NodeItemType, typename EdgeItemType>
+		class PL_core_graph_edge_iterator;
+
+template <typename NodeItemType, typename EdgeItemType>
+		class PL_core_graph_node_iterator;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 // >>> GRAPH
 ///////////////////////////////////////////////////////////////////////////////
-template <typename ItemType, typename EdgeItemType>
+template <typename NodeItemType, typename EdgeItemType>
 class PL_core_graph
 {
 
@@ -36,7 +41,11 @@ public:
 
 	// ------------
 	// *** Iterator
-	typedef PL_core_graph_iterator<ItemType, EdgeItemType> node_iterator;
+	typedef PL_core_graph_edge_iterator<NodeItemType, EdgeItemType>
+			edge_iterator;
+
+	typedef PL_core_graph_node_iterator<NodeItemType, EdgeItemType>
+			node_iterator;
 
 private:
 
@@ -54,35 +63,35 @@ private:
 
 	struct edge
 	{
-		PL_core_graph <ItemType, EdgeItemType> *graph;
+		PL_core_graph<NodeItemType, EdgeItemType> *graph;
 		EdgeItemType value;
 
 		_node *nodeIn;
 		_node *nodeOut;
 
-		typename PL_core_graph<ItemType, EdgeItemType>::node_iterator
+		typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
 				*iteratorIn()
 		{
-			return new typename PL_core_graph<ItemType, EdgeItemType>::
+			return new typename PL_core_graph<NodeItemType, EdgeItemType>::
 					node_iterator(graph, nodeIn);
 		}
 
-		typename PL_core_graph<ItemType, EdgeItemType>::node_iterator
+		typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
 				*iteratorOut()
 		{
-			return new typename PL_core_graph<ItemType, EdgeItemType>::
+			return new typename PL_core_graph<NodeItemType, EdgeItemType>::
 					node_iterator(graph, nodeOut);
 		}
 	};
-	typedef std::list<edge *> edges;
+	typedef std::list<edge *> edgesList;
 
 	// Node
 	struct _node
 	{
-		ItemType value;
+		NodeItemType value;
 
-		edges edgesOut;
-		edges edgesIn;
+		edgesList edgesOut;
+		edgesList edgesIn;
 	} typedef node;
 
 	// **************************************************************
@@ -95,12 +104,8 @@ private:
 
 	std::list<node *> _nodes;
 
-public:
 
-	// **************************************************************
-	// *					Public _ Types							*
-	// **************************************************************
-	typedef typename edges::iterator edge_iterator;
+public:
 
 
 	// **************************************************************
@@ -112,12 +117,6 @@ public:
 	PL_core_graph()
 		: _root(NULL)
 	{
-	}
-
-	PL_core_graph(ItemType &inValue)
-		: _root(NULL)
-	{
-		//begin()->setValue(inValue);
 	}
 
 	virtual ~PL_core_graph()
@@ -134,7 +133,7 @@ public:
 
 	// ------------
 	// *** Creation
-	node_iterator *createNodeWithValue(ItemType inValue)
+	node_iterator *createNodeWithValue(NodeItemType inValue)
 	{
 		node *theNode = new node();
 		theNode->value = inValue;
@@ -223,7 +222,7 @@ public:
 		node *theGlobalNode = NULL;
 		node *theLocalNode = NULL;
 
-		typename edges::iterator theEdgeIterator;
+		typename edgesList::iterator theEdgeIterator;
 
 		// Create nodes addresses to indexes map
 		theStream << _nodes.size() << std::endl;
@@ -275,12 +274,12 @@ public:
 	// **************************************************************
 	// *					Static methods							*
 	// **************************************************************
-	static PL_core_graph<ItemType, EdgeItemType> *sharedGraph()
+	static PL_core_graph<NodeItemType, EdgeItemType> *sharedGraph()
 	{
-		static PL_core_graph<ItemType, EdgeItemType> *sGraph = NULL;
+		static PL_core_graph<NodeItemType, EdgeItemType> *sGraph = NULL;
 		if (NULL == sGraph)
 		{
-			sGraph = new PL_core_graph<ItemType, EdgeItemType>();
+			sGraph = new PL_core_graph<NodeItemType, EdgeItemType>();
 		}
 
 		return sGraph;
@@ -289,20 +288,61 @@ public:
 	// **************************************************************
 	// *					Public _ Friends						*
 	// **************************************************************
-	template<typename _ItemType, typename _EdgeItemType> friend class
-			PL_core_graph_iterator;
+	template<typename _NodeItemType, typename _EdgeItemType> friend class
+			PL_core_graph_edge_iterator;
 
+	template<typename _NodeItemType, typename _EdgeItemType> friend class
+			PL_core_graph_node_iterator;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-template <typename ItemType, typename EdgeItemType>
-class PL_core_graph_iterator
+template <typename NodeItemType, typename EdgeItemType>
+class PL_core_graph_edge_iterator
 {
-public:
-	PL_core_graph<ItemType, EdgeItemType> *_graph;
-	typename PL_core_graph<ItemType, EdgeItemType>::node *_node;
+private:
+	typename PL_core_graph<NodeItemType, EdgeItemType>::edgesList::iterator
+			_edgeListIterator;
+
+	PL_core_graph_edge_iterator(
+			typename PL_core_graph<NodeItemType, EdgeItemType>::edgesList::
+					iterator inEdgeListIterator)
+	{
+		_edgeListIterator = inEdgeListIterator;
+	}
 
 public:
+
+	EdgeItemType &operator *()
+	{
+		return _edgeListIterator->value;
+	}
+
+	EdgeItemType *operator ->()
+	{
+		return &_edgeListIterator->value;
+	}
+
+	void operator ++()
+	{
+		++_edgeListIterator;
+	}
+
+
+	// **************************************************************
+	// *					Public _ Friends						*
+	// **************************************************************
+	template<typename _NodeItemType, typename _EdgeItemType> friend class
+			PL_core_graph_node_iterator;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+template <typename NodeItemType, typename EdgeItemType>
+class PL_core_graph_node_iterator
+{
+private:
+	PL_core_graph<NodeItemType, EdgeItemType> *_graph;
+	typename PL_core_graph<NodeItemType, EdgeItemType>::node *_node;
+
 
 	// **************************************************************
 	// *					Public _ Methods						*
@@ -310,30 +350,61 @@ public:
 
 	// ---------------------
 	// *** Memory management
-	PL_core_graph_iterator(PL_core_graph<ItemType, EdgeItemType> *inGraph,
-			typename PL_core_graph<ItemType, EdgeItemType>::node *inNode)
+	PL_core_graph_node_iterator(
+			PL_core_graph<NodeItemType, EdgeItemType> *inGraph,
+			typename PL_core_graph<NodeItemType, EdgeItemType>::node *inNode)
 	{
 		_graph = inGraph;
 		_node = inNode;
 	}
 
-	PL_core_graph_iterator(typename PL_core_graph<ItemType, EdgeItemType>::
-			node_iterator *inIterator)
+	PL_core_graph_node_iterator(
+			typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
+					*inIterator)
 	{
 		_graph = inIterator->_graph;
 		_node = inIterator->_node;
 	}
 
-	virtual ~PL_core_graph_iterator()
+public:
+
+
+	virtual ~PL_core_graph_node_iterator()
 	{
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	typename PL_core_graph<ItemType, EdgeItemType>::edges *edgesIn()
+	knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+			edge_iterator> beginEdgeOut()
 	{
-		return &_node->edgesIn;
+		return knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+				edge_iterator>::create(_node->edgesOut.begin());
 	}
 
+	knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+			edge_iterator> endEdgeOut()
+	{
+		return knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+				edge_iterator>::create(_node->edgesOut.end());
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+			edge_iterator> beginEdgeIn()
+	{
+		return knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+				edge_iterator>::create(_node->edgesIn.begin());
+	}
+
+	knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+			edge_iterator> endEdgeIn()
+	{
+		return knowing_ref<typename PL_core_graph<NodeItemType, EdgeItemType>::
+				edge_iterator>::create(_node->edgesIn.end());
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	/*
 	typename PL_core_graph<ItemType, EdgeItemType>::edge_iterator
 			findEdgeFrom(typename PL_core_graph<ItemType, EdgeItemType>::
 					node_iterator *inNodeIterator)
@@ -413,12 +484,12 @@ public:
 
 		delete theEdge;
 	}
-
+*/
 	///////////////////////////////////////////////////////////////////////////
-	typename PL_core_graph<ItemType, EdgeItemType>::node_iterator
-			*createNextNodeWithValue(ItemType inValue, EdgeItemType inEdgeItem)
+	typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
+			*createNextNodeWithValue(NodeItemType inValue, EdgeItemType inEdgeItem)
 	{
-		typename PL_core_graph<ItemType, EdgeItemType>::node_iterator
+		typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
 				*theIterator =
 						_graph->createNodeWithValue(inValue);
 
@@ -427,8 +498,8 @@ public:
 		return theIterator;
 	}
 
-	typename PL_core_graph<ItemType, EdgeItemType>::edge_iterator
-			&connectToNode(typename PL_core_graph<ItemType, EdgeItemType>::
+	typename PL_core_graph<NodeItemType, EdgeItemType>::edge_iterator
+			&connectToNode(typename PL_core_graph<NodeItemType, EdgeItemType>::
 					node_iterator *inIterator, EdgeItemType inEdgeItem)
 	{
 		return _graph->connectNodes(this, inIterator, inEdgeItem);
@@ -441,18 +512,18 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	ItemType &operator *()
+	NodeItemType &operator *()
 	{
 		return _node->value;
 	}
 
-	ItemType *operator ->()
+	NodeItemType *operator ->()
 	{
 		return &_node->value;
 	}
 
 	bool operator ==(
-			const typename PL_core_graph<ItemType, EdgeItemType>::
+			const typename PL_core_graph<NodeItemType, EdgeItemType>::
 					node_iterator &inIterator)
 	{
 		return _node == inIterator._node;
@@ -461,7 +532,7 @@ public:
 	// **************************************************************
 	// *					Public _ Friends						*
 	// **************************************************************
-	template<typename _ItemType, typename _EdgeItemType> friend class
+	template<typename _NodeItemType, typename _EdgeItemType> friend class
 			PL_core_graph;
 };
 

@@ -6,7 +6,7 @@ PLPoint PLCreatePoint(double inX, double inY)
 {
 	PLPoint theSize;
 	theSize.x = inX;
-	theSize.x = inY;
+	theSize.y = inY;
 
 	return theSize;
 }

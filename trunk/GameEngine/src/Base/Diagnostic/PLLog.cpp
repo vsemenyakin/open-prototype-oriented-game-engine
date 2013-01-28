@@ -58,7 +58,7 @@ void PLLog::init(const char* inFilename, PLLogFormatter* inFormatter)
 			stream_out=&cout;
 			std::string errmsg("[PLLOG] Cannot initialize ");
 			errmsg.append(inFilename);
-			print(errmsg.c_str(), ERROR, "PLLog");
+			print(errmsg.c_str(), ERROR_LOG_LEVEL, "PLLog");
 		}
 	}
 }
