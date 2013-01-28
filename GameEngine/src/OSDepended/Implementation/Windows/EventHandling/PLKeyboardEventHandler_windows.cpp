@@ -9,6 +9,9 @@
 #include "PLKeyboardEventHandler_windows.h"
 #include <windows.h>
 
+#include <iostream.h>
+
+///////////////////////////////////////////////////////////////////////////////
 PLKeyboardEventHandler_windows::PLKeyboardEventHandler_windows()
 {
 }
@@ -33,10 +36,13 @@ PLHandlerRegistringInformation
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PLKeyboardEventHandler_windows::handleEvent(HWND inWindowHandle,
-		UINT inMessage, WPARAM inWindowParameter, LPARAM inD)
+void PLKeyboardEventHandler_windows::handleEvent(MSG inMessage)
 {
-	(*_callback)(new unsigned int(inWindowParameter));
+	std::cout << "<Key pressed event>" << std::endl;
+	std::cout << "Time: " << inMessage.time << std::endl;
+	std::cout << "Information: " << inMessage.wParam << std::endl;
+
+	(*_callback)(new unsigned int(0));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -89,8 +89,8 @@ void PLWindow_windows::show()
 	// Size of structure
 	_windowClass->cbSize = sizeof(WNDCLASSEX);
 
-	// Style of window
-	_windowClass->style = CS_HREDRAW | CS_VREDRAW;
+	// Style of window. Redraw On Size, And Own DC For Window.
+	_windowClass->style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 
 	// Event handling procedure
 	_windowClass->lpfnWndProc = windowProcedure;
@@ -100,7 +100,7 @@ void PLWindow_windows::show()
 
 	// Extra bytes to allocate after the window instance. Zero.
 	// the CLASS directive in resource file
-	_windowClass-> cbWndExtra = 0;
+	_windowClass->cbWndExtra = 0;
 
 	// Event handling procedure (window procedure)
 	_windowClass->hInstance = GetModuleHandleA(NULL);
@@ -115,10 +115,10 @@ void PLWindow_windows::show()
 
 	// Handle to class background brush. Sets color or brush to paint the
 	// background.
-	_windowClass->hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+	_windowClass->hbrBackground = NULL; // No background
 
 	// String that specifies the resource name of the class menu.
-	_windowClass->lpszMenuName = NULL;
+	_windowClass->lpszMenuName = NULL; // Make no menu
 
 	// Name of current class
 	_windowClass->lpszClassName = "OpenGL";
@@ -127,11 +127,11 @@ void PLWindow_windows::show()
 	_windowClass->hIconSm = NULL;
 
 	//////////////////////////////////////////
-	ATOM theAtom;
-	if (0 == (theAtom = RegisterClassEx(_windowClass)))
+	ATOM theAtom = RegisterClassEx(_windowClass);
+	if (0 == theAtom)
     {
     	///GetLastError()
-    	std::cout << "Error" << std::endl;
+    	std::cout << "Failed to register the window class" << std::endl;
 
     	return;
     }
@@ -139,14 +139,16 @@ void PLWindow_windows::show()
     GetLastError();
 
     _windowHandle = CreateWindowExA(
-    		WS_EX_APPWINDOW,
+    		// Window extended style
+    		WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
     		"OpenGL",
     		_name,
-			WS_CLIPCHILDREN,
-			100,
-			100,
-			500,
-			500,
+    		// Required window style
+    		WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS |	WS_CLIPCHILDREN,
+    		(int)_frame.position.x,
+    		(int)_frame.position.y,
+    		(int)_frame.size.width,
+    		(int)_frame.size.height,
 			NULL,
 			NULL,
 			GetModuleHandleA(NULL),
@@ -155,60 +157,9 @@ void PLWindow_windows::show()
     assignWindowHandleWithWindowClass(_windowHandle, this);
 
 	// Show window
-    this->getGLContext();
+    //this->getGLContext();
 
-	ShowWindow(_windowHandle, SW_SHOW);
-	UpdateWindow(_windowHandle);
-
-	// RESIZE
-	int width = 500;
-	int height = 500;
-
-	if (height==0)										// Prevent A Divide By Zero By
-	{
-		height=1;										// Making Height Equal One
-	}
-
-	glViewport(0,0,width,height);						// Reset The Current Viewport
-
-	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-	glLoadIdentity();									// Reset The Projection Matrix
-
-	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(45.0f,(GLfloat)width/(GLfloat)height,0.1f,100.0f);
-
-	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-	glLoadIdentity();
-
-	// INIT_GL
-	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
-	glClearDepth(1.0f);									// Depth Buffer Setup
-	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
-	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
-
-	// DRAW_SCENE
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
-	glLoadIdentity();									// Reset The Current Modelview Matrix
-	glTranslatef(-1.5f,0.0f,-6.0f);						// Move Left 1.5 Units And Into The Screen 6.0
-	glBegin(GL_TRIANGLES);								// Drawing Using Triangles
-		glVertex3f( 0.0f, 1.0f, 0.0f);					// Top
-		glVertex3f(-1.0f,-1.0f, 0.0f);					// Bottom Left
-		glVertex3f( 1.0f,-1.0f, 0.0f);					// Bottom Right
-	glEnd();											// Finished Drawing The Triangle
-	glTranslatef(3.0f,0.0f,0.0f);						// Move Right 3 Units
-	glBegin(GL_QUADS);									// Draw A Quad
-		glVertex3f(-1.0f, 1.0f, 0.0f);					// Top Left
-		glVertex3f( 1.0f, 1.0f, 0.0f);					// Top Right
-		glVertex3f( 1.0f,-1.0f, 0.0f);					// Bottom Right
-		glVertex3f(-1.0f,-1.0f, 0.0f);					// Bottom Left
-	glEnd();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void PLWindow_windows::getGLContext()
-{
+    // ***********************************
 	// Set Pixel forma descriptor
 	PIXELFORMATDESCRIPTOR thePixelFormatDescriptor;
 
@@ -217,7 +168,7 @@ void PLWindow_windows::getGLContext()
 	thePixelFormatDescriptor.dwFlags =
 			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	thePixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
-	thePixelFormatDescriptor.cColorBits = 24;
+	thePixelFormatDescriptor.cColorBits = 16;
 	thePixelFormatDescriptor.cRedBits = 0; // Default
 	thePixelFormatDescriptor.cRedShift = 0; // Default
 	thePixelFormatDescriptor.cGreenBits = 0; // Default
@@ -232,7 +183,7 @@ void PLWindow_windows::getGLContext()
 	thePixelFormatDescriptor.cAccumBlueBits = 0; // Default
 	thePixelFormatDescriptor.cAccumAlphaBits = 0; // Default
 	thePixelFormatDescriptor.cDepthBits = 0; // Default
-	thePixelFormatDescriptor.cStencilBits = 32;
+	thePixelFormatDescriptor.cStencilBits = 16;
 	thePixelFormatDescriptor.cAuxBuffers = 0; // Default
 	thePixelFormatDescriptor.iLayerType = 0; // Default
 	thePixelFormatDescriptor.bReserved = PFD_MAIN_PLANE;
@@ -240,40 +191,171 @@ void PLWindow_windows::getGLContext()
 	thePixelFormatDescriptor.dwVisibleMask = 0; // Default
 	thePixelFormatDescriptor.dwDamageMask = 0; // Default
 
-	RECT theWindowRectange;
-	GetClientRect(_windowHandle, &theWindowRectange);
-
-	std::cout << theWindowRectange.left << " " << theWindowRectange.right <<
-			" " << theWindowRectange.top << " " << theWindowRectange.bottom <<
-					std::endl;
-
-	// Device context. The device context connects the window the
+	// Device context. The device context connects the window to the
 	// GDI (Graphics Device Interface).
 	HDC theDeviceContext = GetDC(_windowHandle);
+	if (NULL == theDeviceContext)
+	{
+		std::cout << "Can't create a GL Device Context" << std::endl;
+	}
+	else
+	{
+		std::cout << theDeviceContext << std::endl;
+	}
 
 	// Get nearest pixel format (gets by system based on requested device
 	// context).
 	int thePixelFormat = ChoosePixelFormat(theDeviceContext,
 			&thePixelFormatDescriptor);
+	if (0 == thePixelFormat)
+	{
+		std::cout << "Can't find suitable Pixel Format" << std::endl;
+	}
+	else
+	{
+		std::cout << thePixelFormat << std::endl;
+	}
 
-	SetPixelFormat(theDeviceContext, thePixelFormat,
-			&thePixelFormatDescriptor);
+	if (false == SetPixelFormat(theDeviceContext, thePixelFormat,
+			&thePixelFormatDescriptor))
+	{
+		std::cout << "Can't set the found Pixel Format" << std::endl;
+	}
 
 	// OpenGL program is linked to Rendering Context, that connects to device
 	// context
 	HGLRC theOpenGLRenderingContext = wglCreateContext(theDeviceContext);
-	if(theOpenGLRenderingContext == NULL)
+	if(NULL == theOpenGLRenderingContext)
 	{
-		std::cout << "Handle wasn't created" << std::endl;
+		std::cout << "Can't create a openGL Rendering Context" << std::endl;
+	}
+	else
+	{
+		std::cout << theOpenGLRenderingContext << std::endl;
 	}
 
-	if(wglMakeCurrent(theDeviceContext, theOpenGLRenderingContext) == false)
+	if(false == wglMakeCurrent(theDeviceContext, theOpenGLRenderingContext))
 	{
-		std::cout << "Handle wasn't created" << std::endl;
+		std::cout << "Can't set the context as current" << std::endl;
 	}
 
-	//
-	wglMakeCurrent(theDeviceContext, theOpenGLRenderingContext);
+	std::cout << "GL context created" << std::endl;
+    // ***********************************
+
+	ShowWindow(_windowHandle, SW_SHOW);
+	SetForegroundWindow(_windowHandle);
+	SetFocus(_windowHandle);
+
+	// RESIZE
+	if (_frame.size.height == 0) // Prevent A Divide By Zero By
+	{
+		_frame.size.height = 1; // Making Height Equal One
+	}
+
+	// Reset The Current Viewport
+	glViewport(0 ,0 , (GLsizei)_frame.size.width, (GLsizei)_frame.size.height);
+
+	glMatrixMode(GL_PROJECTION); // Select The Projection Matrix
+	glLoadIdentity(); // Reset The Projection Matrix
+
+	// Calculate The Aspect Ratio Of The Window
+	gluPerspective(45.0f,
+			(GLfloat)_frame.size.width/(GLfloat)_frame.size.height, 0.1f,
+					100.0f);
+
+	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
+	glLoadIdentity();
+
+	// INIT_GL
+	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
+	glClearColor(0.0f, 1.0f, 0.0f, 0.5f);				// Black Background
+	glClearDepth(1.0f);									// Depth Buffer Setup
+	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
+	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PLWindow_windows::getGLContext()
+{
+	// Set Pixel forma descriptor
+	PIXELFORMATDESCRIPTOR thePixelFormatDescriptor;
+
+	thePixelFormatDescriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	thePixelFormatDescriptor.nVersion = 1;
+	thePixelFormatDescriptor.dwFlags =
+			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	thePixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
+	thePixelFormatDescriptor.cColorBits = 16;
+	thePixelFormatDescriptor.cRedBits = 0; // Default
+	thePixelFormatDescriptor.cRedShift = 0; // Default
+	thePixelFormatDescriptor.cGreenBits = 0; // Default
+	thePixelFormatDescriptor.cGreenShift = 0; // Default
+	thePixelFormatDescriptor.cBlueBits = 0; // Default
+	thePixelFormatDescriptor.cBlueShift = 0; // Default
+	thePixelFormatDescriptor.cAlphaBits = 0; // Default
+	thePixelFormatDescriptor.cAlphaShift = 0; // Default
+	thePixelFormatDescriptor.cAccumBits = 0; // Default
+	thePixelFormatDescriptor.cAccumRedBits = 0; // Default
+	thePixelFormatDescriptor.cAccumGreenBits = 0; // Default
+	thePixelFormatDescriptor.cAccumBlueBits = 0; // Default
+	thePixelFormatDescriptor.cAccumAlphaBits = 0; // Default
+	thePixelFormatDescriptor.cDepthBits = 0; // Default
+	thePixelFormatDescriptor.cStencilBits = 16;
+	thePixelFormatDescriptor.cAuxBuffers = 0; // Default
+	thePixelFormatDescriptor.iLayerType = 0; // Default
+	thePixelFormatDescriptor.bReserved = PFD_MAIN_PLANE;
+	thePixelFormatDescriptor.dwLayerMask = 0; // Default
+	thePixelFormatDescriptor.dwVisibleMask = 0; // Default
+	thePixelFormatDescriptor.dwDamageMask = 0; // Default
+
+	// Device context. The device context connects the window the
+	// GDI (Graphics Device Interface).
+	HDC theDeviceContext = GetDC(_windowHandle);
+	if (NULL == theDeviceContext)
+	{
+		std::cout << "Can't create a GL Device Context" << std::endl;
+	}
+	else
+	{
+		std::cout << theDeviceContext << std::endl;
+	}
+
+	// Get nearest pixel format (gets by system based on requested device
+	// context).
+	int thePixelFormat = ChoosePixelFormat(theDeviceContext,
+			&thePixelFormatDescriptor);
+	if (0 == thePixelFormat)
+	{
+		std::cout << "Can't find suitable Pixel Format" << std::endl;
+	}
+	else
+	{
+		std::cout << thePixelFormat << std::endl;
+	}
+
+	if (false == SetPixelFormat(theDeviceContext, thePixelFormat,
+			&thePixelFormatDescriptor))
+	{
+		std::cout << "Can't set the found Pixel Format" << std::endl;
+	}
+
+	// OpenGL program is linked to Rendering Context, that connects to device
+	// context
+	HGLRC theOpenGLRenderingContext = wglCreateContext(theDeviceContext);
+	if(NULL == theOpenGLRenderingContext)
+	{
+		std::cout << "Can't create a openGL Rendering Context" << std::endl;
+	}
+	else
+	{
+		std::cout << theOpenGLRenderingContext << std::endl;
+	}
+
+	if(false == wglMakeCurrent(theDeviceContext, theOpenGLRenderingContext))
+	{
+		std::cout << "Can't set the context as current" << std::endl;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -22,8 +22,7 @@ public:
 	virtual ~PLKeyboardEventHandler_windows();
 
 	virtual PLHandlerRegistringInformation *getRegistringInformation();
-	virtual void handleEvent(HWND inWindowHandle, UINT inMessage,
-			WPARAM inWindowParameter, LPARAM inD);
+	virtual void handleEvent(MSG inMessage);
 
 	virtual void addCallback(PLEventCallback inCallback);
 };

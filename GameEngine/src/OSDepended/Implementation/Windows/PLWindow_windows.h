@@ -14,8 +14,10 @@
 #include "../../../Base/PLCore.h"
 #include "EventHandling/PLRunLoop_windows.h"
 
+#include "../../Interface/PLWindow_interface.h"
+
 ///////////////////////////////////////////////////////////////////////////////
-class PLWindow_windows
+class PLWindow_windows : public PLWindow_interface
 {
 private:
 	// Low level properties
@@ -33,14 +35,11 @@ public:
 	PLWindow_windows(char *inName, PLRectange inFrame);
 	virtual ~PLWindow_windows();
 
-	void show();
-	void getGLContext();
-	void setFocus();
+	virtual void show();
+	virtual void getGLContext();
+	virtual void setFocus();
 
-	PLRunLoop_windows *getRunLoop();
+	virtual PLRunLoop_windows *getRunLoop();
 };
-
-///////////////////////////////////////////////////////////////////////////////
-#define PLWindow PLWindow_windows
 
 #endif /* PLWINDOW_WINDOWS_H_ */
