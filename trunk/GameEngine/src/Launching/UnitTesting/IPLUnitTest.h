@@ -11,7 +11,6 @@
 class IPLUnitTest
 {
 public:
-	virtual ~IPLUnitTest() { };
 	virtual void performTest() = 0;
 };
 
