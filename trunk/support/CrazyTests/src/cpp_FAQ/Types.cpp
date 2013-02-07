@@ -98,8 +98,8 @@ void CPPTypes::printTypesSizes()
 	Helpers::__printFAQBlock_END();
 
 	// REFERENCES:
-	// 1. To get information about constat values for several types you may see
-	//  the CPPTypes::printStandartConstants() function.
+	// 1. To get information about constant values for several types you may
+	//  see the CPPTypes::printStandartConstants() function.
 }
 
 void CPPTypes::printStandartConstants()
