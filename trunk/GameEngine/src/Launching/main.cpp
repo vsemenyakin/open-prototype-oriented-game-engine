@@ -7,7 +7,7 @@ using namespace std;
 #include <iostream.h>
 
 //#define UNIT_TESTING
-#define APPLICATION_EXECUTION
+//#define APPLICATION_EXECUTION
 
 ///////////////////////////////////////////////////////////////////////////////
 int main()
