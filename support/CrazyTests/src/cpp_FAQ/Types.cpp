@@ -210,10 +210,11 @@ void CPPMemory::memoryAllocationTest()
 	const int theStackSecondInteger = 2;
 
 	// NB: Four variables declared above are situated on memory one by one
-	//  beginning from "theStackFirstInteger" and decreasing the address. Code
-	//  below prints the table with address and value of each declared
-	//  variable. Code illustrates how the size of variables influence to
-	//  address of next variable on stack.
+	//  beginning from "theStackFirstInteger" and decreasing the address
+	//  (!OS depended. I tested for Windows, on other OS or other C++ compiler
+	//  implementation it may be different!). Code below prints the table with
+	//  address and value of each declared variable. Code illustrates how the
+	//  size of variables influence to address of next variable on stack.
 	// NB: Unary operator "&" returns the address of variable.
 	std::cout << "Name\t\t\t\tAddress\t\tValue" << std::endl;
 	std::cout << "<theStackFirstInteger>\t\t" << &theStackFirstInteger << "\t"
@@ -262,10 +263,11 @@ void CPPMemory::memoryAllocationTest()
 	int &theIntegerReference = theStackFirstInteger;
 	double &theDoubleReference = *theStackDoublePointer;
 
-	// NB: Reference is something like alias of object. It's size on windows OS
-	//  and WinGW compiler is same as pointer, and (on my mind) it's exactly a
-	//  pointer, that just automatically dereferenced on use. Getting address
-	//  of reference return address of variable, that is pointed by reference.
+	// NB: Reference is something like automatically dereferencing pointer or
+	//  alias of object. It's size on windows OS and WinGW compiler is same as
+	//  pointer, and (on my mind) it's exactly a pointer, that just
+	//  automatically dereferenced on use. Getting address of reference return
+	//  address of variable, that is pointed by reference.
 	std::cout << std::endl;
 	std::cout << "Name\t\t\t\tAddress\t\tValue" << std::endl;
 	std::cout << "<theIntegerReference>\t\t" << &theIntegerReference << "\t"
