@@ -29,17 +29,18 @@ void TEST_PLAudio::performTest()
 	AudioControler->initialiseDevice(NULL);
 
 	AudioControler->_audioLibrary.recordCreateHelloWorld(
-			PL_STR("test_record"));
+			&*PL_STR("test_record"));
 
-	AudioControler->createContext(PL_STR("context"), NULL);
-	AudioControler->setContextCurrent(PL_STR("context"));
+	AudioControler->createContext(&*PL_STR("context"), NULL);
+	AudioControler->setContextCurrent(&*PL_STR("context"));
 
-	AudioControler->getContext(PL_STR("context"))->
-			createSource(PL_STR("source"));
-	AudioControler->getContext(PL_STR("context"))->
-			getSource(PL_STR("source"))->attachAudio(PL_STR("test_record"));
-	AudioControler->getContext(PL_STR("context"))->
-			getSource(PL_STR("source"))->play();
+	AudioControler->getContext(&*PL_STR("context"))->
+			createSource(&*PL_STR("source"));
+	AudioControler->getContext(&*PL_STR("context"))->
+			getSource(&*PL_STR("source"))->attachAudio(
+					&*PL_STR("test_record"));
+	AudioControler->getContext(&*PL_STR("context"))->
+			getSource(&*PL_STR("source"))->play();
 
 	std::cout << "Insert any string to finish:" << std::endl;
 	int tmp;

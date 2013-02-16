@@ -1,19 +1,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "PLObject.h"
 #include "PLString.h"
-#include "../Behavior/Reflection/PLReflectionDictionary.h"
 
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 PLObject::PLObject()
-	: _reflections(NULL)
 {
 }
 
 PLObject::~PLObject()
 {
-	delete _reflections;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,15 +19,4 @@ PLObject::~PLObject()
 PLString *PLObject::description()
 {
 	return new PLString("PLObject\0");
-}
-
-///////////////////////////////////////////////////////////////////////////////
-PLReflectionDictionary *PLObject::reflections()
-{
-	if (NULL == _reflections)
-	{
-		_reflections = new PLReflectionDictionary();
-	}
-
-	return _reflections;
 }

@@ -5,6 +5,7 @@
 #define TRACE_EXPRESSION(expr) std::cout << #expr << " = " << expr << std::endl;
 
 #include <iostream>
+
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -22,12 +23,12 @@
 	typedef PLAutoPointer_owning<name> name##Ref; \
 	class name
 
-
 ///////////////////////////////////////////////////////////////////////////////
 //
 // TYPES: Wrapper types declarations
 //
 ///////////////////////////////////////////////////////////////////////////////
+// TODO: Encapsulate classes on this file
 
 // -------------------
 // *** Reference count
@@ -52,42 +53,57 @@ template <typename ItemType> class PLAutoPointer_owning;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
+// MACRO: Null reference constant
+//
+///////////////////////////////////////////////////////////////////////////////
+template<typename ItemType>
+static inline knowing_ref<ItemType> NULL_REF()
+{
+	return knowing_ref<ItemType>((ItemType *)NULL);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
 // MACRO: Creation referenced objects declaration
 //
 ///////////////////////////////////////////////////////////////////////////////
-#define DECLARE_CREATION(REFERENCE_TYPE)\
-static REFERENCE_TYPE<ItemType> create()\
-{\
-	return REFERENCE_TYPE<ItemType>(new ItemType());\
-}\
-template<typename T1>\
-static REFERENCE_TYPE<ItemType> create(T1 arg1)\
-{\
-	return REFERENCE_TYPE<ItemType>(new ItemType(arg1));\
-}\
-template<typename T1, typename T2>\
-static REFERENCE_TYPE<ItemType> create(T1 arg1, T2 arg2)\
-{\
-	return REFERENCE_TYPE<ItemType>(new ItemType(arg1, arg2));\
-}\
-template<typename T1, typename T2, typename T3>\
-static REFERENCE_TYPE<ItemType> create(T1 arg1, T2 arg2, T3 arg3)\
-{\
-	return REFERENCE_TYPE<ItemType>(new ItemType(arg1, arg2, arg3));\
-}\
-template<typename T1, typename T2, typename T3, typename T4>\
-static REFERENCE_TYPE<ItemType> create(T1 arg1, T2 arg2, T3 arg3, T4 arg4)\
-{\
-	return REFERENCE_TYPE<ItemType>(new ItemType(arg1, arg2, arg3, arg4));\
-}\
-template<typename T1, typename T2, typename T3, typename T4, typename T5>\
-static REFERENCE_TYPE<ItemType> create(T1 arg1, T2 arg2, T3 arg3, T4 arg4,\
-		T5 arg5)\
-{\
-	return REFERENCE_TYPE<ItemType>(new ItemType(arg1, arg2, arg3, arg4,\
-			arg5));\
-}\
+template<typename ItemType>
+static knowing_ref<ItemType> new_ref()
+{
+	return knowing_ref<ItemType>(new ItemType());
+}
 
+template<typename ItemType, typename T1>
+static knowing_ref<ItemType> new_ref(T1 arg1)
+{
+	return knowing_ref<ItemType>(new ItemType(arg1));
+}
+
+template<typename ItemType, typename T1, typename T2>
+static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2)
+{
+	return knowing_ref<ItemType>(new ItemType(arg1, arg2));
+}
+
+template<typename ItemType, typename T1, typename T2, typename T3>
+static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3)
+{
+	return knowing_ref<ItemType>(new ItemType(arg1, arg2, arg3));
+}
+
+template<typename ItemType, typename T1, typename T2, typename T3, typename T4>
+static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+{
+	return knowing_ref<ItemType>(new ItemType(arg1, arg2, arg3, arg4));
+}
+
+template<typename ItemType, typename T1, typename T2, typename T3, typename T4,
+		typename T5>
+static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3, T4 arg4,
+		T5 arg5)
+{
+	return knowing_ref<ItemType>(new ItemType(arg1, arg2, arg3, arg4, arg5));
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -97,11 +113,11 @@ static REFERENCE_TYPE<ItemType> create(T1 arg1, T2 arg2, T3 arg3, T4 arg4,\
 #define CASTING_DECLARATION(INPUT_REFERENCE_TYPE)\
 template<typename _CastType, typename _ItemType> friend\
 		knowing_ref<_CastType> cast_ref(\
-				INPUT_REFERENCE_TYPE<_ItemType> &inReference);
+				const INPUT_REFERENCE_TYPE<_ItemType> &inReference);
 
 #define CASTING_IMPLEMENTATION(INPUT_REFERENCE_TYPE)\
 template<typename CastType, typename RefType> static knowing_ref<CastType>\
-		cast_ref(INPUT_REFERENCE_TYPE<RefType> &inReference)\
+		cast_ref(const INPUT_REFERENCE_TYPE<RefType> &inReference)\
 {\
 	static_cast<CastType *>(inReference._pointerToWrapper->pointer);\
 	knowing_ref<CastType> theReference(inReference._pointerToWrapper);\
@@ -125,7 +141,7 @@ PLAutoPointer_knowing<ItemType> &operator = (\
 		const ASSIGNING_TYPE<ItemType> &inPointer)\
 {\
 	std::cout << "Knowing assigning" << std::endl;\
-	if (inPointer.pointerWrapper != this->_pointerToWrapper)\
+	if (inPointer._pointerToWrapper != this->_pointerToWrapper)\
 	{\
 		PLAutoPointer_knowing<ItemType>::_pointerToWrapper =\
 				inPointer._pointerToWrapper;\
@@ -285,9 +301,6 @@ public:
 	// Creation and assigning
 	DECALRE_OWNING_CREATION_AND_ASSIGNING(PLAutoPointer_knowing)
 	DECALRE_OWNING_CREATION_AND_ASSIGNING(PLAutoPointer_owning)
-
-	// Static creation declarations
-	DECLARE_CREATION(PLAutoPointer_owning)
 
 	// ---------------------
 	// *** Memory management

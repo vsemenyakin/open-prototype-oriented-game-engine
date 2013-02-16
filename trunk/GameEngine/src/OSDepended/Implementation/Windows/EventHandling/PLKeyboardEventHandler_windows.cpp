@@ -9,10 +9,11 @@
 #include "PLKeyboardEventHandler_windows.h"
 #include <windows.h>
 
-#include <iostream.h>
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 PLKeyboardEventHandler_windows::PLKeyboardEventHandler_windows()
+	: _callback(NULL)
 {
 }
 

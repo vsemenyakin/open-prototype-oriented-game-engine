@@ -1,9 +1,9 @@
 #include "PLString.h"
 
 //////////////////////////////////////////////////////////////
-PLString *PLStringCreate(const char *inCString)
+owning_ref<PLString> PLStringCreate(const char *inCString)
 {
-	return new PLString(inCString);
+	return new_ref<PLString>(inCString);
 }
 
 //////////////////////////////////////////////////////////////

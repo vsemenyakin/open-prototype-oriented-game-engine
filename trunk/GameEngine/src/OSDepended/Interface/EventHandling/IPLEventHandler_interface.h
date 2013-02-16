@@ -18,6 +18,8 @@ typedef void (*PLEventCallback)(void *inMessage);
 class IPLEventHandler_interface
 {
 public:
+	virtual ~IPLEventHandler_interface() { };
+
 	virtual PLHandlerRegistringInformation *getRegistringInformation() = 0;
 	virtual void addCallback(PLEventCallback inCallback) = 0;
 };

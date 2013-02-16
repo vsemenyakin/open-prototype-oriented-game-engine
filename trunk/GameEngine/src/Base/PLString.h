@@ -105,8 +105,8 @@ public:
 	friend PLString &operator + (const PLString &inString, const char inChar);
 	friend PLString &operator + (const PLString &inString,
 			const PLCharacter inCharacter);
-	friend PLString &operator + (const PLString &inString,
-			const PLString &inString);
+	friend PLString &operator + (const PLString &inStringA,
+			const PLString &inStringB);
 };
 
 PLString &operator + (const PLString &inString, const char inChar);
@@ -117,7 +117,7 @@ bool PLCStringEquals(const char *inCStringA, size_t inCStringALength,
 		const char *inCStringB, size_t inCStringBLength);
 
 ///////////////////////////////////////////////////////////////////////////////
-PLString *PLStringCreate(const char *inCString);
+owning_ref<PLString> PLStringCreate(const char *inCString);
 
 #define PL_STR(C_STRING) PLStringCreate(C_STRING)
 
