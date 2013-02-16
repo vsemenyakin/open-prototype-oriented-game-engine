@@ -4,17 +4,19 @@
  *  Created on: 23.01.2013
  *      Author: нргл
  */
-
+///////////////////////////////////////////////////////////////////////////////
 #ifndef PLAUDIOLIBRARY_H_
 #define PLAUDIOLIBRARY_H_
 
+///////////////////////////////////////////////////////////////////////////////
 #include <map>
 
 #include "../Base/PLString.h"
-#include "../alutdlls36/alut.h"
+#include <alut.h>
 
 #include "PLAudioObject.h"
 #include "PLAudioRecord.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 class PLAudioLibrary: public PLAudioObject
 {
@@ -32,5 +34,6 @@ public:
 
 	void recordCreateHelloWorld(const PLString* inName);
 };
+
 ///////////////////////////////////////////////////////////////////////////////
 #endif /* PLAUDIOLIBRARY_H_ */

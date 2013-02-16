@@ -39,7 +39,7 @@ PLString *plStringFromFile(PLString &inFileName)
 {
 	PLString *theString = new PLString();
 
-	fstream theStream(inFileName.getCString());
+	std::fstream theStream(inFileName.getCString());
 
 	char theCharacter;
 
@@ -92,6 +92,7 @@ typedef PL_core_graph<int, int> testGraph;
 ///////////////////////////////////////////////////////////////////////////////
 PLError *PLApplication::start()
 {
+	/*
 	PLWindow *theWindow = new PLWindow("First window",
 			PLCreateRectangle(0.0, 0.0, 640.0, 480.0));
 
@@ -104,6 +105,7 @@ PLError *PLApplication::start()
 	theKeyboardEventsHandler->addCallback(callback);
 
 	theWindow->getRunLoop()->run();
+	 */
 
 //	owning_ref<B> theOwningReference = owning_ref<B>::create();
 //	knowing_ref<A> theAssignedKnowingReference =
@@ -113,7 +115,7 @@ PLError *PLApplication::start()
 
 	//
 	//  _________
-	// /     6   \
+	// |     6   |
 	// |  1    3 |  4    5
 	// * -> * -> * -> * -> *
 	// 1 <- 2    3    4    5

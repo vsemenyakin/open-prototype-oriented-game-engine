@@ -9,12 +9,18 @@
 #define PLREFLECTIONTREE_H_
 
 ///////////////////////////////////////////////////////////////////////////////
+// Utilities
 #include <list>
 #include <map>
+
+#include "PL_core_fastStack.h"
+
+// Streams
 #include <iostream>
 #include <fstream>
 
-#include "../Base/Memory/PLAutoPointer.h"
+// PLCore
+#include "../Base/PLString.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 template <typename NodeItemType, typename EdgeItemType>
@@ -45,7 +51,7 @@ public:
 			node_iterator;
 
 
-private:
+public:
 
 
 	// **************************************************************
@@ -56,43 +62,15 @@ private:
 	// -------------------
 	// *** Structure
 
-	// Edge
-	struct _node;
-
-	struct _edge
-	{
-		typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
-				_nodeIn;
-		typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
-				_nodeOut;
-
-		EdgeItemType _value;
-		PL_core_graph<NodeItemType, EdgeItemType> *_graph;
-
-		// *** Memory management
-		_edge(const typename PL_core_graph<NodeItemType, EdgeItemType>::
-						node_iterator &inNodeIn,
-				const typename PL_core_graph<NodeItemType, EdgeItemType>::
-						node_iterator &inNodeOut, const EdgeItemType &inValue,
-				PL_core_graph<NodeItemType, EdgeItemType> *inGraph)
-		{
-			_nodeIn = inNodeIn;
-			_nodeOut = inNodeOut;
-
-			_value = inValue;
-			_graph = inGraph;
-		}
-	} typedef edge;
-	typedef std::list<edge *> edgesList;
-	typedef typename edgesList::iterator inner_edge_iterator;
+	struct _edge;
 
 	// Node
 	struct _node
 	{
 		NodeItemType _value;
 
-		edgesList _edgesOut;
-		edgesList _edgesIn;
+		std::list<_edge *> _edgesOut;
+		std::list<_edge *> _edgesIn;
 
 		_node(const NodeItemType &inValue)
 		{
@@ -102,6 +80,30 @@ private:
 	typedef std::list<node> nodesList;
 	typedef typename nodesList::iterator inner_node_iterator;
 
+	// Edge
+	struct _edge
+	{
+		node_iterator _nodeIn;
+		node_iterator _nodeOut;
+
+		EdgeItemType _value;
+		PL_core_graph<NodeItemType, EdgeItemType> *_graph;
+
+		// *** Memory management
+		_edge(const typename PL_core_graph<NodeItemType, EdgeItemType>::
+						inner_node_iterator &inNodeIn,
+				const typename PL_core_graph<NodeItemType, EdgeItemType>::
+						inner_node_iterator &inNodeOut,
+						const EdgeItemType &inValue,
+				PL_core_graph<NodeItemType, EdgeItemType> *inGraph)
+			: _nodeIn(inNodeIn, inGraph), _nodeOut(inNodeOut, inGraph),
+			  _value(inValue), _graph(inGraph)
+		{
+		}
+	} typedef edge;
+	typedef std::list<edge *> edgesList;
+	typedef typename edgesList::iterator inner_edge_iterator;
+
 	// **************************************************************
 	// *					 Private _ Variables					*
 	// **************************************************************
@@ -109,6 +111,30 @@ private:
 	// ---------------
 	// *** Graph nodes
 	nodesList _nodes;
+
+
+	// **************************************************************
+	// *					Private _ Methods						*
+	// **************************************************************
+	inner_node_iterator _createNodeWithValue(const NodeItemType &inValue)
+	{
+		_nodes.push_back(node(inValue));
+		return --_nodes.end();
+	}
+
+	inner_edge_iterator _createEdge(
+			const inner_node_iterator &inNodeIteratorIn,
+			const inner_node_iterator &inNodeIteratorOut,
+			const EdgeItemType &inEdgeItem)
+	{
+		edge *theEdge = new edge(inNodeIteratorIn, inNodeIteratorOut,
+				inEdgeItem, this);
+
+		inNodeIteratorIn->_edgesOut.push_back(theEdge);
+		inNodeIteratorOut->_edgesIn.push_back(theEdge);
+
+		return --inNodeIteratorIn->_edgesOut.end();
+	}
 
 public:
 
@@ -140,9 +166,7 @@ public:
 	// *** Node lifecicle
 	node_iterator createNodeWithValue(const NodeItemType &inValue)
 	{
-		_nodes.push_back(node(inValue));
-
-		return node_iterator(this, --_nodes.end());
+		return node_iterator(_createNodeWithValue(inValue), this);
 	}
 
 	// Returns iterator for beginning node
@@ -169,14 +193,8 @@ public:
 			const node_iterator &inNodeIteratorOut,
 					const EdgeItemType &inEdgeItem)
 	{
-		edge *theEdge = new edge(inNodeIteratorIn, inNodeIteratorOut,
-				inEdgeItem, this);
-
-		inNodeIteratorIn._nodeIterator->_edgesOut.push_back(theEdge);
-		inNodeIteratorOut._nodeIterator->_edgesIn.push_back(theEdge);
-
 		return edge_iterator(this,
-				--inNodeIteratorIn._nodeIterator->_edgesOut.end());
+				_createEdge(inNodeIteratorIn, inNodeIteratorOut, inEdgeItem));
 	}
 
 	void removeEdge(const edge_iterator &inEdgeIterator)
@@ -207,10 +225,7 @@ public:
 				theTemporaryIterator = new node_iterator(theIterator);
 				theIterator->moveToPreviousNode(
 						theIterator->edgesIn()->begin());
-				this->excludeNodeFromGraph(theTemporaryIterator);
-
-				std::cout << theIterator->edgesIn()->size() << " : "
-						<< theIterator->edgesOut()->size() << std::endl;
+				//this->excludeNodeFromGraph(theTemporaryIterator);
 			} while (theIterator->edgesIn()->size() != 0 &&
 					theIterator->edgesOut()->size() == 0);
 		}
@@ -297,6 +312,9 @@ public:
 
 	template<typename _NodeItemType, typename _EdgeItemType> friend class
 			PL_core_graph_node_iterator;
+
+	template<typename _NodeItemType, typename _EdgeItemType> friend class
+			PL_core_graph_builder;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -305,6 +323,7 @@ class PL_core_graph_edge_iterator
 {
 private:
 	PL_core_graph<NodeItemType, EdgeItemType> *_graph;
+
 	typename PL_core_graph<NodeItemType, EdgeItemType>::inner_edge_iterator
 			_edgeIterator;
 
@@ -312,12 +331,11 @@ public:
 
 	// *** Memory management
 	PL_core_graph_edge_iterator(
-			PL_core_graph<NodeItemType, EdgeItemType> *inGraph,
 			const typename PL_core_graph<NodeItemType, EdgeItemType>::
-					inner_edge_iterator &inEdgeIterator)
+					inner_edge_iterator &inEdgeIterator,
+			PL_core_graph<NodeItemType, EdgeItemType> *inGraph)
+		: _graph(inGraph), _edgeIterator(inEdgeIterator)
 	{
-		_graph = inGraph;
-		_edgeIterator = inEdgeIterator;
 	}
 
 	// *** Value getter
@@ -373,9 +391,73 @@ class PL_core_graph_node_iterator
 {
 
 private:
+
+	class buildingState
+	{
+	private:
+		PL_core_graph<NodeItemType, EdgeItemType> *_graph;
+
+		PL_core_fastStack<typename PL_core_graph<NodeItemType, EdgeItemType>::
+				inner_node_iterator> _buildingStack;
+		std::map<PLString,
+				typename PL_core_graph<NodeItemType, EdgeItemType>::
+						inner_node_iterator> _savedLables;
+
+	public:
+
+		buildingState(PL_core_graph<NodeItemType, EdgeItemType> *inGraph)
+		{
+			_graph = inGraph;
+		}
+
+		//
+		void pushToBuildingStack(
+				typename PL_core_graph<NodeItemType, EdgeItemType>::
+						inner_node_iterator inIterator)
+		{
+			_buildingStack.push(inIterator);
+		}
+
+		typename PL_core_graph<NodeItemType, EdgeItemType>::inner_node_iterator
+				popFromBuildingStack()
+		{
+			if (0 != _buildingStack.size())
+			{
+				return _buildingStack.pop();
+			}
+			else
+			{
+				// TODO: Throw an exception here
+			}
+
+			// TODO: Return something
+			//return 0;
+		}
+
+		//
+		void saveNodeByLable(PLString &inLable,
+				typename PL_core_graph<NodeItemType, EdgeItemType>::
+						inner_node_iterator inIterator)
+		{
+			_savedLables[inLable] = inIterator;
+		}
+
+		typename PL_core_graph<NodeItemType, EdgeItemType>::
+				inner_node_iterator getNodeByLable(PLString &inLable)
+		{
+			return _savedLables[inLable];
+		}
+
+	};
+
+	///////////////////////////////////////////////////////////////////////////
+	buildingState _buildingState;
 	PL_core_graph<NodeItemType, EdgeItemType> *_graph;
+
 	typename PL_core_graph<NodeItemType, EdgeItemType>::inner_node_iterator
 			_nodeIterator;
+
+	///////////////////////////////////////////////////////////////////////////
 
 public:
 
@@ -387,23 +469,25 @@ public:
 	// ---------------------
 	// *** Memory management
 	PL_core_graph_node_iterator(
-			PL_core_graph<NodeItemType, EdgeItemType> *inGraph,
 			const typename PL_core_graph<NodeItemType, EdgeItemType>::
-					inner_node_iterator &inNodeIterator)
+					inner_node_iterator &inNodeIterator,
+			PL_core_graph<NodeItemType, EdgeItemType> *inGraph)
+		: _buildingState(inGraph), _graph(inGraph),
+		  _nodeIterator(inNodeIterator)
 	{
-		_graph = inGraph;
-		_nodeIterator = inNodeIterator;
 	}
 
 	PL_core_graph_node_iterator(
 			const PL_core_graph_node_iterator<NodeItemType, EdgeItemType>
 					&inNodeIterator)
+		: _buildingState(inNodeIterator._graph),
+		  _graph(inNodeIterator._graph),
+		  _nodeIterator(inNodeIterator._nodeIterator)
 	{
-		_graph = inNodeIterator._graph;
-		_nodeIterator = inNodeIterator._nodeIterator;
 	}
 
 	PL_core_graph_node_iterator()
+		: _buildingState(NULL), _graph(NULL), _nodeIterator(NULL)
 	{
 		_graph = NULL;
 	}
@@ -417,25 +501,28 @@ public:
 			beginOutEdge() const
 	{
 		return typename PL_core_graph<NodeItemType, EdgeItemType>::
-				edge_iterator(_graph, _nodeIterator->_edgesOut.begin());
+				edge_iterator(_nodeIterator->_edgesOut.begin(), _graph);
 	}
+
 	void moveThroughOutEdge(
 			const typename PL_core_graph<NodeItemType, EdgeItemType>::
 					edge_iterator &inEdge)
 	{
 		_nodeIterator = inEdge.nodeOut;
 	}
+
 	void removeOutEdge(
 			typename PL_core_graph<NodeItemType, EdgeItemType>::
 					edge_iterator &inEdge)
 	{
 		_graph->removeEdge(inEdge);
 	}
+
 	typename PL_core_graph<NodeItemType, EdgeItemType>::edge_iterator
 			endOutEdge() const
 	{
 		return typename PL_core_graph<NodeItemType, EdgeItemType>::
-				edge_iterator(_graph, _nodeIterator->_edgesOut.end());
+				edge_iterator(_nodeIterator->_edgesOut.end(), _graph);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -452,21 +539,44 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////
 	typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
-			createNextNodeWithValue(const NodeItemType &inValue,
-					const EdgeItemType &inEdgeItem)
+			&beginBrunch()
 	{
-		typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
-				theIterator = _graph->createNodeWithValue(inValue);
-		connectToNode(theIterator, inEdgeItem);
-
-		return theIterator;
+		_buildingState.pushToBuildingStack(_nodeIterator);
+		return *this;
 	}
 
-	typename PL_core_graph<NodeItemType, EdgeItemType>::edge_iterator
-			connectToNode(typename PL_core_graph<NodeItemType, EdgeItemType>::
-					node_iterator &inIterator, const EdgeItemType &inEdgeItem)
+	typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
+			&createNodeWithValue(const NodeItemType &inValue,
+					const EdgeItemType &inEdgeItem)
 	{
-		return _graph->createEdge(*this, inIterator, inEdgeItem);
+		typename PL_core_graph<NodeItemType, EdgeItemType>::inner_node_iterator
+				theIterator = _graph->_createNodeWithValue(inValue);
+		_graph->_createEdge(_nodeIterator, theIterator, inEdgeItem);
+
+		_nodeIterator = theIterator;
+
+		return *this;
+	}
+
+	typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
+			&saveNodeByLable(PLString &inString)
+	{
+		_buildingState.saveNodeByLable(inString, _nodeIterator);
+	}
+
+	typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
+			&connectToNode(PLString &inString, const EdgeItemType &inEdgeItem)
+	{
+		_graph->_createEdge(_nodeIterator,
+				_buildingState.getNodeByLable(inString), inEdgeItem);
+		return *this;
+	}
+
+	typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator
+			&endBrunch()
+	{
+		_nodeIterator = _buildingState.popFromBuildingStack();
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -498,7 +608,6 @@ public:
 	{
 		return _graph;
 	}
-
 
 	// **************************************************************
 	// *					Public _ Friends						*

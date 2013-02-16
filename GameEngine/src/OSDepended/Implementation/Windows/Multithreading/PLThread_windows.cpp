@@ -9,7 +9,7 @@
 
 #include <map>
 
-#include <iostream.h>
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
 DWORD threadFunctionMapping(LPVOID inArgument)

@@ -7,14 +7,16 @@
 #ifndef PLAUDIODEVICE_H_
 #define PLAUDIODEVICE_H_
 
+///////////////////////////////////////////////////////////////////////////////
 #include <map>
 
 #include "../Base/PLString.h"
-#include "../alutdlls36/alut.h"
+#include <alut.h>
 
 #include "PLAudioObject.h"
 #include "PLAudioContext.h"
 #include "PLAudioLibrary.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 class PLAudioController : public PLAudioObject
 {

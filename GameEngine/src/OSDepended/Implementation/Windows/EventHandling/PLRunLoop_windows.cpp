@@ -7,12 +7,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "PLRunLoop_windows.h"
 
-#include <iostream.h>
+#include <iostream>
 
 #include <gl/gl.h>
 #include <gl/glu.h>
 
 #include <wingdi.h>
+#include <winuser.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 PLRunLoop_windows::PLRunLoop_windows()
@@ -117,7 +118,7 @@ void PLRunLoop_windows::run()
 				glVertex3f(-1.0f,-1.0f, 0.0f);					// Bottom Left
 			glEnd();
 
-			SwapBuffers(___handle);
+//			SwapBuffers(___handle);
 
 			// No events got on this runloop iteration.
 		}
@@ -125,10 +126,10 @@ void PLRunLoop_windows::run()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PLRunLoop_windows::setHandle(HDC inHandle)
-{
-	___handle = inHandle;
-}
+//void PLRunLoop_windows::setHandle(HDC inHandle)
+//{
+//	___handle = inHandle;
+//}
 
 ///////////////////////////////////////////////////////////////////////////////
 LRESULT CALLBACK PLRunLoop_windows::windowProcedure(HWND inWindowHandle,

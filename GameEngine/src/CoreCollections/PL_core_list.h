@@ -5,6 +5,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include <list>
 
+#include <cstdlib>
+
 ////////////////////////////////////////////////////////////////////////////////
 template <typename ItemType> class PL_core_list_iterator;
 
@@ -120,7 +122,7 @@ public:
 	{
 		if (NULL == _addingElements)
 		{
-			_addingElements = new list<ItemType>();
+			_addingElements = new std::list<ItemType>();
 		}
 
 		_addingElements->push_back(inElement);
@@ -130,7 +132,7 @@ public:
 	{
 		if (NULL == _addingElements)
 		{
-			_addingElements = new list<ItemType>();
+			_addingElements = new std::list<ItemType>();
 		}
 
 		for (PL_core_list_iterator<ItemType> theIterator = inList->begin();
@@ -144,7 +146,7 @@ public:
 	{
 		if (NULL == _removingElements)
 		{
-			_removingElements = new list<iterator *>();
+			_removingElements = new std::list<iterator *>();
 		}
 
 		_removingElements->push_back(new iterator(inIterator));

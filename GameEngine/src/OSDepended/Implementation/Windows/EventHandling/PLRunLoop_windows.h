@@ -32,7 +32,7 @@ public:
 	void assignHandler(IPLEventHandler_windows *inHandler);
 	void run();
 
-	void setHandle(HDC inHandle);
+//	void setHandle(HDC inHandle);
 
 	LRESULT CALLBACK windowProcedure(HWND inWindowHandle, UINT inMessage,
 			WPARAM inWindowParameter, LPARAM inD);

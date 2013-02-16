@@ -7,9 +7,10 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 template <typename ItemType>
-class PL_core_fastStack {
+class PL_core_fastStack
+{
 private:
-	std::list<ItemType > list;
+	std::list<ItemType> _list;
 
 ///////////////////////////////////////////////////////////////////////////////
 public:
@@ -19,13 +20,13 @@ public:
 	// Content management
 	void push(const ItemType &inElement)
 	{
-		list.push_back(inElement);
+		_list.push_back(inElement);
 	}
 
 	ItemType pop()
 	{
-		ItemType theElement = *list.end();
-		list.pop_back();
+		ItemType theElement = _list.back();
+		_list.pop_back();
 
 		return theElement;
 	}
@@ -33,7 +34,7 @@ public:
 	// Getters
 	int size()
 	{
-		return list.size();
+		return _list.size();
 	}
 };
 

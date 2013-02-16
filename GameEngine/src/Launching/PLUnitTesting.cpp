@@ -1,13 +1,22 @@
 ///////////////////////////////////////////////////////////////////////////////
+// Header linking
 #include "PLUnitTesting.h"
-#include <iostream.h>
 
+// Utilities
+#include <iostream>
+
+// Tests
 #include "UnitTesting/TEST_PLString.h"
+#include "UnitTesting/TEST_PL_core_graph.h"
+#include "UnitTesting/TEST_PLWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 PLUnitTesting::PLUnitTesting()
+	: _tests()
 {
 	_tests.push_back(new TEST_PLString());
+	_tests.push_back(new TEST_PL_core_graph());
+	_tests.push_back(new TEST_PLWindow());
 }
 
 PLUnitTesting::~PLUnitTesting()

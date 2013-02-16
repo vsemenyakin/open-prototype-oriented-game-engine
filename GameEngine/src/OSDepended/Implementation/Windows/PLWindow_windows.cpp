@@ -6,16 +6,16 @@
  */
 
 ///////////////////////////////////////////////////////////////////////////////
-// Also, note that you'll need to put an #include <windows.h> statement
+// Note, you need to put an #include <windows.h> statement
 // before the #include<GL/gl.h>.
 
 #include "PLWindow_windows.h"
 
-#include <iostream.h>
+#include <iostream>
 #include <gl/gl.h>
 #include <gl/glu.h>
 
-#include <map.h>
+#include <map>
 
 ///////////////////////////////////////////////////////////////////////////////
 // | *********************** |
@@ -23,7 +23,7 @@
 // | *********************** |
 ///////////////////////////////////////////////////////////////////////////////
 // *** Window registry
-static map<HWND, PLWindow_windows *> sWindowsAssigning;
+static std::map<HWND, PLWindow_windows *> sWindowsAssigning;
 
 // -----------------------------------------------------
 // *** Assigning window class and window handle function
