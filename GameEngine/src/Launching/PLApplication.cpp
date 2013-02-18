@@ -92,20 +92,19 @@ typedef PL_core_graph<int, int> testGraph;
 ///////////////////////////////////////////////////////////////////////////////
 PLError *PLApplication::start()
 {
-	/*
 	PLWindow *theWindow = new PLWindow("First window",
 			PLCreateRectangle(0.0, 0.0, 640.0, 480.0));
 
 	theWindow->show();
 	theWindow->setFocus();
-
+/*
 	PLKeyboardEventHandler *theKeyboardEventsHandler =
 			new PLKeyboardEventHandler();
 	theWindow->getRunLoop()->assignHandler(theKeyboardEventsHandler);
 	theKeyboardEventsHandler->addCallback(callback);
-
+*/
 	theWindow->getRunLoop()->run();
-	 */
+
 
 //	owning_ref<B> theOwningReference = owning_ref<B>::create();
 //	knowing_ref<A> theAssignedKnowingReference =
