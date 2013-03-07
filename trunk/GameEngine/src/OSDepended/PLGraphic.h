@@ -8,19 +8,20 @@
 #ifndef PLGRAPHIC_H_
 #define PLGRAPHIC_H_
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // WIN32
 #ifdef WIN32
 
-#include "../Implementation/Windows/PLGraphic_windows.h"
+// TODO: Rename
+#include "Implementation/Windows/PLGraphic_windows.h"
 
-typedef PLWindow_windows PLWindow;
+typedef PLApplication_windows PLApplication;
 
+typedef PLThread_windows PLThread;
 typedef PLRunLoop_windows PLRunLoop;
 typedef PLKeyboardEventHandler_windows PLKeyboardEventHandler;
 
-typedef PLThread_windows PLThread;
+typedef PLWindow_windows PLWindow;
 
 #endif
 

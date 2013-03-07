@@ -7,11 +7,12 @@
 
 #include "PLOpenGL_windows.h"
 
-PLOpenGL_windows::PLOpenGL_windows() {
+PLOpenGL_windows::PLOpenGL_windows()
+{
 	// TODO Auto-generated constructor stub
-
 }
 
-PLOpenGL_windows::~PLOpenGL_windows() {
+PLOpenGL_windows::~PLOpenGL_windows()
+{
 	// TODO Auto-generated destructor stub
 }

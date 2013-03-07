@@ -17,10 +17,10 @@
 #include "../../../Interface/PLGraphic_interface.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLRunLoop_windows : public PLRunLoop_interface
+class PLRunLoop_windows : public IPLRunLoop
 {
 private:
-	std::map<PLEventMessage, IPLEventHandler_windows *>
+	std::map<PLEventMessage, IPLEventHandler *>
 			_messageHandlersAssigning;
 
 	HDC ___handle;
@@ -29,7 +29,7 @@ public:
 	PLRunLoop_windows();
 	virtual ~PLRunLoop_windows();
 
-	void assignHandler(IPLEventHandler_windows *inHandler);
+	void assignHandler(IPLEventHandler *inHandler);
 	void run();
 
 //	void setHandle(HDC inHandle);

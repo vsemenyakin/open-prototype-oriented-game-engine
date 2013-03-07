@@ -191,7 +191,7 @@ void PLLog::addLoglevel(const char* errorlevel)
 
 bool PLLog::deleteLoglevel(const char* errorlevel)
 {
-	return (acceptableLoglevels->erase(errorlevel) > 0) ;
+	return (acceptableLoglevels->erase(errorlevel) > 0);
 }
 
 void PLLog::wipeLogLevels()
@@ -201,6 +201,7 @@ void PLLog::wipeLogLevels()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/*
 static PLLog *sharedLogPointer = NULL;
 
 static PLLog *PLLogsharedLog()
@@ -212,3 +213,4 @@ static PLLog *PLLogsharedLog()
 
 	return sharedLogPointer;
 }
+*/

@@ -14,10 +14,10 @@
 #include "../../../Base/PLCore.h"
 #include "EventHandling/PLRunLoop_windows.h"
 
-#include "../../Interface/PLWindow_interface.h"
+#include "../../Interface/IPLWindow.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLWindow_windows : public PLWindow_interface
+class PLWindow_windows : public IPLWindow
 {
 private:
 	// Low level properties
@@ -30,6 +30,10 @@ private:
 
 	/////////////////
 	PLRunLoop_windows *_runLoop;
+
+
+	WNDCLASSEX *createWindowClass(const char *inName);
+
 
 public:
 	PLWindow_windows(char *inName, PLRectange inFrame);

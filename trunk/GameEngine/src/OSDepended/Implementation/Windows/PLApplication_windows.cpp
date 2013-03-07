@@ -1,37 +1,26 @@
 ///////////////////////////////////////////////////////////////////////////////
-#include "PLApplication.h"
-
-#include <iostream>
-#include <fstream>
+#include "PLApplication_windows.h"
 
 #include <windows.h>
 
-#include "../Base/PLCore.h"
-#include "../OSDepended/Interface/PLGraphic.h"
+// Utilities
+#include <iostream>
+#include <fstream>
 
-#include "../CoreCollections/PL_core_graph.h"
+// Framework core
+#include "../../../Base/PLCore.h"
 
-#include "../Base/Memory/PLAutoPointer.h"
+//
+#include "PLGraphic_windows.h"
 
-#include "../OSDepended/Implementation/Windows/PLWindow_windows.h"
-
-///////////////////////////////////////////////////////////////////////////////
+#include "Multithreading/PLThread_windows.h"
+#include "EventHandling/PLRunLoop_windows.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 void testCallback(void *inTarget, void *inArgument)
 {
 	PLCharacter theSymbol = *((PLCharacter *)inArgument);
 	std::cout << theSymbol << std::endl;
-}
-
-// TODO put here PLLog
-///////////////////////////////////////////////////////////////////////////////
-PLApplication::PLApplication()
-{
-}
-
-PLApplication::~PLApplication()
-{
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,53 +47,41 @@ void callback(void *inEventMessage)
 	std::cout << "Key pressed" << std::endl;
 }
 
+// TODO put here PLLog
 ///////////////////////////////////////////////////////////////////////////////
-class A
+PLApplication_windows::PLApplication_windows()
 {
-public:
-	virtual void foo()
-	{
-		std::cout << "First foo" << std::endl;
-	}
+}
 
-	virtual ~A()
-	{
-		std::cout << ">>> Removed" << std::endl;
-	}
-};
-
-class B : public A
+PLApplication_windows::~PLApplication_windows()
 {
-public:
-	virtual void foo()
-	{
-		std::cout << "First foo" << std::endl;
-	}
-
-	virtual ~B()
-	{
-	}
-};
+}
 
 ///////////////////////////////////////////////////////////////////////////////
-typedef PL_core_graph<int, int> testGraph;
-
-///////////////////////////////////////////////////////////////////////////////
-PLError *PLApplication::start()
+void PLApplication_windows::init()
 {
-	PLWindow *theWindow = new PLWindow("First window",
+	// Create main thread object
+	PLThread_windows::createMainThreadObject(GetCurrentThread());
+
+	// Create main window object
+	PLWindow_windows *theWindow = new PLWindow_windows((char *)"First window",
 			PLCreateRectangle(0.0, 0.0, 640.0, 480.0));
 
 	theWindow->show();
 	theWindow->setFocus();
-/*
-	PLKeyboardEventHandler *theKeyboardEventsHandler =
-			new PLKeyboardEventHandler();
-	theWindow->getRunLoop()->assignHandler(theKeyboardEventsHandler);
-	theKeyboardEventsHandler->addCallback(callback);
-*/
-	theWindow->getRunLoop()->run();
 
+	/*
+		PLKeyboardEventHandler *theKeyboardEventsHandler =
+				new PLKeyboardEventHandler();
+		theWindow->getRunLoop()->assignHandler(theKeyboardEventsHandler);
+		theKeyboardEventsHandler->addCallback(callback);
+	*/
+	theWindow->getRunLoop()->run();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+PLError *PLApplication_windows::start()
+{
 
 //	owning_ref<B> theOwningReference = owning_ref<B>::create();
 //	knowing_ref<A> theAssignedKnowingReference =
