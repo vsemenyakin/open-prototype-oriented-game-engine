@@ -1,9 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////
-#include "PLApplication.h"
-#include "PLUnitTesting.h"
+#include "OSDepended/PLGraphic.h"
+#include "Launching/PLUnitTesting.h"
 
 #include <iostream>
 
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 //#define UNIT_TESTING
 #define APPLICATION_EXECUTION
@@ -11,9 +12,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 int main()
 {
-
 // Unit testing
-#ifdef UNIT_TESTING
+#ifdef UNIT_TESTIN
 	PLUnitTesting theUnitTesting;
 	theUnitTesting.perform();
 #endif
@@ -21,6 +21,7 @@ int main()
 // Application execution
 #ifdef APPLICATION_EXECUTION
 	PLApplication theApplication;
+	theApplication.init();
 	theApplication.start();
 #endif
 

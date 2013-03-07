@@ -5,17 +5,24 @@
  *      Author: Admin
  */
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef PLTHREAD_INTERFACE_H_
-#define PLTHREAD_INTERFACE_H_
+#ifndef IPLTHREAD_H_
+#define IPLTHREAD_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-typedef void (PLThreadEnterPointFunction)(void *);
+#include "../EventHandling/IPLRunLoop.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLThread_interface
+typedef unsigned int PLThreadPerforingResult;
+typedef PLThreadPerforingResult (PLThreadEnterPointFunction)(void *);
+
+///////////////////////////////////////////////////////////////////////////////
+class IPLThread
 {
 public:
+	virtual ~IPLThread(){}
+
 	virtual void runWithArgument(void *inArgument) = 0;
+	virtual IPLRunLoop *runLoop() = 0;
 };
 
-#endif /* PLTHREAD_INTERFACE_H_ */
+#endif /* IPLTHREAD_H_ */

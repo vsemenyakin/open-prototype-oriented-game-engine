@@ -1,0 +1,25 @@
+/*
+ * IPLApplication.h
+ *
+ *  Created on: 03.03.2013
+ *      Author: semenyakinVS
+ */
+
+///////////////////////////////////////////////////////////////////////////////
+#ifndef IPLAPPLICATION_H_
+#define IPLAPPLICATION_H_
+
+///////////////////////////////////////////////////////////////////////////////
+class PLError;
+
+///////////////////////////////////////////////////////////////////////////////
+class IPLApplication
+{
+public:
+	virtual ~IPLApplication(){}
+
+	virtual void init() = 0;
+	virtual PLError *start() = 0;
+};
+
+#endif /* IPLAPPLICATION_H_ */

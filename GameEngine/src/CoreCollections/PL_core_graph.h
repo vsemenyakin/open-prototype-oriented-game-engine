@@ -244,7 +244,7 @@ public:
 		inner_edge_iterator theEdgeIterator;
 
 		// Create nodes addresses to indexes map
-		theStream << _nodes.size() << std::endl;
+		//theStream << _nodes.size() << std::endl;
 
 		int theIndex = 0;
 		for (inner_node_iterator theIterator = _nodes.begin();
@@ -425,13 +425,10 @@ private:
 			{
 				return _buildingStack.pop();
 			}
-			else
-			{
-				// TODO: Throw an exception here
-			}
 
-			// TODO: Return something
-			//return 0;
+			// TODO: Throw an exception here. Return null node constant
+			return typename PL_core_graph<NodeItemType, EdgeItemType>::
+					inner_node_iterator();
 		}
 
 		//
@@ -562,6 +559,7 @@ public:
 			&saveNodeByLable(PLString &inString)
 	{
 		_buildingState.saveNodeByLable(inString, _nodeIterator);
+		return *this;
 	}
 
 	typename PL_core_graph<NodeItemType, EdgeItemType>::node_iterator

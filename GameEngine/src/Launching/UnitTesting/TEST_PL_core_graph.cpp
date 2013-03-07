@@ -9,6 +9,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_PL_core_graph::TEST_PL_core_graph()
+	: _graphPointer(NULL)
 {
 }
 
@@ -23,6 +24,7 @@ void TEST_PL_core_graph::performTest()
 	_graphPointer = new graph();
 
 	graph::node_iterator theRoot = _graphPointer->createNodeWithValue(1);
+
 	theRoot
 		.beginBrunch()
 			.createNodeWithValue(2, 2)
@@ -33,18 +35,6 @@ void TEST_PL_core_graph::performTest()
 						.beginBrunch().createNodeWithValue(6, 6).endBrunch()
 				.endBrunch()
 		.endBrunch();
-
-	_graphPointer->writeToFile("testGraph.txt");
-
-//	theIterator
-//		.beginBrunch
-//			.createNode
-//			.createNode
-//				.beginBrunch
-//					.createNode
-//				.endBrunch
-//		.endBrunch
-
 
 	// Removing
 	delete _graphPointer;

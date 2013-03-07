@@ -9,20 +9,28 @@
 // Note, you need to put an #include <windows.h> statement
 // before the #include<GL/gl.h>.
 
+// Header include
 #include "PLWindow_windows.h"
 
-#include <iostream>
-#include <gl/gl.h>
-#include <gl/glu.h>
-
+// Utilities include
 #include <map>
+
+// OpenGL
+//#include <gl/gl.h>
+//#include <gl/glu.h>
+#include "../../../OpenGL/PLShader.h"
+
+// Logging
+#include <iostream>
+
+#include "Multithreading/PLThread_windows.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // | *********************** |
 // | *** Window regestry *** |
 // | *********************** |
 ///////////////////////////////////////////////////////////////////////////////
-// *** Window registry
+// *** Window registry data structure
 static std::map<HWND, PLWindow_windows *> sWindowsAssigning;
 
 // -----------------------------------------------------
@@ -40,13 +48,17 @@ PLWindow_windows *getWindowClassByWindowHandle(HWND inWindowHandle)
 	return sWindowsAssigning[inWindowHandle];
 }
 
-// ---------------------
-// *** Windows procedure
-LRESULT CALLBACK windowProcedure(HWND inWindowHandle, UINT inMessage,
+///////////////////////////////////////////////////////////////////////////////
+// | ************************ |
+// | *** Window procedure *** |
+// | ************************ |
+///////////////////////////////////////////////////////////////////////////////
+LRESULT __stdcall windowProcedure(HWND inWindowHandle, UINT inMessage,
 		WPARAM inWindowParameter, LPARAM inD)
 {
 	PLWindow_windows *theWindows =
 			getWindowClassByWindowHandle(inWindowHandle);
+
 	if (NULL != theWindows)
 	{
 		// Delegating for created window
@@ -65,10 +77,11 @@ LRESULT CALLBACK windowProcedure(HWND inWindowHandle, UINT inMessage,
 // | *********************** |
 ///////////////////////////////////////////////////////////////////////////////
 // *** Event management
+
 PLWindow_windows::PLWindow_windows(char *inName, PLRectange inFrame)
+	: _windowClass(NULL), _windowHandle(0), _name(inName), _frame(inFrame),
+	  _runLoop(NULL)
 {
-	_name = inName;
-	_frame = inFrame;
 }
 
 PLWindow_windows::~PLWindow_windows()
@@ -79,65 +92,22 @@ PLWindow_windows::~PLWindow_windows()
 ///////////////////////////////////////////////////////////////////////////////
 void PLWindow_windows::show()
 {
-	_runLoop = new PLRunLoop_windows();
+	// Set run loop as current thread run loop
+	_runLoop = (PLRunLoop_windows *)PLThread_windows::currentThread()->
+			runLoop();
 
-	// *******************
-	// Create window class
-	// *******************
-	_windowClass = new WNDCLASSEX();
+	// Create and register windows class
+	_windowClass = createWindowClass("openGL");
 
-	// Size of structure
-	_windowClass->cbSize = sizeof(WNDCLASSEX);
-
-	// Style of window. Redraw On Size, And Own DC For Window.
-	_windowClass->style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-
-	// Event handling procedure
-	_windowClass->lpfnWndProc = windowProcedure;
-
-	// Extra bytes after window-class structure. Zero.
-	_windowClass->cbClsExtra = 0;
-
-	// Extra bytes to allocate after the window instance. Zero.
-	// the CLASS directive in resource file
-	_windowClass->cbWndExtra = 0;
-
-	// Event handling procedure (window procedure)
-	_windowClass->hInstance = GetModuleHandleA(NULL);
-
-	// Icon resource. If NULL - sets as default
-	_windowClass->hIcon = LoadIcon(NULL, IDI_APPLICATION);
-
-	// Handle to class cursor resource. If this is NULL,
-	// an application must explicitly set the cursor shape whenever the mouse
-	// moves into the application's window
-	_windowClass->hCursor = LoadCursor(NULL, IDC_ARROW);
-
-	// Handle to class background brush. Sets color or brush to paint the
-	// background.
-	_windowClass->hbrBackground = NULL; // No background
-
-	// String that specifies the resource name of the class menu.
-	_windowClass->lpszMenuName = NULL; // Make no menu
-
-	// Name of current class
-	_windowClass->lpszClassName = "OpenGL";
-
-	// Small icon resource
-	_windowClass->hIconSm = NULL;
-
-	//////////////////////////////////////////
 	ATOM theAtom = RegisterClassEx(_windowClass);
 	if (0 == theAtom)
     {
-    	///GetLastError()
     	std::cout << "Failed to register the window class" << std::endl;
 
     	return;
     }
 
-    GetLastError();
-
+	// Create window
     _windowHandle = CreateWindowExA(
     		// Window extended style
     		WS_EX_APPWINDOW | WS_EX_WINDOWEDGE,
@@ -154,10 +124,23 @@ void PLWindow_windows::show()
 			GetModuleHandleA(NULL),
 			this);
 
+    // Make map from window handle to window object
     assignWindowHandleWithWindowClass(_windowHandle, this);
 
-	// Show window
-    //this->getGLContext();
+    // OpenGL acrions
+
+
+	// Device context. The device context connects the window to the
+	// GDI (Graphics Device Interface).
+	HDC theDeviceContext = GetDC(_windowHandle);
+	if (NULL == theDeviceContext)
+	{
+		std::cout << "Can't create a GL Device Context" << std::endl;
+	}
+	else
+	{
+		std::cout << theDeviceContext << std::endl;
+	}
 
     // ***********************************
 	// Set Pixel forma descriptor
@@ -168,7 +151,7 @@ void PLWindow_windows::show()
 	thePixelFormatDescriptor.dwFlags =
 			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	thePixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
-	thePixelFormatDescriptor.cColorBits = 16;
+	thePixelFormatDescriptor.cColorBits = 32;
 	thePixelFormatDescriptor.cRedBits = 0; // Default
 	thePixelFormatDescriptor.cRedShift = 0; // Default
 	thePixelFormatDescriptor.cGreenBits = 0; // Default
@@ -182,26 +165,14 @@ void PLWindow_windows::show()
 	thePixelFormatDescriptor.cAccumGreenBits = 0; // Default
 	thePixelFormatDescriptor.cAccumBlueBits = 0; // Default
 	thePixelFormatDescriptor.cAccumAlphaBits = 0; // Default
-	thePixelFormatDescriptor.cDepthBits = 0; // Default
-	thePixelFormatDescriptor.cStencilBits = 16;
+	thePixelFormatDescriptor.cDepthBits = 32; // Default
+	thePixelFormatDescriptor.cStencilBits = 0;
 	thePixelFormatDescriptor.cAuxBuffers = 0; // Default
-	thePixelFormatDescriptor.iLayerType = 0; // Default
-	thePixelFormatDescriptor.bReserved = PFD_MAIN_PLANE;
+	thePixelFormatDescriptor.iLayerType = PFD_MAIN_PLANE;
+	thePixelFormatDescriptor.bReserved = 0; // Default
 	thePixelFormatDescriptor.dwLayerMask = 0; // Default
 	thePixelFormatDescriptor.dwVisibleMask = 0; // Default
 	thePixelFormatDescriptor.dwDamageMask = 0; // Default
-
-	// Device context. The device context connects the window to the
-	// GDI (Graphics Device Interface).
-	HDC theDeviceContext = GetDC(_windowHandle);
-	if (NULL == theDeviceContext)
-	{
-		std::cout << "Can't create a GL Device Context" << std::endl;
-	}
-	else
-	{
-		std::cout << theDeviceContext << std::endl;
-	}
 
 	// Get nearest pixel format (gets by system based on requested device
 	// context).
@@ -239,13 +210,14 @@ void PLWindow_windows::show()
 		std::cout << "Can't set the context as current" << std::endl;
 	}
 
+
 	std::cout << "GL context created" << std::endl;
     // ***********************************
 
 	ShowWindow(_windowHandle, SW_SHOW);
 	SetForegroundWindow(_windowHandle);
 	SetFocus(_windowHandle);
-
+/*
 	// RESIZE
 	if (_frame.size.height == 0) // Prevent A Divide By Zero By
 	{
@@ -253,7 +225,7 @@ void PLWindow_windows::show()
 	}
 
 	// Reset The Current Viewport
-	glViewport(0 ,0 , (GLsizei)_frame.size.width, (GLsizei)_frame.size.height);
+	glViewport(0, 0 ,(GLsizei)_frame.size.width, (GLsizei)_frame.size.height);
 
 	glMatrixMode(GL_PROJECTION); // Select The Projection Matrix
 	glLoadIdentity(); // Reset The Projection Matrix
@@ -268,11 +240,115 @@ void PLWindow_windows::show()
 
 	// INIT_GL
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.0f, 1.0f, 0.0f, 0.5f);				// Black Background
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
 	glClearDepth(1.0f);									// Depth Buffer Setup
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing
 	glDepthFunc(GL_LEQUAL);								// The Type Of Depth Testing To Do
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Really Nice Perspective Calculations
+*/
+	// ****************************************
+    GLenum theGlewInitializeError = glewInit();
+    if (GLEW_OK != theGlewInitializeError)
+    {
+    	std::cout << "Glew started successfully" << std::endl;
+    }
+
+	// ****************************************
+	const GLubyte *theOpnGLVersion = glGetString(GL_VERSION);
+	std::cout << "OpenGL version: " << theOpnGLVersion << std::endl;
+
+	const GLubyte *theShaderVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+	std::cout << "Shader version: " << theShaderVersion << std::endl;
+
+	const GLubyte *theVendorName = glGetString(GL_VENDOR);
+	std::cout << "Vendor: " << theVendorName << std::endl;
+
+	// Raw data buffers
+	float thePositionData[] =
+	{
+		-0.8f, -0.8f, 0.0f,
+		0.8f, -0.8f, 0.0f,
+		0.0f, 0.8f, 0.0f
+	};
+
+//	float theColorData[] =
+//	{
+//		1.0f, 0.0f, 0.0f,
+//		1.0f, 1.0f, 0.0f,
+//		0.0f, 0.0f, 1.0f
+//	};
+
+	// Create handlers to buffer objects
+	GLuint theBufferObjectHandlers[2] = {0, 0};
+	glGenBuffers(1, theBufferObjectHandlers);
+
+	GLuint thePositionBufferHandler = theBufferObjectHandlers[0];
+//	GLuint theColorBufferHandler = theBufferObjectHandlers[1];
+
+	// Bind buffer
+	glBindBuffer(GL_ARRAY_BUFFER, thePositionBufferHandler);
+	glBufferData(GL_ARRAY_BUFFER, 9 + sizeof(float), thePositionData,
+			GL_STATIC_DRAW);
+
+//	glBindBuffer(GL_ARRAY_BUFFER, theColorBufferHandler);
+//	glBufferData(GL_ARRAY_BUFFER, 9 + sizeof(float), theColorData,
+//			GL_STATIC_DRAW);
+
+	// Create and set the vertex array object
+	GLuint theVertexArrayObjectHandler;
+
+	glGenVertexArrays(1, &theVertexArrayObjectHandler);
+	glBindVertexArray(theVertexArrayObjectHandler);
+
+	// Map indexes to buffers
+	glBindBuffer(GL_ARRAY_BUFFER, thePositionBufferHandler);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+//	glBindBuffer(GL_ARRAY_BUFFER, theColorBufferHandler);
+//	glEnableVertexAttribArray(1);
+//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+	// Create shader
+	const char *theVertexShaderCode = "#version 330\n"
+								"in vec3 VertexPosition;\n"
+//								"in vec3 VertexColor;\n"
+								"out vec3 Color;\n"
+								"out gl_PerVertex\n"
+								"{\n"
+								"\tvec4 gl_Position;\n"
+								"};\n"
+								"void main()\n"
+								"{\n"
+								"\tColor = vec3(1.0, 0.0, 0.0);\n"
+								"\tgl_Position = vec4(0.5, 0.5, 0.5, 1.0);"
+								"}\n\0";
+
+	const char *theFragmentShaderCode = "#version 330\n"
+								"in vec3 Color;\n"
+								"out vec4 FragColor;\n"
+								"void main()\n"
+								"{\n"
+								"\tFragColor = vec4(Color, 1.0);\n"
+								"}\n\0";
+
+	PLShader theShader;
+
+	theShader.attachShader(PLShader::vertexShader, theVertexShaderCode);
+
+	std::cout << " ----- " << std::endl;
+
+	theShader.attachShader(PLShader::fragmentShader, theFragmentShaderCode);
+	theShader.link();
+
+	glUseProgram(theShader.handler());
+
+	// Render array
+	glBindVertexArray(theVertexArrayObjectHandler);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	// Swap buffers
+	SwapBuffers(theDeviceContext);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -359,9 +435,49 @@ void PLWindow_windows::getGLContext()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-PLRunLoop_windows *PLWindow_windows::getRunLoop()
+WNDCLASSEX *PLWindow_windows::createWindowClass(const char *inName)
 {
-	return _runLoop;
+	_windowClass = new WNDCLASSEX();
+
+	// Size of structure
+	_windowClass->cbSize = sizeof(WNDCLASSEX);
+
+	// Style of window. Redraw On Size, And Own DC For Window.
+	_windowClass->style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+
+	// Event handling procedure
+	_windowClass->lpfnWndProc = windowProcedure;
+
+	// Extra bytes after window-class structure. Zero.
+	_windowClass->cbClsExtra = 0;
+
+	// Extra bytes to allocate after the window instance. Zero.
+	// the CLASS directive in resource file
+	_windowClass->cbWndExtra = 0;
+
+	// Event handling procedure (window procedure)
+	_windowClass->hInstance = GetModuleHandleA(NULL);
+
+	// Icon resource. If NULL - sets as default
+	_windowClass->hIcon = LoadIcon(NULL, IDI_APPLICATION);
+
+	// Handle to class cursor resource. If this is NULL,
+	// an application must explicitly set the cursor shape whenever the mouse
+	// moves into the application's window
+	_windowClass->hCursor = LoadCursor(NULL, IDC_ARROW);
+
+	// Handle to class background brush. Sets color or brush to paint the
+	// background.
+	_windowClass->hbrBackground = NULL; // No background
+
+	// String that specifies the resource name of the class menu.
+	_windowClass->lpszMenuName = NULL; // Make no menu
+
+	// Name of current class
+	_windowClass->lpszClassName = inName;
+
+	// Small icon resource
+	_windowClass->hIconSm = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

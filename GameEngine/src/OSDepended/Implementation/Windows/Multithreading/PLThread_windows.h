@@ -11,33 +11,55 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
 
-#include "../../../Interface/Multithreading/PLThread_interface.h"
+#include "../../../Interface/Multithreading/IPLThread.h"
+
+#include "../EventHandling/PLRunLoop_windows.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLThread_windows : public PLThread_interface
+class PLThread_windows : public IPLThread
 {
 private:
+
+	//
 	typedef struct
 	{
 		void *argument;
 		PLThreadEnterPointFunction *function;
-	} EnterPoint;
-
-
-	HANDLE _threadHandle;
-	PLThreadEnterPointFunction *_enterPointFunction;
+	}
+	EnterPoint;
 
 	//
-	friend DWORD threadFunctionMapping(LPVOID inArgument);
+	HANDLE _threadHandle;
+	EnterPoint *_enterPoint;
+
+	//
+	PLRunLoop_windows *_runLoop;
+
+	//
+	PLThread_windows(HANDLE inThreadHandle,
+			PLThreadEnterPointFunction *inFunction);
+
+	//
+	friend DWORD threadEnterFunction(LPVOID inArgument);
 
 public:
+
+
 	//
 	//
 	PLThread_windows(PLThreadEnterPointFunction *inFunction);
+
 	virtual ~PLThread_windows();
 
 	//
 	virtual void runWithArgument(void *inArgument);
+
+	//
+	virtual IPLRunLoop *runLoop();
+
+	// TODO: Put static methods to interface if it's possible
+	static void createMainThreadObject(HANDLE inHandle);
+	static PLThread_windows *currentThread();
 };
 
 ///////////////////////////////////////////////////////////////////////////////
