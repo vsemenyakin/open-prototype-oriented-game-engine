@@ -9,14 +9,12 @@
 #define PLAUDIOOBJECT_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include "../Base/PLObject.h"
 #include <alut.h>
-#include "../Base/Diagnostic/IPLLogReceiver.h"
 
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLAudioObject : public PLObject
+class PLAudioObject
 {
 protected:
 	void checkError(void);

@@ -1,7 +1,7 @@
 #include "PLString.h"
 
 //////////////////////////////////////////////////////////////
-strong_ref<PLString> PLStringCreate(const PLCharacter *inCString)
+func_out_ref<PLString> PLStringCreate(const PLCharacter *inCString)
 {
 	return new_ref<PLString>(inCString);
 }

@@ -11,7 +11,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
 
-#include "../../../Base/PLCore.h"
 #include "EventHandling/PLRunLoop_windows.h"
 
 #include "../../Interface/IPLWindow.h"

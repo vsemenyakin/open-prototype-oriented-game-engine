@@ -13,7 +13,7 @@
 int main()
 {
 // Unit testing
-#ifdef UNIT_TESTIN
+#ifdef UNIT_TESTING
 	PLUnitTesting theUnitTesting;
 	theUnitTesting.perform();
 #endif

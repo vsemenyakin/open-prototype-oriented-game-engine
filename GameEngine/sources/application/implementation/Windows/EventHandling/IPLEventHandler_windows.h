@@ -5,8 +5,8 @@
  *      Author: Admin
  */
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef IPLEVENTHANDLER_H_
-#define IPLEVENTHANDLER_H_
+#ifndef IPLEVENTHANDLER_WINDOWS_H_
+#define IPLEVENTHANDLER_WINDOWS_H_
 
 ///////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
@@ -30,4 +30,4 @@ public:
 	virtual void handleEvent(MSG inMessage) = 0;
 };
 
-#endif /* PLEVENTHANDLER_H_ */
+#endif /* IPLEVENTHANDLER_WINDOWS_H_ */
