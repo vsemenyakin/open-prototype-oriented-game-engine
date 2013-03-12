@@ -1,7 +1,7 @@
 #include "PLString.h"
 
 //////////////////////////////////////////////////////////////
-owning_ref<PLString> PLStringCreate(const char *inCString)
+strong_ref<PLString> PLStringCreate(const PLCharacter *inCString)
 {
 	return new_ref<PLString>(inCString);
 }
@@ -14,12 +14,12 @@ PLString::PLString()
 {
 }
 
-PLString::PLString(const char *inCString)
+PLString::PLString(const PLCharacter *inCString)
 {
 	_string.append(inCString);
 }
 
-PLString::PLString(function_ref<PLString> inString)
+PLString::PLString(func_in_ref<PLString> inString)
 {
 	_string.append(inString->getCString());
 }
@@ -43,32 +43,32 @@ const PLIndex PLString::length() const
 
 //////////////////////////////////////////////////////////////
 // *** Character methods group
-void PLString::assign(char inCharacter)
+void PLString::assign(PLCharacter inCharacter)
 {
 	this->clear();
 	this->append(inCharacter);
 }
 
-void PLString::append(char inCharacter)
+void PLString::append(PLCharacter inCharacter)
 {
 	_string.push_back(inCharacter);
 }
 
 //////////////////////////////////////////////////////////////
 // *** CString methods group
-void PLString::append(const char *inCString)
+void PLString::append(const PLCharacter *inCString)
 {
 	_string.append(inCString);
 }
 
 //////////////////////////////////////////////////////////////
 // *** PLString methods group
-void PLString::append(function_ref<PLString> inString)
+void PLString::append(func_in_ref<PLString> inString)
 {
 	_string.append(inString->getCString());
 }
 
-void PLString::append(function_ref<PLString> inString, PLRange inRange)
+void PLString::append(func_in_ref<PLString> inString, PLRange inRange)
 {
 	_string.append(inString->getCString(), inRange.begin, inRange.count);
 }
@@ -113,14 +113,6 @@ PLString &PLString::operator += (const PLString &inString)
 }
 
 // Functions concating
-PLString &operator + (const PLString &inString, const char &inChar)
-{
-	PLString *theString = new PLString(inString);
-	(*theString) += inChar;
-
-	return *theString;
-}
-
 PLString &operator + (const PLString &inString, const PLCharacter &inCharacter)
 {
 	PLString *theString = new PLString(inString);
