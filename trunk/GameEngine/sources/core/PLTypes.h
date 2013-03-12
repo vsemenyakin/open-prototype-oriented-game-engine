@@ -1,5 +1,5 @@
-#ifndef PLSCALARTYPES_H_
-#define PLSCALARTYPES_H_
+#ifndef PLTYPES_H_
+#define PLTYPES_H_
 
 ///////////////////////////////////////////////////////////////////////////////
 #include <limits.h>
@@ -68,4 +68,4 @@ PLRectange PLCreateRectangle(double inX, double inY, double inWidth,
 PLCharacter *charactersFromCharBuffer(const char *inCharBuffer,
 		size_t inSize);
 
-#endif /* PLSCALARTYPES_H_ */
+#endif /* PLTYPES_H_ */
