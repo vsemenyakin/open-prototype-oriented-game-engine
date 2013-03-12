@@ -4,7 +4,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 #define TRACE_EXPRESSION(expr) std::cout << #expr << " = " << expr << std::endl;
 
+///////////////////////////////////////////////////////////////////////////////
 #include <iostream>
+#include <cstdlib>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -14,9 +16,11 @@
 // MACRO: Type mapping
 //
 ///////////////////////////////////////////////////////////////////////////////
-#define knowing_ref PLAutoPointer_knowing
-#define function_ref PLAutoPointer_knowing
-#define owning_ref PLAutoPointer_owning
+#define weak_ref PLAutoPointer_knowing
+#define strong_ref PLAutoPointer_owning
+
+#define func_in_ref PLAutoPointer_knowing
+#define func_out_ref PLAutoPointer_knowing
 
 #define CLASS_WITH_REF(name) \
 	class name;	\
@@ -57,9 +61,9 @@ template <typename ItemType> class PLAutoPointer_owning;
 //
 ///////////////////////////////////////////////////////////////////////////////
 template<typename ItemType>
-static inline knowing_ref<ItemType> NULL_REF()
+static inline weak_ref<ItemType> NULL_REF()
 {
-	return knowing_ref<ItemType>((ItemType *)NULL);
+	return weak_ref<ItemType>((ItemType *)NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,41 +72,41 @@ static inline knowing_ref<ItemType> NULL_REF()
 //
 ///////////////////////////////////////////////////////////////////////////////
 template<typename ItemType>
-static knowing_ref<ItemType> new_ref()
+static weak_ref<ItemType> new_ref()
 {
-	return knowing_ref<ItemType>(new ItemType());
+	return weak_ref<ItemType>(new ItemType());
 }
 
 template<typename ItemType, typename T1>
-static knowing_ref<ItemType> new_ref(T1 arg1)
+static weak_ref<ItemType> new_ref(T1 arg1)
 {
-	return knowing_ref<ItemType>(new ItemType(arg1));
+	return weak_ref<ItemType>(new ItemType(arg1));
 }
 
 template<typename ItemType, typename T1, typename T2>
-static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2)
+static weak_ref<ItemType> new_ref(T1 arg1, T2 arg2)
 {
-	return knowing_ref<ItemType>(new ItemType(arg1, arg2));
+	return weak_ref<ItemType>(new ItemType(arg1, arg2));
 }
 
 template<typename ItemType, typename T1, typename T2, typename T3>
-static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3)
+static weak_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3)
 {
-	return knowing_ref<ItemType>(new ItemType(arg1, arg2, arg3));
+	return weak_ref<ItemType>(new ItemType(arg1, arg2, arg3));
 }
 
 template<typename ItemType, typename T1, typename T2, typename T3, typename T4>
-static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+static weak_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3, T4 arg4)
 {
-	return knowing_ref<ItemType>(new ItemType(arg1, arg2, arg3, arg4));
+	return weak_ref<ItemType>(new ItemType(arg1, arg2, arg3, arg4));
 }
 
 template<typename ItemType, typename T1, typename T2, typename T3, typename T4,
 		typename T5>
-static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3, T4 arg4,
+static weak_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3, T4 arg4,
 		T5 arg5)
 {
-	return knowing_ref<ItemType>(new ItemType(arg1, arg2, arg3, arg4, arg5));
+	return weak_ref<ItemType>(new ItemType(arg1, arg2, arg3, arg4, arg5));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,15 +116,15 @@ static knowing_ref<ItemType> new_ref(T1 arg1, T2 arg2, T3 arg3, T4 arg4,
 ///////////////////////////////////////////////////////////////////////////////
 #define CASTING_DECLARATION(INPUT_REFERENCE_TYPE)\
 template<typename _CastType, typename _ItemType> friend\
-		knowing_ref<_CastType> cast_ref(\
+		weak_ref<_CastType> cast_ref(\
 				const INPUT_REFERENCE_TYPE<_ItemType> &inReference);
 
 #define CASTING_IMPLEMENTATION(INPUT_REFERENCE_TYPE)\
-template<typename CastType, typename RefType> static knowing_ref<CastType>\
+template<typename CastType, typename RefType> static weak_ref<CastType>\
 		cast_ref(const INPUT_REFERENCE_TYPE<RefType> &inReference)\
 {\
 	static_cast<CastType *>(inReference._pointerToWrapper->pointer);\
-	knowing_ref<CastType> theReference(inReference._pointerToWrapper);\
+	weak_ref<CastType> theReference(inReference._pointerToWrapper);\
 	return theReference;\
 }\
 

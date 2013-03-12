@@ -10,7 +10,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include <map>
 
-#include "../Base/PLString.h"
+#include <core/PLString.h>
+
 #include <alut.h>
 
 #include "PLAudioObject.h"

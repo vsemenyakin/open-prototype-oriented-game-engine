@@ -3,8 +3,8 @@
 #define STRING_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include "PLAutoPointer.h"
-#include "../PLTypes.h"
+#include <core/PLAutoPointer.h>
+#include <core/PLTypes.h>
 
 #include <string>
 
@@ -112,7 +112,7 @@ bool PLCStringEquals(const PLCharacter *inCStringA, size_t inCStringALength,
 		const PLCharacter *inCStringB, size_t inCStringBLength);
 
 ///////////////////////////////////////////////////////////////////////////////
-strong_ref<PLString> PLStringCreate(const PLCharacter *inCString);
+func_out_ref<PLString> PLStringCreate(const PLCharacter *inCString);
 
 #define PL_STR(C_STRING) PLStringCreate(C_STRING)
 

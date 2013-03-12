@@ -8,9 +8,6 @@
 #include <fstream>
 
 // Framework core
-#include "../../../Base/PLCore.h"
-
-//
 #include "PLGraphic_windows.h"
 
 #include "Multithreading/PLThread_windows.h"
