@@ -6,7 +6,7 @@
  *		Visit My Site At nehe.gamedev.net
  */
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream.h>
+#include <iostream>
 #include <time.h>
 #include "cpp_FAQ/Types.h"
 

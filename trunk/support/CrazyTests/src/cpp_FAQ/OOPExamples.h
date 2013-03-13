@@ -8,7 +8,7 @@
 #ifndef OOPEXAMPLES_H_
 #define OOPEXAMPLES_H_
 
-#include <iostream.h>
+#include <iostream>
 
 namespace OOPExampleClasses
 {
