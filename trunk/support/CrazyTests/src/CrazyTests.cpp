@@ -82,5 +82,8 @@ int main()
 
 	std::cout << "Time: " << clock() - theClockTime << std::endl;
 */
+
+	std::cout << "Tests finished..." << std::endl;
+
 	return 0;
 }
