@@ -141,8 +141,8 @@ void CPPTypes::constantsTest()
 
 	// ------------------------------------.
 	// #Pointers to constant (fixed value)
-	const int *thePointerToConstantInteger = new int(1);
-
+//	const int *thePointerToConstantInteger = new int(1);
+	const int *thePointerToConstantInteger = new int(theInteger);
 	// NB: The constant before pointer type says that the value the pointer
 	//  pointing to cannot be changed. So the next code will return compile
 	//  error
