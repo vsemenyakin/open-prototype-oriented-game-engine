@@ -35,7 +35,7 @@ DWORD threadEnterFunction(LPVOID inArgument)
 // | ******************** |
 ///////////////////////////////////////////////////////////////////////////////
 PLThread_windows::PLThread_windows(PLThreadEnterPointFunction *inFunction)
-	: _threadHandle(0), _enterPoint(new EnterPoint())
+	: _threadHandle(0), _enterPoint(new EnterPoint()), _runLoop(NULL)
 {
 	_enterPoint->function = inFunction;
 }
@@ -43,7 +43,8 @@ PLThread_windows::PLThread_windows(PLThreadEnterPointFunction *inFunction)
 // Private constructor
 PLThread_windows::PLThread_windows(HANDLE inThreadHandle,
 		PLThreadEnterPointFunction *inFunction)
-	: _threadHandle(inThreadHandle), _enterPoint(new EnterPoint())
+	: _threadHandle(inThreadHandle), _enterPoint(new EnterPoint()),
+	  _runLoop(NULL)
 {
 	_enterPoint->function = inFunction;
 }

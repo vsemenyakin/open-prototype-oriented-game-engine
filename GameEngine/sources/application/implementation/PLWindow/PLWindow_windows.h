@@ -11,9 +11,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
 
-#include "EventHandling/PLRunLoop_windows.h"
+#include <application/interface/IPLWindow.h>
 
-#include "../../Interface/IPLWindow.h"
+#include <application/implementation/event_handling/PLRunLoop/PLRunLoop_windows.h>
+#include <core/PLTypes.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLWindow_windows : public IPLWindow

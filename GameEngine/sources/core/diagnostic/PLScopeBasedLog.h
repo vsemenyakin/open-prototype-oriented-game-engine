@@ -12,7 +12,7 @@
 #include <string>
 #include <fstream>
 
-#include "../Types/PLScalarTypes.h"
+#include <core/PLTypes.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLScopeBasedLog
@@ -33,9 +33,7 @@ public:
 
 	//
 	void print(PLCharacter inCharacter);
-	void print(char inChar);
 	void print(PLCharacter *inString);
-	void print(const char *inString);
 	void print(int inInteger);
 	void print(const void *inPointer);
 

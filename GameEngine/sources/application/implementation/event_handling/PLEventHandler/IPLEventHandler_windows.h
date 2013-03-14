@@ -12,7 +12,7 @@
 #include <windows.h>
 #include <list>
 
-#include "../../../Interface/PLGraphic_interface.h"
+#include <application/interface/event_handling/IPLEventHandler.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 typedef UINT PLEventMessage;
@@ -21,7 +21,7 @@ typedef std::list<PLEventMessage> PLHandlerRegistringInformation;
 typedef void (*PLEventCallback)(void *inMessage);
 
 ///////////////////////////////////////////////////////////////////////////////
-class IPLEventHandler_windows : public IPLEventHandler_interface
+class IPLEventHandler_windows : public IPLEventHandler
 {
 public:
 	virtual PLHandlerRegistringInformation *getRegistringInformation() = 0;

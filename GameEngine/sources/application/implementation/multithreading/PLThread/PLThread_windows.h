@@ -13,7 +13,7 @@
 
 #include "../../../Interface/Multithreading/IPLThread.h"
 
-#include "../EventHandling/PLRunLoop_windows.h"
+#include <application/implementation/event_handling/PLRunLoop/PLRunLoop_windows.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLThread_windows : public IPLThread

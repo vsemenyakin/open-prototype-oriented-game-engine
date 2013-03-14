@@ -9,7 +9,7 @@
 #define IPLWINDOW_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include "EventHandling/IPLRunLoop.h"
+#include <application/interface/event_handling/IPLRunLoop.h>
 
 #include <windows.h>
 

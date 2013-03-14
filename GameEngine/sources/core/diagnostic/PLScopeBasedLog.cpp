@@ -28,21 +28,7 @@ void PLScopeBasedLog::print(PLCharacter inCharacter)
 	_file << inCharacter;
 }
 
-void PLScopeBasedLog::print(char inChar)
-{
-	this->beginLine();
-	std::cout << inChar;
-	_file << inChar;
-}
-
 void PLScopeBasedLog::print(PLCharacter *inString)
-{
-	this->beginLine();
-	std::cout << inString;
-	_file << inString;
-}
-
-void PLScopeBasedLog::print(const char *inString)
 {
 	this->beginLine();
 	std::cout << inString;

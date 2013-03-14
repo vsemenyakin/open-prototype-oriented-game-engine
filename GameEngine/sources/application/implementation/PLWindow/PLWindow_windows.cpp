@@ -23,7 +23,7 @@
 // Logging
 #include <iostream>
 
-#include "Multithreading/PLThread_windows.h"
+#include <application/implementation/multithreading/PLThread/PLThread_windows.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // | *********************** |
@@ -478,6 +478,12 @@ WNDCLASSEX *PLWindow_windows::createWindowClass(const char *inName)
 
 	// Small icon resource
 	_windowClass->hIconSm = NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+PLRunLoop_windows *PLWindow_windows::getRunLoop()
+{
+	return _runLoop;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

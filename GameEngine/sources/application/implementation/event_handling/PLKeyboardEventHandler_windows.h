@@ -9,7 +9,7 @@
 #define PLKEYBOARDEVENTHANDLER_WINDOWS_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include "IPLEventHandler_windows.h"
+#include <application/implementation/event_handling/PLEventHandler/IPLEventHandler_windows.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLKeyboardEventHandler_windows : public IPLEventHandler_windows
