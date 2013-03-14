@@ -31,7 +31,7 @@ PLString::~PLString()
 
 //////////////////////////////////////////////////////////////
 // *** Accessors
-const char* PLString::getCString() const
+const PLCharacter* PLString::getCString() const
 {
 	return _string.c_str();
 }

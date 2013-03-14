@@ -15,7 +15,7 @@ typedef int PLInteger;
 
 typedef bool PLBOOL;
 typedef float PLFLOAT;
-typedef unsigned char PLCharacter;
+typedef char PLCharacter;
 typedef double PLDOUBLE;
 
 // **************************************************************

@@ -8,35 +8,9 @@
 #include <fstream>
 
 // Framework core
-#include "PLGraphic_windows.h"
-
-#include "Multithreading/PLThread_windows.h"
-#include "EventHandling/PLRunLoop_windows.h"
-
-///////////////////////////////////////////////////////////////////////////////
-void testCallback(void *inTarget, void *inArgument)
-{
-	PLCharacter theSymbol = *((PLCharacter *)inArgument);
-	std::cout << theSymbol << std::endl;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-PLString *plStringFromFile(PLString &inFileName)
-{
-	PLString *theString = new PLString();
-
-	std::fstream theStream(inFileName.getCString());
-
-	char theCharacter;
-
-	while (false == theStream.eof())
-	{
-		theStream >> theCharacter;
-		(*theString) += theCharacter;
-	}
-
-	return theString;
-}
+#include <application/implementation/PLWindow/PLWindow_windows.h>
+#include <application/implementation/multithreading/PLThread/PLThread_windows.h>
+#include <application/implementation/event_handling/PLRunLoop/PLRunLoop_windows.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 void callback(void *inEventMessage)
@@ -67,12 +41,7 @@ void PLApplication_windows::init()
 	theWindow->show();
 	theWindow->setFocus();
 
-	/*
-		PLKeyboardEventHandler *theKeyboardEventsHandler =
-				new PLKeyboardEventHandler();
-		theWindow->getRunLoop()->assignHandler(theKeyboardEventsHandler);
-		theKeyboardEventsHandler->addCallback(callback);
-	*/
+	//
 	theWindow->getRunLoop()->run();
 }
 

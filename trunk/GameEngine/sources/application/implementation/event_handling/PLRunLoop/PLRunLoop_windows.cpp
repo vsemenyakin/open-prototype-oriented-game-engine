@@ -17,6 +17,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 PLRunLoop_windows::PLRunLoop_windows()
+	: _messageHandlersAssigning(), ___handle(0)
 {
 }
 
@@ -25,7 +26,7 @@ PLRunLoop_windows::~PLRunLoop_windows()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PLRunLoop_windows::assignHandler(IPLEventHandler_windows *inHandler)
+void PLRunLoop_windows::assignHandler(IPLEventHandler *inHandler)
 {
 	PLHandlerRegistringInformation *theRegistringInformation =
 			inHandler->getRegistringInformation();
@@ -82,12 +83,12 @@ void PLRunLoop_windows::run()
 				// message handlers assigning object
 				//.
 				// -----------------------------------------------------------
-				IPLEventHandler_windows *theHandler =
-						_messageHandlersAssigning[theMessage.message];
-				if (NULL != theHandler)
+				if (_messageHandlersAssigning.end() !=
+						_messageHandlersAssigning.find(theMessage.message))
 				{
-					_messageHandlersAssigning[theMessage.message]->handleEvent(
-							theMessage);
+					((IPLEventHandler_windows *)
+							_messageHandlersAssigning[theMessage.message])->
+									handleEvent(theMessage);
 				}
 
 				// ------------------------------------------------------------

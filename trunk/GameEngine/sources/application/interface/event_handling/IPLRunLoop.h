@@ -15,7 +15,10 @@
 class IPLRunLoop
 {
 public:
-	void assignHandler(IPLEventHandler *inHandler);
+	virtual ~IPLRunLoop() { }
+
+	virtual void assignHandler(IPLEventHandler *inHandler) = 0;
+	virtual void run() = 0;
 };
 
 #endif /* IPLRUNLOOP_H_ */

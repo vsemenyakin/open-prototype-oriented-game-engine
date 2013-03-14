@@ -9,7 +9,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 TEST_PL_core_graph::TEST_PL_core_graph()
-	: _graphPointer(NULL)
+	/*: _graphPointer(NULL)*/
 {
 }
 
@@ -19,7 +19,7 @@ TEST_PL_core_graph::~TEST_PL_core_graph()
 
 ///////////////////////////////////////////////////////////////////////////////
 void TEST_PL_core_graph::performTest()
-{
+{/*
 	// Creation
 	_graphPointer = new graph();
 
@@ -38,4 +38,5 @@ void TEST_PL_core_graph::performTest()
 
 	// Removing
 	delete _graphPointer;
+	*/
 }

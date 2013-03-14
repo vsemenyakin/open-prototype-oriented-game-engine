@@ -9,12 +9,12 @@
 #define PLRUNLOOP_WINDOWS_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include "IPLEventHandler_windows.h"
+#include <application/implementation/event_handling/PLEventHandler/IPLEventHandler_windows.h>
 
 #include <windows.h>
 #include <map>
 
-#include "../../../Interface/PLGraphic_interface.h"
+#include <application/interface/event_handling/IPLRunLoop.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLRunLoop_windows : public IPLRunLoop
@@ -29,8 +29,8 @@ public:
 	PLRunLoop_windows();
 	virtual ~PLRunLoop_windows();
 
-	void assignHandler(IPLEventHandler *inHandler);
-	void run();
+	virtual void assignHandler(IPLEventHandler *inHandler);
+	virtual void run();
 
 //	void setHandle(HDC inHandle);
 

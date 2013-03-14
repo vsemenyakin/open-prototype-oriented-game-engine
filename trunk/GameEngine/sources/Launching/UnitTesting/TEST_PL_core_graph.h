@@ -10,7 +10,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 #include "IPLUnitTest.h"
-#include "../../CoreCollections/PL_core_graph.h"
+//#include "../../CoreCollections/PL_core_graph.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 class TEST_PL_core_graph : public IPLUnitTest
@@ -22,13 +22,13 @@ private:
 	// *					 Private _ Types						*
 	// **************************************************************
 
-	typedef PL_core_graph<int, int> graph;
+	//typedef PL_core_graph<int, int> graph;
 
 
 	// **************************************************************
 	// *					 Private _ Variables					*
 	// **************************************************************
-	graph *_graphPointer;
+	//graph *_graphPointer;
 
 
 	// **************************************************************

@@ -7,7 +7,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #include "TEST_PLAudio.h"
 
-#include "../../Audio/PLAudioController.h"
+//#include "../../Audio/PLAudioController.h"
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,7 @@ TEST_PLAudio::~TEST_PLAudio()
 ///////////////////////////////////////////////////////////////////////////////
 void TEST_PLAudio::performTest()
 {
+	/*
 	std::cout << "////////////////////////////////////" << std::endl;
 	std::cout << "Interactive audio testing started" << std::endl;
 
@@ -47,4 +48,5 @@ void TEST_PLAudio::performTest()
 	std::cin >>tmp;
 	std::cout << "Interactive audio testing complited" << std::endl;
 	std::cout << "////////////////////////////////////" << std::endl;
+	*/
 }
