@@ -10,27 +10,21 @@
 
 
 
-namespace Prototype {
+namespace Prototype
+{
+	FileManager::FileManager() {
+		// TODO Auto-generated constructor stub
+	}
+
+	FileManager::~FileManager() {
+		// TODO Auto-generated destructor stub
+	}
 
 
 
-FileManager::FileManager() {
-	// TODO Auto-generated constructor stub
-}
-
-FileManager::~FileManager() {
-	// TODO Auto-generated destructor stub
-}
-
-
-
-	bool FileManager::fileExistsAtPath(const char *path){
-		if( (access( path, 0 )) != -1 ){
-			return true;
-		}
-		else{
-			return false;
-		}
+	bool FileManager::fileExistsAtPath(const char *path)
+	{
+		return (access(path, F_OK) == 0);
 	}
 
 	bool FileManager::fileExistsAtPathisDirectory (const char *path, bool isDirectory){
