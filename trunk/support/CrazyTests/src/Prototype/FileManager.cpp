@@ -5,11 +5,10 @@
  *      Author: BRONY
  */
 #include "FileManager.h"
-#include <string>
 #include <fstream>
 #include  <io.h>
-#include  <stdio.h>
-#include  <stdlib.h>
+
+
 
 namespace Prototype {
 
