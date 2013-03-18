@@ -8,8 +8,6 @@
 #ifndef FILEMANAGER_H_
 #define FILEMANAGER_H_
 
-#include <string>
-
 namespace Prototype {
 
 class FileManager {
