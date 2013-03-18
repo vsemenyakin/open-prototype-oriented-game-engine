@@ -9,7 +9,7 @@
 #include <iostream>
 #include <time.h>
 #include "cpp_FAQ/Types.h"
-
+#include "Prototype/TestFileManager.h"
 ///////////////////////////////////////////////////////////////////////////////
 template<typename ItemType> class A;
 template<typename ItemType> class B;
@@ -88,6 +88,6 @@ int main()
 */
 
 	std::cout << "Tests finished..." << std::endl;
-
+	Prototype::FileManagerTest();
 	return 0;
 }
