@@ -9,33 +9,37 @@
 #define PLRUNLOOP_WINDOWS_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include <application/implementation/event_handling/PLEventHandler/IPLEventHandler_windows.h>
-
-#include <windows.h>
-#include <map>
-
 #include <application/interface/event_handling/IPLRunLoop.h>
+
+#include <core/PLString.h>
+
+#include <map>
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLRunLoop_windows : public IPLRunLoop
 {
 private:
-	std::map<PLEventMessage, IPLEventHandler *>
-			_messageHandlersAssigning;
 
-	HDC ___handle;
+	typedef std::map<PLString, IPLRunLoopService *> AServicesMap;
+	AServicesMap _services;
 
 public:
+
+	// **************************************************************
+	// *					Public _ Methods						*
+	// **************************************************************
+
+	// =====================
+	// *** Memory management
 	PLRunLoop_windows();
 	virtual ~PLRunLoop_windows();
 
-	virtual void assignHandler(IPLEventHandler *inHandler);
+	// ===============================
+	// *** [IMPLEMENTATION: IPLRunLoop]
 	virtual void run();
 
-//	void setHandle(HDC inHandle);
-
-	LRESULT CALLBACK windowProcedure(HWND inWindowHandle, UINT inMessage,
-			WPARAM inWindowParameter, LPARAM inD);
+	virtual void addService(IPLRunLoopService *inService);
+	virtual IPLRunLoopService *serviceForKey(PLString &inKey);
 };
 
 #endif /* PLRUNLOOP_WINDOWS_H_ */

@@ -5,7 +5,7 @@
 #define TRACE_EXPRESSION(expr) std::cout << #expr << " = " << expr << std::endl;
 
 ///////////////////////////////////////////////////////////////////////////////
-#include <iostream>
+//#include <iostream>
 #include <cstdlib>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,10 +61,12 @@ template <typename ItemType> class PLAutoPointer_owning;
 //
 ///////////////////////////////////////////////////////////////////////////////
 template<typename ItemType>
-static inline weak_ref<ItemType> NULL_REF()
+static inline weak_ref<ItemType> null_ref_function()
 {
 	return weak_ref<ItemType>((ItemType *)NULL);
 }
+
+#define NULL_REF(TYPE) null_ref_function<TYPE>()
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -137,14 +139,14 @@ template<typename CastType, typename RefType> static weak_ref<CastType>\
 #define DECALRE_KNOWING_CREATION_AND_ASSIGNING(ASSIGNING_TYPE)\
 PLAutoPointer_knowing(const ASSIGNING_TYPE<ItemType> &inPointer)\
 {\
-	std::cout << "Knowing copy constructor" << std::endl;\
+	/*std::cout << "Knowing copy constructor" << std::endl;*/\
 	PLAutoPointer_knowing<ItemType>::_pointerToWrapper =\
 			inPointer._pointerToWrapper;\
 }\
 PLAutoPointer_knowing<ItemType> &operator = (\
 		const ASSIGNING_TYPE<ItemType> &inPointer)\
 {\
-	std::cout << "Knowing assigning" << std::endl;\
+/*std::cout << "Knowing assigning" << std::endl;*/\
 	if (inPointer._pointerToWrapper != this->_pointerToWrapper)\
 	{\
 		PLAutoPointer_knowing<ItemType>::_pointerToWrapper =\
@@ -152,6 +154,23 @@ PLAutoPointer_knowing<ItemType> &operator = (\
 	}\
 	return *this;\
 }\
+bool operator == (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper == inPointer._pointerToWrapper;\
+}\
+bool operator != (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper != inPointer._pointerToWrapper;\
+}\
+bool operator > (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper > inPointer._pointerToWrapper;\
+}\
+bool operator < (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper < inPointer._pointerToWrapper;\
+}\
+\
 
 ///////////////////////////////////////////////////////////////////////////////
 // Class
@@ -177,15 +196,15 @@ public:
 	// **************************************************************
 	PLAutoPointer_knowing(void *inRawPointer)
 	{
-		std::cout << "Knowing reference constructor for raw pointer" <<
-				std::endl;
+		//std::cout << "Knowing reference constructor for raw pointer" <<
+		//		std::endl;
 		_pointerToWrapper = new PointerWrapper(inRawPointer);
 	}
 
 	PLAutoPointer_knowing(PointerWrapper *inPointerWrapper)
 	{
-		std::cout << "Knowing reference constructor for pointer wrapper" <<
-				std::endl;
+		//std::cout << "Knowing reference constructor for pointer wrapper" <<
+		//		std::endl;
 		_pointerToWrapper = inPointerWrapper;
 	}
 
@@ -207,7 +226,7 @@ public:
 	//
 	PLAutoPointer_knowing()
 	{
-		std::cout << "Default knowing constructor" << std::endl;
+		//std::cout << "Default knowing constructor" << std::endl;
 		_pointerToWrapper = NULL;
 	}
 
@@ -250,7 +269,7 @@ CASTING_IMPLEMENTATION(PLAutoPointer_owning)
 #define DECALRE_OWNING_CREATION_AND_ASSIGNING(ASSIGNING_TYPE)\
 PLAutoPointer_owning(const ASSIGNING_TYPE<ItemType> &inPointer)\
 {\
-	std::cout << "Owning copy constructor" << std::endl;\
+	/*std::cout << "Owning copy constructor" << std::endl;*/\
 	PLAutoPointer_knowing<ItemType>::_pointerToWrapper =\
 			inPointer._pointerToWrapper;\
 	retain();\
@@ -258,7 +277,7 @@ PLAutoPointer_owning(const ASSIGNING_TYPE<ItemType> &inPointer)\
 PLAutoPointer_owning<ItemType> &operator = (\
 		const ASSIGNING_TYPE<ItemType> &inPointer)\
 {\
-	std::cout << "Owning assigning" << std::endl;\
+	/*std::cout << "Owning assigning" << std::endl;*/\
 	if (inPointer._pointerToWrapper != this->_pointerToWrapper)\
 	{\
 		release();\
@@ -268,6 +287,23 @@ PLAutoPointer_owning<ItemType> &operator = (\
 	}\
 	return *this;\
 }\
+bool operator == (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper == inPointer._pointerToWrapper;\
+}\
+bool operator != (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper != inPointer._pointerToWrapper;\
+}\
+bool operator > (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper > inPointer._pointerToWrapper;\
+}\
+bool operator < (const ASSIGNING_TYPE<ItemType> &inPointer) const\
+{\
+	return _pointerToWrapper < inPointer._pointerToWrapper;\
+}\
+\
 
 ///////////////////////////////////////////////////////////////////////////////
 // Class
@@ -311,12 +347,12 @@ public:
 	PLAutoPointer_owning()
 		: PLAutoPointer_knowing<ItemType>()
 	{
-		std::cout << "Owning default constructor" << std::endl;
+		//std::cout << "Owning default constructor" << std::endl;
 	}
 
 	virtual ~PLAutoPointer_owning()
 	{
-		std::cout << "Removed owning reference" << std::endl;
+		//std::cout << "Removed owning reference" << std::endl;
 		release();
 	}
 
@@ -324,7 +360,7 @@ public:
 	// *** Owning behavior
 	void retain()
 	{
-		std::cout << "Retained" << std::endl;
+		//std::cout << "Retained" << std::endl;
 		if (NULL != this->_pointerToWrapper)
 		{
 			++this->_pointerToWrapper->referenceCount;
@@ -333,7 +369,7 @@ public:
 
 	void release()
 	{
-		std::cout << "Released" << std::endl;
+		//std::cout << "Released" << std::endl;
 		if (NULL != this->_pointerToWrapper)
 		{
 			--this->_pointerToWrapper->referenceCount;

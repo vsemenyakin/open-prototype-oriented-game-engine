@@ -24,8 +24,6 @@ public:
 	virtual void setFocus() = 0;
 
 	virtual IPLRunLoop *getRunLoop() = 0;
-
-//	virtual void getGLContext();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

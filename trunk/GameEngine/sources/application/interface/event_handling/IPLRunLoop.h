@@ -9,7 +9,9 @@
 #define IPLRUNLOOP_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include "IPLEventHandler.h"
+#include <application/interface/event_handling/IPLRunLoopService.h>
+
+#include <core/PLString.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 class IPLRunLoop
@@ -17,8 +19,10 @@ class IPLRunLoop
 public:
 	virtual ~IPLRunLoop() { }
 
-	virtual void assignHandler(IPLEventHandler *inHandler) = 0;
 	virtual void run() = 0;
+
+	virtual void addService(IPLRunLoopService *inService) = 0;
+	virtual IPLRunLoopService *serviceForKey(PLString &inKey) = 0;
 };
 
 #endif /* IPLRUNLOOP_H_ */

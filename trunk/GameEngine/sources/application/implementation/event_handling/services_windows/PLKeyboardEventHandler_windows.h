@@ -9,22 +9,25 @@
 #define PLKEYBOARDEVENTHANDLER_WINDOWS_H_
 
 ///////////////////////////////////////////////////////////////////////////////
-#include <application/implementation/event_handling/PLEventHandler/IPLEventHandler_windows.h>
+#include <application/implementation/event_handling/services_windows/IPLEventHandler.h>
+
+#include <core/PLEventCenter.h>
 
 ///////////////////////////////////////////////////////////////////////////////
-class PLKeyboardEventHandler_windows : public IPLEventHandler_windows
-{
-private:
-	PLEventCallback _callback;
+DECLARE_EVENT_KEY(kPLKeyDownEvent)
+DECLARE_EVENT_KEY(kPLKeyUpEvent)
 
+///////////////////////////////////////////////////////////////////////////////
+class PLKeyboardEventHandler_windows : public IPLEventHandler
+{
 public:
 	PLKeyboardEventHandler_windows();
 	virtual ~PLKeyboardEventHandler_windows();
 
 	virtual PLHandlerRegistringInformation *getRegistringInformation();
-	virtual void handleEvent(MSG inMessage);
 
-	virtual void addCallback(PLEventCallback inCallback);
+	// Get and process windows message
+	virtual void handleEvent(MSG &inMessage);
 };
 
 #endif /* PLKEYBOARDEVENTHANDLER_WINDOWS_H_ */
