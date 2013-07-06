@@ -1,7 +1,7 @@
 /*
- * IPLEventHandler.h
+ * PLEventHandler.h
  *
- *  Created on: Jan 21, 2013
+ *  Created on: Jan 20, 2013
  *      Author: Admin
  */
 ///////////////////////////////////////////////////////////////////////////////
@@ -9,22 +9,21 @@
 #define IPLEVENTHANDLER_H_
 
 ///////////////////////////////////////////////////////////////////////////////
+#include <windows.h>
 #include <list>
 
 ///////////////////////////////////////////////////////////////////////////////
-typedef unsigned int PLEventMessage;
-typedef std::list<PLEventMessage> PLHandlerRegistringInformation;
-
-typedef void (*PLEventCallback)(void *inMessage);
+//! Structure that saves all windows messages that processed by current handler
+typedef std::list<UINT> PLHandlerRegistringInformation;
 
 ///////////////////////////////////////////////////////////////////////////////
 class IPLEventHandler
 {
 public:
-	virtual ~IPLEventHandler() { };
+	virtual ~IPLEventHandler() { }
 
 	virtual PLHandlerRegistringInformation *getRegistringInformation() = 0;
-	virtual void addCallback(PLEventCallback inCallback) = 0;
+	virtual void handleEvent(MSG &inMessage) = 0;
 };
 
 #endif /* IPLEVENTHANDLER_H_ */

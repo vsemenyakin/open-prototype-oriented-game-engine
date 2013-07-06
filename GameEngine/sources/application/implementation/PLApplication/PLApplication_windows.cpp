@@ -12,11 +12,15 @@
 #include <application/implementation/multithreading/PLThread/PLThread_windows.h>
 #include <application/implementation/event_handling/PLRunLoop/PLRunLoop_windows.h>
 
-///////////////////////////////////////////////////////////////////////////////
-void callback(void *inEventMessage)
-{
-	std::cout << "Key pressed" << std::endl;
-}
+#include <application/implementation/event_handling/services_windows/PLWindowEventsService.h>
+
+#include <core/PLEventCenter.h>
+
+#include <application/implementation/event_handling/services_windows/PLKeyboardEventHandler_windows.h>
+
+#include <core/PLFunctor.h>
+
+#include <core/PLAutoPointer.h>
 
 // TODO put here PLLog
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,19 +33,30 @@ PLApplication_windows::~PLApplication_windows()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+void test(double inArgument)
+{
+	std::cout << inArgument << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void PLApplication_windows::init()
 {
 	// Create main thread object
 	PLThread_windows::createMainThreadObject(GetCurrentThread());
 
-	// Create main window object
+	// Create main window object, show it and focus to it
 	PLWindow_windows *theWindow = new PLWindow_windows((char *)"First window",
 			PLCreateRectangle(0.0, 0.0, 640.0, 480.0));
 
 	theWindow->show();
 	theWindow->setFocus();
 
-	//
+	// Run runloop for event handling
+	theWindow->getRunLoop()->addService(new PLWindowEventsService());
+
+//	PLEventCenter::defaultCenter()->addInvocationByEventWithNameFromTarget(
+//			&kPLKeyDownEvent, theWindow, test);
+
 	theWindow->getRunLoop()->run();
 }
 

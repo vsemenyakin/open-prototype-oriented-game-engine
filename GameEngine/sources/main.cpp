@@ -1,18 +1,27 @@
-
-//#include "Launching/PLUnitTesting.h"
-
-#include <iostream>
-#include <application/implementation/PLApplication/PLApplication_windows.h>
-
-// my test comment
-///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 //#define UNIT_TESTING
-#define APPLICATION_EXECUTION
+//#define APPLICATION_EXECUTION
+
+///////////////////////////////////////////////////////////////////////////////
+
+#include <iostream>
+
+// =====================
+// Unit testing includes
+#ifdef UNIT_TESTING
+#include "Launching/PLUnitTesting.h"
+#endif // UNIT_TESTING
+
+// ====================
+// Application includes
+#ifdef APPLICATION_EXECUTION
+#include <application/implementation/PLApplication/PLApplication_windows.h>
+#endif // APPLICATION_EXECUTION
 
 ///////////////////////////////////////////////////////////////////////////////
 int main()
 {
+
 // Unit testing
 #ifdef UNIT_TESTING
 	PLUnitTesting theUnitTesting;
@@ -26,6 +35,5 @@ int main()
 	theApplication.start();
 #endif
 
-	// TODO return here PLError
 	return 0;
 }

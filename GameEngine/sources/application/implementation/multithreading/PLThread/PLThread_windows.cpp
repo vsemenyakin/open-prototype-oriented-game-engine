@@ -15,12 +15,13 @@
 // | ********************************************* |
 // | *** OS thread to framework thread mapping *** |
 // | ********************************************* |
-///////////////////////////////////////////////////////////////////////////////
-// *** Mapping data structure
+
+// Mapping data structure.
+// Used for association of windows thread
+// (represented by it's handle) and PL thread object
 static std::map<HANDLE, PLThread_windows *> sThreadMapping;
 
-///////////////////////////////////////////////////////////////////////////////
-// *** Thread registry data structure
+// Windows thread enter point.
 DWORD threadEnterFunction(LPVOID inArgument)
 {
 	PLThread_windows::EnterPoint *theEnterPoint =

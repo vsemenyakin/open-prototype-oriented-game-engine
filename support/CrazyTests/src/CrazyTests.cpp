@@ -10,84 +10,292 @@
 #include <time.h>
 #include "cpp_FAQ/Types.h"
 #include "Prototype/TestFileManager.h"
+
+/*
 ///////////////////////////////////////////////////////////////////////////////
-template<typename ItemType> class A;
-template<typename ItemType> class B;
+using namespace std;
+
+#include <algorithm>
+#include <cstdlib>
+#include <iterator>
+#include <vector>
+
+#include <functional>
 
 ///////////////////////////////////////////////////////////////////////////////
-template <typename ItemType>
-class A
+// *** CALLER
+///////////////////////////////////////////////////////////////////////////////
+//============================================================================
+// Name        : Functor.cpp
+// Author      : Andrew Begunov
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Hello World in C++, Ansi-style
+///////////////////////////////////////////////////////////////////////////////
+#include <iostream>
+using namespace std;
+
+static const unsigned kMaxArgsCountAvailable = 100;
+
+///////////////////////////////////////////////////////////////////////////////
+class AbstractTarget
 {
-private:
-	ItemType anArgument;
+public:
+	void *_args[kMaxArgsCountAvailable];
+
+	virtual void call()=0;
+
+	virtual ~AbstractTarget()
+	{
+	}
+};
+
+///////////////////////////////////////////////////////////////////////////////
+template <typename T>
+class Target : public AbstractTarget
+{
+};
+
+template <typename ArgT>
+class Target<void (*)(ArgT)> : public AbstractTarget
+{
+	void (*_callback)(ArgT);
 
 public:
-	template<typename ItemType_1> void operator = (A<ItemType_1> &inArgument)
+	Target(void (*callback)(ArgT))
+		:_callback(callback)
 	{
-		anArgument = static_cast<ItemType_1>(inArgument.getVariable());
 	}
 
-
-	virtual void setVariable(const ItemType &inType)
+	void call()
 	{
-		anArgument = inType;
-	}
-
-	virtual ItemType &getVariable()
-	{
-		return anArgument;
-	}
-
-	virtual ~A()
-	{
+		_callback(*(ArgT*)(_args[0]));
 	}
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-template <typename ItemType>
-class B : public A<ItemType>
+template <typename ClassT, typename ArgT>
+class Target<void (ClassT::*)(ArgT)> : public AbstractTarget
 {
+	ClassT *_object;
+	void (ClassT::*_callback)(ArgT);
+
+public:
+	Target(ClassT *object, void (ClassT::*callback)(ArgT))
+		:_object(object), _callback(callback)
+	{
+	}
+
+	void call()
+	{
+		(_object->*_callback)(*(ArgT*)(_args[0]));
+	}
 };
+
+///////////////////////////////////////////////////////////////////////////////
+template <typename ArgT>
+class Target<std::function<void(ArgT)> > : public AbstractTarget
+{
+	std::function<void(ArgT)> _callback;
+
+public:
+	Target(std::function<void(ArgT)> inCallback)
+		: _callback(inCallback)
+	{
+	}
+
+	void call()
+	{
+		_callback(*(ArgT *)(_args[0]));
+	}
+};
+
+///////////////////////////////////////////////////////////////////////////////
+class Functor
+{
+private:
+	AbstractTarget *_caller;
+
+public:
+	template <typename ClassT, typename ArgT>
+	Functor(ClassT *object, void (ClassT::*callback)(ArgT))
+		:_caller(new Target<void (ClassT::*)(ArgT)>(object, callback))
+	{
+	}
+
+	template <typename ArgT>
+	Functor(void (*callback)(ArgT))
+		:_caller(new Target<void (*)(ArgT)>(callback))
+	{
+	}
+
+	template <typename ArgT>
+	Functor(std::function<void(ArgT)> inLamda)
+		:_caller(new Target<std::function<void(ArgT)> >(inLamda))
+	{
+	}
+
+	template <typename T>
+	void call(T arg)
+	{
+		_caller->_args[0] = (void *)&arg;
+		_caller->call();
+	}
+
+	~Functor()
+	{
+		delete _caller;
+	}
+};
+
+///////////////////////////////////////////////////////////////////////////////
+typedef int PLEventKey;
+static const PLEventKey kPLNullEventKey = 0;
+#define DECLARE_EVENT_KEY(EVENT_NAME) PLEventKey EVENT_NAME = kPLNullEventKey;
+
+void addEventListener(PLEventKey *inKey)
+{
+	if (*inKey == kPLNullEventKey)
+	{
+		// Set key
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void f(float arg)
+{
+	std::cout << arg * arg << std::endl;
+}
+
+class Test
+{
+public:
+	void method(float x)
+	{
+		std::cout << x*x << std::endl;
+	}
+};
+
+///////////////////////////////////////////////////////////////////////////////
+template <typename RetType, typename Arg>
+RetType test_func(Arg inArgument)
+{
+	return (RetType)inArgument;
+}
+*/
+
+class MyClass
+{
+public:
+	int x;
+	int y;
+	char name;
+
+	MyClass(const MyClass &inObject)
+		: x(inObject.x), y(inObject.y), name(inObject.name)
+	{
+		std::cout << "Copy constructor called" << std::endl;
+	}
+
+	MyClass()
+		: x(0), y(0), name('A')
+	{
+	}
+
+	MyClass &operator = (const MyClass &inObject)
+	{
+		x = inObject.x;
+		y = inObject.y;
+		name = inObject.name;
+
+		std::cout << "Assigning object address: " << this << std::endl;
+
+		return *this;
+	}
+};
+
+///////////////////////////////////////////////////////////////////////////////
+class ClassWithExplicityInlineMethod
+{
+public:
+	inline void sum(int &a, int b)
+	{
+		a = a + b;
+	}
+};
+
+int sum(int &a, int b)
+{
+	return a + b;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 int main()
 {
-	CPPTypes::printTypesSizes();
-	//CPPTypes::printStandartConstants();
+	ClassWithExplicityInlineMethod theClass;
 
-	CPPMemory::memoryAllocationTest();
+	int theTestTimes = 1000000000;
+	int theIndex = 0;
+
+	int theResult = 0;
+
+	time_t theTime = 0;
+
+	// Simple sum
+	theTime = clock();
+	theResult = 0;
+	for (theIndex = 0; theIndex < theTestTimes; ++theIndex)
+	{
+		theResult = theResult + theIndex;
+	}
+	theTime = clock() - theTime;
+	std::cout << theResult << " " << theTime << std::endl;
+
+	// Function sum
+	theTime = clock();
+	theResult = 0;
+	for (theIndex = 0; theIndex < theTestTimes; ++theIndex)
+	{
+		theResult = sum(theResult, theIndex);
+	}
+	theTime = clock() - theTime;
+	std::cout << theResult << " " << theTime << std::endl;
+
+	// Inline method sum
+	theTime = clock();
+	theResult = 0;
+	for (theIndex = 0; theIndex < theTestTimes; ++theIndex)
+	{
+		theClass.sum(theResult, theIndex);
+	}
+	theTime = clock() - theTime;
+	std::cout << theResult << " " << theTime << std::endl;
+
 
 	/*
-	A<int> first;
-	A<double> second;
+	MyClass a, b, c;
 
-	second.setVariable(-0.1);
+	std::cout << "A address: " << &a << std::endl;
+	std::cout << "B address: " << &b << std::endl;
+	std::cout << "C address: " << &c << std::endl;
 
-	first = second;
+	c.x = 1;
+	c.y = 2;
+	c.name = 'a';
+
+	a = b = c;
 	*/
 
 	/*
-	void *first = new B<int>();
-	void *second1;
-
-	clock_t theClockTime = clock();
-
-	int size = 40000;
-	int i, j;
-
-	for (i = 0; i < size; ++i)
+	Functor theFunctor = std::function<void(float)>([](float inArgument)
 	{
-		for (j = 0; j < size; ++j)
-		{
-			//second1 = (A<int> *)first;
-			second1 = first;
-		}
-	}
+		std::cout << "Lambda" << std::endl;
+	});
 
-	std::cout << "Time: " << clock() - theClockTime << std::endl;
-*/
+	theFunctor.call(1.6);
 
-	std::cout << "Tests finished..." << std::endl;
-	Prototype::FileManagerTest();
+	std::cout << "Test finished" << std::endl;
+	 */
+
 	return 0;
 }

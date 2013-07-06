@@ -12,8 +12,11 @@
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
+EVENT_KEY(kPLKeyDownEvent)
+EVENT_KEY(kPLKeyUpEvent)
+
+///////////////////////////////////////////////////////////////////////////////
 PLKeyboardEventHandler_windows::PLKeyboardEventHandler_windows()
-	: _callback(NULL)
 {
 }
 
@@ -37,17 +40,9 @@ PLHandlerRegistringInformation
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PLKeyboardEventHandler_windows::handleEvent(MSG inMessage)
+void PLKeyboardEventHandler_windows::handleEvent(MSG &inMessage)
 {
 	std::cout << "<Key pressed event>" << std::endl;
 	std::cout << "Time: " << inMessage.time << std::endl;
 	std::cout << "Information: " << inMessage.wParam << std::endl;
-
-	(*_callback)(new unsigned int(0));
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void PLKeyboardEventHandler_windows::addCallback(PLEventCallback inCallback)
-{
-	_callback = inCallback;
 }

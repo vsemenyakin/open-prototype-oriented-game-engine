@@ -20,7 +20,9 @@ class PLThread_windows : public IPLThread
 {
 private:
 
-	//
+	// **************************************************************
+	// *					Private _ Types							*
+	// **************************************************************
 	typedef struct
 	{
 		void *argument;
@@ -28,36 +30,65 @@ private:
 	}
 	EnterPoint;
 
-	//
+
+	// **************************************************************
+	// *					Private _ Fields						*
+	// **************************************************************
+
+	// Handle to windows thread
 	HANDLE _threadHandle;
+
+	// PL thread object enter point
 	EnterPoint *_enterPoint;
 
-	//
+	// Runloop of thread
 	PLRunLoop_windows *_runLoop;
 
-	//
+
+	// **************************************************************
+	// *					Private _ Methods						*
+	// **************************************************************
+
+	// =====================
+	// *** Memory management
+
+	// Windows handle based thread constructor.
+	// Needs for assigning the windows thread
+	// handle and PL thread object handle.
 	PLThread_windows(HANDLE inThreadHandle,
 			PLThreadEnterPointFunction *inFunction);
 
-	//
+	// **************************************************************
+	// *					Private _ Friends						*
+	// **************************************************************
+
+	// Windows thread enter point.
+	// This function calls when windows thread starts. Then it cast input
+	// argument to PL thread object enter point (PLThread_windows::EnterPoint)
+	// and launch enter point function with enter point argument.
 	friend DWORD threadEnterFunction(LPVOID inArgument);
 
 public:
 
 
-	//
-	//
-	PLThread_windows(PLThreadEnterPointFunction *inFunction);
+	// **************************************************************
+	// *					Public _ Methods						*
+	// **************************************************************
 
+	// =====================
+	// *** Memory management
+	PLThread_windows(PLThreadEnterPointFunction *inFunction);
 	virtual ~PLThread_windows();
 
-	//
-	virtual void runWithArgument(void *inArgument);
 
-	//
+	// ===============================
+	// *** [IMPLEMENTATION: IPLThread]
+	virtual void runWithArgument(void *inArgument);
 	virtual IPLRunLoop *runLoop();
 
-	// TODO: Put static methods to interface if it's possible
+
+	// ==================
+	// *** Static methods
 	static void createMainThreadObject(HANDLE inHandle);
 	static PLThread_windows *currentThread();
 };

@@ -25,6 +25,11 @@
 
 #include <application/implementation/multithreading/PLThread/PLThread_windows.h>
 
+// Event handlers
+#include <application/implementation/event_handling/services_windows/PLKeyboardEventHandler_windows.h>
+
+#include <application/implementation/event_handling/services_windows/PLWindowEventsService.h>
+
 ///////////////////////////////////////////////////////////////////////////////
 // | *********************** |
 // | *** Window regestry *** |
@@ -59,12 +64,12 @@ LRESULT __stdcall windowProcedure(HWND inWindowHandle, UINT inMessage,
 	PLWindow_windows *theWindows =
 			getWindowClassByWindowHandle(inWindowHandle);
 
-	if (NULL != theWindows)
-	{
-		// Delegating for created window
-		return theWindows->getRunLoop()->windowProcedure(inWindowHandle,
-				inMessage, inWindowParameter, inD);
-	}
+//	if (NULL != theWindows)
+//	{
+//		// Delegating for created window
+//		return theWindows->getRunLoop()->windowProcedure(inWindowHandle,
+//				inMessage, inWindowParameter, inD);
+//	}
 
 	// Default call
 	return DefWindowProc(inWindowHandle, inMessage, inWindowParameter, inD);
@@ -490,4 +495,18 @@ PLRunLoop_windows *PLWindow_windows::getRunLoop()
 void PLWindow_windows::setFocus()
 {
 	SetFocus(_windowHandle);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PLWindow_windows::initializeEnvironmentForEvent(PLEventKey *inoutEventKey)
+{
+	if (inoutEventKey == &kPLKeyDownEvent || inoutEventKey == &kPLKeyUpEvent)
+	{
+		PLWindowEventsService *theServiceWindowEventService =
+				(PLWindowEventsService *)PLThread_windows::currentThread()->
+						runLoop()->serviceForKey(kPLRunLoopServiceWindowEvent);
+
+		theServiceWindowEventService->assignHandler(
+				new PLKeyboardEventHandler_windows());
+	}
 }
