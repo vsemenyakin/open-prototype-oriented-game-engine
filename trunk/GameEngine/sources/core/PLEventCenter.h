@@ -10,6 +10,7 @@
 #define PLEVENTCENTER_H_
 
 ///////////////////////////////////////////////////////////////////////////////
+#include <list>
 #include <map>
 #include <vector>
 
@@ -20,10 +21,11 @@ class IPLCompositeEventSource;
 
 ///////////////////////////////////////////////////////////////////////////////
 typedef int PLEventKey;
-static const PLEventKey kPLNullEventKey = 0xFFFFFFFF;
+static const PLEventKey kPLUnregisteredEventValue = 0xFFFFFFFF;
 
-#define DECLARE_EVENT_KEY(EVENT_NAME) extern PLEventKey EVENT_NAME;
-#define EVENT_KEY(EVENT_NAME) PLEventKey EVENT_NAME = kPLNullEventKey;
+#define USE_EVENT_KEY(EVENT_NAME) extern PLEventKey EVENT_NAME;
+#define DECLARE_EVENT_KEY(EVENT_NAME)\
+		PLEventKey EVENT_NAME = kPLUnregisteredEventValue;
 
 ///////////////////////////////////////////////////////////////////////////////
 class PLEventCenter
@@ -36,15 +38,16 @@ private:
 	// **************************************************************
 
 	// Target to callback functor map
-	typedef std::map<void *, PLFunctor>
-			PLTargetToFunctor;
+	typedef std::list<PLFunctor> AFunctorsList;
+	typedef std::map<void *, AFunctorsList> AnEventSourceMapping;
+	typedef std::vector<AnEventSourceMapping> AEventKeyMapping;
 
 	// **************************************************************
 	// *					Private _ Field							*
 	// **************************************************************
 
 	// Event name to targets to functors map assigning
-	std::vector<PLTargetToFunctor > _eventNameAssigning;
+	AEventKeyMapping _eventKeyToTargetMappingMap;
 
 public:
 
@@ -67,19 +70,25 @@ public:
 
 	// All objects invocation
 	void addInvocationByEventWithNameFromTarget(PLEventKey *inoutEventKey,
-			void *inTarget, PLFunctor inFunctor);
+			void *inEventSource, const PLFunctor &inFunctor);
 
 	// Composite event source invocation
 	// (object that needs environment initialization)
 	void addInvocationByEventWithNameFromTarget(PLEventKey *inoutEventKey,
-			IPLCompositeEventSource *inTarget, PLFunctor inFunctor);
+			IPLCompositeEventSource *inEventSource, const PLFunctor &inFunctor);
 
 	// ----------------
 	// *** Handle event
 
 	// Final event invocation
-	void invokeEventWithInformation(PLEventKey *inoutEventKey, void *inTarget,
-			void *inEventInformation);
+	void invokeEventWithInformation(PLEventKey *inoutEventKey,
+			void *inEventSource, void *inEventInformation);
+
+	// -------------------------
+	// *** Remove event handler
+
+	void removeHandler(PLEventKey *inoutEventKey, void *inEventSource,
+			const PLFunctor &inFunctor);
 
 	// ==================
 	// *** Static methods
