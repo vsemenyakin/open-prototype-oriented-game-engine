@@ -12,8 +12,8 @@
 #include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////
-EVENT_KEY(kPLKeyDownEvent)
-EVENT_KEY(kPLKeyUpEvent)
+DECLARE_EVENT_KEY(kPLKeyDownEvent)
+DECLARE_EVENT_KEY(kPLKeyUpEvent)
 
 ///////////////////////////////////////////////////////////////////////////////
 PLKeyboardEventHandler_windows::PLKeyboardEventHandler_windows()

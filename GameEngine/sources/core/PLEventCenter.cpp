@@ -14,7 +14,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 PLEventCenter::PLEventCenter()
-	: _eventNameAssigning()
+	: _eventKeyToTargetMappingMap()
 {
 }
 
@@ -24,42 +24,77 @@ PLEventCenter::~PLEventCenter()
 
 ///////////////////////////////////////////////////////////////////////////////
 void PLEventCenter::addInvocationByEventWithNameFromTarget(
-		PLEventKey *inoutEventKey, void *inTarget, PLFunctor inFunctor)
+		PLEventKey *inoutEventKey, void *inTarget, const PLFunctor &inFunctor)
 {
-	if (kPLNullEventKey == *inoutEventKey)
+	// Register event
+	if (kPLUnregisteredEventValue == *inoutEventKey)
 	{
-		_eventNameAssigning.push_back(PLTargetToFunctor());
-		*inoutEventKey = _eventNameAssigning.size() - 1;
+		*inoutEventKey = _eventKeyToTargetMappingMap.size();
+		_eventKeyToTargetMappingMap.push_back(AnEventSourceMapping());
 	}
 
-	PLTargetToFunctor &theMap = _eventNameAssigning[*inoutEventKey];
-	theMap[inTarget] = inFunctor;
+	AnEventSourceMapping &theMap = _eventKeyToTargetMappingMap[*inoutEventKey];
+	theMap[inTarget].push_back(inFunctor);
 }
 
 void PLEventCenter::addInvocationByEventWithNameFromTarget(
-		PLEventKey *inoutEventKey, IPLCompositeEventSource *inTarget,
-				PLFunctor inFunctor)
+		PLEventKey *inoutEventKey, IPLCompositeEventSource *inEventSource,
+				const PLFunctor &inFunctor)
 {
-	if (kPLNullEventKey == *inoutEventKey)
+	if (kPLUnregisteredEventValue == *inoutEventKey)
 	{
-		inTarget->initializeEnvironmentForEvent(inoutEventKey);
+		inEventSource->initializeEnvironmentForEvent(inoutEventKey);
 	}
 
-	addInvocationByEventWithNameFromTarget(inoutEventKey, (void *)inTarget,
+	addInvocationByEventWithNameFromTarget(inoutEventKey, (void *)inEventSource,
 			inFunctor);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void PLEventCenter::invokeEventWithInformation(PLEventKey *inoutEventKey,
-		void *inTarget, void *inEventInformation)
+void PLEventCenter::removeHandler(PLEventKey *inoutEventKey,
+		void *inEventSource, const PLFunctor &inFunctor)
 {
-	if (kPLNullEventKey != *inoutEventKey)
+	if (*inoutEventKey != kPLUnregisteredEventValue)
 	{
-		PLTargetToFunctor theMap = _eventNameAssigning[*inoutEventKey];
-		for (PLTargetToFunctor::iterator theIterator = theMap.begin();
-				theIterator != theMap.end(); ++theIterator)
+		AnEventSourceMapping &theEventSourceMapping =
+				_eventKeyToTargetMappingMap[*inoutEventKey];
+
+		const AnEventSourceMapping::iterator &theIterator =
+				theEventSourceMapping.find(inEventSource);
+
+		if (theIterator != theEventSourceMapping.end())
 		{
-			theIterator->second(inEventInformation);
+			theIterator->second.remove(inFunctor);
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void PLEventCenter::invokeEventWithInformation(PLEventKey *inoutEventKey,
+		void *inEventSource, void *inEventInformation)
+{
+	if (kPLUnregisteredEventValue != *inoutEventKey)
+	{
+		AnEventSourceMapping &theEventSourceMapping =
+				_eventKeyToTargetMappingMap[*inoutEventKey];
+
+		if (NULL != inEventSource)
+		{
+			const AnEventSourceMapping::iterator &theIterator =
+					theEventSourceMapping.find(inEventSource);
+
+			if (theIterator != theEventSourceMapping.end())
+			{
+				AFunctorsList &theFunctorsList = theIterator->second;
+
+				AFunctorsList::iterator theFunctorsIterator =
+						theFunctorsList.begin();
+				for (; theFunctorsIterator != theFunctorsList.end();
+						++theFunctorsIterator)
+				{
+					theFunctorsIterator->call();
+				}
+			}
 		}
 	}
 }

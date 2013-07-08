@@ -31,6 +31,10 @@
 #include <application/implementation/event_handling/services_windows/PLWindowEventsService.h>
 
 ///////////////////////////////////////////////////////////////////////////////
+USE_EVENT_KEY(kPLKeyDownEvent)
+USE_EVENT_KEY(kPLKeyUpEvent)
+
+///////////////////////////////////////////////////////////////////////////////
 // | *********************** |
 // | *** Window regestry *** |
 // | *********************** |
@@ -71,7 +75,7 @@ LRESULT __stdcall windowProcedure(HWND inWindowHandle, UINT inMessage,
 //				inMessage, inWindowParameter, inD);
 //	}
 
-	// Default call
+	// Default call - need for responding to Windows OS calls
 	return DefWindowProc(inWindowHandle, inMessage, inWindowParameter, inD);
 }
 
@@ -500,7 +504,7 @@ void PLWindow_windows::setFocus()
 ///////////////////////////////////////////////////////////////////////////////
 void PLWindow_windows::initializeEnvironmentForEvent(PLEventKey *inoutEventKey)
 {
-	if (inoutEventKey == &kPLKeyDownEvent || inoutEventKey == &kPLKeyUpEvent)
+	if (*inoutEventKey == kPLKeyDownEvent || *inoutEventKey == kPLKeyUpEvent)
 	{
 		PLWindowEventsService *theServiceWindowEventService =
 				(PLWindowEventsService *)PLThread_windows::currentThread()->

@@ -29,6 +29,7 @@ private:
 
 		virtual void call()=0;
 		virtual AbstractTarget *clone()=0;
+		virtual bool isEquals(void *inTarget)=0;
 
 		virtual ~AbstractTarget()
 		{
@@ -60,9 +61,19 @@ private:
 			_callback(*(ArgT*)(_args[0]));
 		}
 
-		AbstractTarget *clone()
+		virtual AbstractTarget *clone()
 		{
 			return new Target<void (*)(ArgT)>(_callback);
+		}
+
+		virtual bool isEquals(void *inTarget)
+		{
+			Target<void (*)(ArgT)> *theFunctorPointer =
+					dynamic_cast<Target<void (*)(ArgT)> >(inTarget);
+
+			if (NULL == theFunctorPointer) return false;
+
+			 return _callback == theFunctorPointer->_callback;
 		}
 	};
 
@@ -88,6 +99,17 @@ private:
 		AbstractTarget *clone()
 		{
 			return new Target<void (ClassT::*)(ArgT)>(_object, _callback);
+		}
+
+		virtual bool isEquals(void *inTarget)
+		{
+			Target<void (ClassT::*)(ArgT)> *theFunctorPointer =
+					dynamic_cast<Target<void (ClassT::*)(ArgT)> >(inTarget);
+
+			if (NULL == theFunctorPointer) return false;
+
+			 return (_callback == theFunctorPointer->_callback) &&
+					 (_object == theFunctorPointer->_object);
 		}
 	};
 
@@ -176,6 +198,11 @@ public:
 	{
 		delete _caller;
 		_caller = inFunctor._caller->clone();
+	}
+
+	bool operator ==(const PLFunctor& inFunctor)
+	{
+		return _caller == inFunctor._caller;
 	}
 
 	~PLFunctor()
