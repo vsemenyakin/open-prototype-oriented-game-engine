@@ -25,14 +25,18 @@
 
 #include <application/implementation/multithreading/PLThread/PLThread_windows.h>
 
-// Event handlers
-#include <application/implementation/event_handling/services_windows/PLKeyboardEventHandler_windows.h>
-
+// Services
 #include <application/implementation/event_handling/services_windows/PLWindowEventsService.h>
 
-///////////////////////////////////////////////////////////////////////////////
-USE_EVENT_KEY(kPLKeyDownEvent)
-USE_EVENT_KEY(kPLKeyUpEvent)
+// Event handlers
+#include <application/implementation/event_handling/services_windows/PLKeyboardEventHandler_windows.h>
+#include <application/implementation/event_handling/services_windows/PLNonArgumentWindowEventHandler_windows.h>
+#include <application/implementation/event_handling/services_windows/PLResizeWindowEventHandler_windows.h>
+#include <application/implementation/event_handling/services_windows/PLWindowActivateEventHandler_windows.h>
+
+// Event keys
+#include <application/PLKeyboardEvents.h>
+#include <application/PLWindowStateEvents.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 // | *********************** |
@@ -62,23 +66,6 @@ PLWindow_windows *getWindowClassByWindowHandle(HWND inWindowHandle)
 // | *** Window procedure *** |
 // | ************************ |
 ///////////////////////////////////////////////////////////////////////////////
-LRESULT __stdcall windowProcedure(HWND inWindowHandle, UINT inMessage,
-		WPARAM inWindowParameter, LPARAM inD)
-{
-	PLWindow_windows *theWindows =
-			getWindowClassByWindowHandle(inWindowHandle);
-
-//	if (NULL != theWindows)
-//	{
-//		// Delegating for created window
-//		return theWindows->getRunLoop()->windowProcedure(inWindowHandle,
-//				inMessage, inWindowParameter, inD);
-//	}
-
-	// Default call - need for responding to Windows OS calls
-	return DefWindowProc(inWindowHandle, inMessage, inWindowParameter, inD);
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // | *********************** |
@@ -105,16 +92,15 @@ void PLWindow_windows::show()
 	_runLoop = (PLRunLoop_windows *)PLThread_windows::currentThread()->
 			runLoop();
 
+	PLWindowEventsService *theServiceWindowEventService =
+			(PLWindowEventsService *)getRunLoop()->serviceForKey(
+					kPLRunLoopServiceWindowEvent);
+	if (NULL == theServiceWindowEventService) {
+		getRunLoop()->addService(new PLWindowEventsService());
+	}
+
 	// Create and register windows class
 	_windowClass = createWindowClass("openGL");
-
-	ATOM theAtom = RegisterClassEx(_windowClass);
-	if (0 == theAtom)
-    {
-    	std::cout << "Failed to register the window class" << std::endl;
-
-    	return;
-    }
 
 	// Create window
     _windowHandle = CreateWindowExA(
@@ -136,8 +122,7 @@ void PLWindow_windows::show()
     // Make map from window handle to window object
     assignWindowHandleWithWindowClass(_windowHandle, this);
 
-    // OpenGL acrions
-
+    // OpenGL actions
 
 	// Device context. The device context connects the window to the
 	// GDI (Graphics Device Interface).
@@ -152,55 +137,8 @@ void PLWindow_windows::show()
 	}
 
     // ***********************************
-	// Set Pixel forma descriptor
-	PIXELFORMATDESCRIPTOR thePixelFormatDescriptor;
-
-	thePixelFormatDescriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-	thePixelFormatDescriptor.nVersion = 1;
-	thePixelFormatDescriptor.dwFlags =
-			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-	thePixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
-	thePixelFormatDescriptor.cColorBits = 32;
-	thePixelFormatDescriptor.cRedBits = 0; // Default
-	thePixelFormatDescriptor.cRedShift = 0; // Default
-	thePixelFormatDescriptor.cGreenBits = 0; // Default
-	thePixelFormatDescriptor.cGreenShift = 0; // Default
-	thePixelFormatDescriptor.cBlueBits = 0; // Default
-	thePixelFormatDescriptor.cBlueShift = 0; // Default
-	thePixelFormatDescriptor.cAlphaBits = 0; // Default
-	thePixelFormatDescriptor.cAlphaShift = 0; // Default
-	thePixelFormatDescriptor.cAccumBits = 0; // Default
-	thePixelFormatDescriptor.cAccumRedBits = 0; // Default
-	thePixelFormatDescriptor.cAccumGreenBits = 0; // Default
-	thePixelFormatDescriptor.cAccumBlueBits = 0; // Default
-	thePixelFormatDescriptor.cAccumAlphaBits = 0; // Default
-	thePixelFormatDescriptor.cDepthBits = 32; // Default
-	thePixelFormatDescriptor.cStencilBits = 0;
-	thePixelFormatDescriptor.cAuxBuffers = 0; // Default
-	thePixelFormatDescriptor.iLayerType = PFD_MAIN_PLANE;
-	thePixelFormatDescriptor.bReserved = 0; // Default
-	thePixelFormatDescriptor.dwLayerMask = 0; // Default
-	thePixelFormatDescriptor.dwVisibleMask = 0; // Default
-	thePixelFormatDescriptor.dwDamageMask = 0; // Default
-
-	// Get nearest pixel format (gets by system based on requested device
-	// context).
-	int thePixelFormat = ChoosePixelFormat(theDeviceContext,
-			&thePixelFormatDescriptor);
-	if (0 == thePixelFormat)
-	{
-		std::cout << "Can't find suitable Pixel Format" << std::endl;
-	}
-	else
-	{
-		std::cout << thePixelFormat << std::endl;
-	}
-
-	if (false == SetPixelFormat(theDeviceContext, thePixelFormat,
-			&thePixelFormatDescriptor))
-	{
-		std::cout << "Can't set the found Pixel Format" << std::endl;
-	}
+	// Set Pixel format
+    setPixelFormat(theDeviceContext);
 
 	// OpenGL program is linked to Rendering Context, that connects to device
 	// context
@@ -444,49 +382,120 @@ void PLWindow_windows::getGLContext()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+bool PLWindow_windows::setPixelFormat(HDC inDeviceContext)
+{
+	// TODO: Put here arguments for setting device context
+
+	// Set Pixel format descriptor
+	PIXELFORMATDESCRIPTOR thePixelFormatDescriptor;
+
+	thePixelFormatDescriptor.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	thePixelFormatDescriptor.nVersion = 1;
+	thePixelFormatDescriptor.dwFlags =
+			PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	thePixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
+	thePixelFormatDescriptor.cColorBits = 32;
+	thePixelFormatDescriptor.cRedBits = 0; // Default
+	thePixelFormatDescriptor.cRedShift = 0; // Default
+	thePixelFormatDescriptor.cGreenBits = 0; // Default
+	thePixelFormatDescriptor.cGreenShift = 0; // Default
+	thePixelFormatDescriptor.cBlueBits = 0; // Default
+	thePixelFormatDescriptor.cBlueShift = 0; // Default
+	thePixelFormatDescriptor.cAlphaBits = 0; // Default
+	thePixelFormatDescriptor.cAlphaShift = 0; // Default
+	thePixelFormatDescriptor.cAccumBits = 0; // Default
+	thePixelFormatDescriptor.cAccumRedBits = 0; // Default
+	thePixelFormatDescriptor.cAccumGreenBits = 0; // Default
+	thePixelFormatDescriptor.cAccumBlueBits = 0; // Default
+	thePixelFormatDescriptor.cAccumAlphaBits = 0; // Default
+	thePixelFormatDescriptor.cDepthBits = 32; // Default
+	thePixelFormatDescriptor.cStencilBits = 0;
+	thePixelFormatDescriptor.cAuxBuffers = 0; // Default
+	thePixelFormatDescriptor.iLayerType = PFD_MAIN_PLANE;
+	thePixelFormatDescriptor.bReserved = 0; // Default
+	thePixelFormatDescriptor.dwLayerMask = 0; // Default
+	thePixelFormatDescriptor.dwVisibleMask = 0; // Default
+	thePixelFormatDescriptor.dwDamageMask = 0; // Default
+
+	// Get nearest pixel format (gets by system based on requested device
+	// context).
+	int thePixelFormat = ChoosePixelFormat(inDeviceContext,
+			&thePixelFormatDescriptor);
+
+	if (0 == thePixelFormat)
+	{
+		std::cout << "Can't find suitable Pixel Format" << std::endl;
+		return false;
+	}
+	else
+	{
+		std::cout << thePixelFormat << std::endl;
+	}
+
+	if (false == SetPixelFormat(inDeviceContext, thePixelFormat,
+			&thePixelFormatDescriptor))
+	{
+		std::cout << "Can't set the found Pixel Format" << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 WNDCLASSEX *PLWindow_windows::createWindowClass(const char *inName)
 {
-	_windowClass = new WNDCLASSEX();
+	WNDCLASSEX *theWindowClass = new WNDCLASSEX();
 
 	// Size of structure
-	_windowClass->cbSize = sizeof(WNDCLASSEX);
+	theWindowClass->cbSize = sizeof(WNDCLASSEX);
 
 	// Style of window. Redraw On Size, And Own DC For Window.
-	_windowClass->style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	theWindowClass->style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 
 	// Event handling procedure
-	_windowClass->lpfnWndProc = windowProcedure;
+	theWindowClass->lpfnWndProc = windowProcedure;
 
 	// Extra bytes after window-class structure. Zero.
-	_windowClass->cbClsExtra = 0;
+	theWindowClass->cbClsExtra = 0;
 
 	// Extra bytes to allocate after the window instance. Zero.
 	// the CLASS directive in resource file
-	_windowClass->cbWndExtra = 0;
+	theWindowClass->cbWndExtra = 0;
 
 	// Event handling procedure (window procedure)
-	_windowClass->hInstance = GetModuleHandleA(NULL);
+	theWindowClass->hInstance = GetModuleHandleA(NULL);
 
 	// Icon resource. If NULL - sets as default
-	_windowClass->hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	theWindowClass->hIcon = LoadIcon(NULL, IDI_APPLICATION);
 
 	// Handle to class cursor resource. If this is NULL,
 	// an application must explicitly set the cursor shape whenever the mouse
 	// moves into the application's window
-	_windowClass->hCursor = LoadCursor(NULL, IDC_ARROW);
+	theWindowClass->hCursor = LoadCursor(NULL, IDC_ARROW);
 
 	// Handle to class background brush. Sets color or brush to paint the
 	// background.
-	_windowClass->hbrBackground = NULL; // No background
+	theWindowClass->hbrBackground = NULL; // No background
 
 	// String that specifies the resource name of the class menu.
-	_windowClass->lpszMenuName = NULL; // Make no menu
+	theWindowClass->lpszMenuName = NULL; // Make no menu
 
 	// Name of current class
-	_windowClass->lpszClassName = inName;
+	theWindowClass->lpszClassName = inName;
 
 	// Small icon resource
-	_windowClass->hIconSm = NULL;
+	theWindowClass->hIconSm = NULL;
+
+	ATOM theAtom = RegisterClassEx(theWindowClass);
+	if (0 == theAtom)
+    {
+    	std::cout << "Failed to register the window class" << std::endl;
+
+    	return NULL;
+    }
+
+	return theWindowClass;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -504,13 +513,41 @@ void PLWindow_windows::setFocus()
 ///////////////////////////////////////////////////////////////////////////////
 void PLWindow_windows::initializeEnvironmentForEvent(PLEventKey *inoutEventKey)
 {
-	if (*inoutEventKey == kPLKeyDownEvent || *inoutEventKey == kPLKeyUpEvent)
-	{
-		PLWindowEventsService *theServiceWindowEventService =
-				(PLWindowEventsService *)PLThread_windows::currentThread()->
-						runLoop()->serviceForKey(kPLRunLoopServiceWindowEvent);
+	PLWindowEventsService *theServiceWindowEventService =
+			(PLWindowEventsService *)getRunLoop()->serviceForKey(
+					kPLRunLoopServiceWindowEvent);
+	if (NULL == theServiceWindowEventService) {
+		getRunLoop()->addService(new PLWindowEventsService());
+	}
 
+	if (*inoutEventKey == kKeyDownEventKey)
+	{
 		theServiceWindowEventService->assignHandler(
-				new PLKeyboardEventHandler_windows());
+				new PLKeyboardEventHandler_windows(
+						WM_KEYDOWN, &kKeyDownEventKey, this));
+	} else if (*inoutEventKey == kKeyUpEventKey)
+	{
+		theServiceWindowEventService->assignHandler(
+				new PLKeyboardEventHandler_windows(
+						WM_KEYUP, &kKeyUpEventKey, this));
+	} else if (*inoutEventKey == kWindowActive ||
+			*inoutEventKey == kWindowMinimize)
+	{
+		theServiceWindowEventService->assignWindowEvent(
+				new PLWindowActivateEventHandler_windows(this));
+	} else if (*inoutEventKey == kWindowShow)
+	{
+		theServiceWindowEventService->assignWindowEvent(
+				new PLNonArgumentWindowEventHandler_windows(
+						WM_SHOWWINDOW, &kWindowShow, this));
+	} else if (*inoutEventKey == kWindowResize)
+	{
+		theServiceWindowEventService->assignWindowEvent(
+				new PLResizeWindowEventHandler_windows(this));
+	} else if (*inoutEventKey == kWindowClose)
+	{
+		theServiceWindowEventService->assignWindowEvent(
+				new PLNonArgumentWindowEventHandler_windows(
+						WM_CLOSE, &kWindowClose, this));
 	}
 }
