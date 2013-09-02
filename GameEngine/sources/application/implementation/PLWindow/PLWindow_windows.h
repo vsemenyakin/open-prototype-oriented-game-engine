@@ -29,6 +29,7 @@
 class PLWindow_windows : public IPLWindow, public IPLCompositeEventSource
 {
 private:
+
 	// Low level properties
 	WNDCLASSEX *_windowClass;
 	HWND _windowHandle;
@@ -43,6 +44,7 @@ private:
 
 	WNDCLASSEX *createWindowClass(const char *inName);
 
+	bool setPixelFormat(HDC inDeviceContext);
 
 public:
 
